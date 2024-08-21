@@ -1,0 +1,33 @@
+<nav class="navbar" [class.transparent]="isTransparent">
+  <div class="container">
+    <a class="navbar-brand position-absolute" href="#">Product</a>
+    <ul class="navbar-nav w-100">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="home" routerLinkActive="active">Trang chủ</a>
+      </li>
+      <li class="nav-item d-flex justify-content-center align-items-center">
+        <a class="nav-link" href="#">Thời trang nam</a>
+        <i class="bi bi-caret-down-fill"></i>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Thời trang nữ</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Phụ kiện</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Trang sức</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" >Hỗ trợ</a>
+      </li>
+      <li *ngIf="!userService.authenticated()"  class="nav-item px-2">
+        <a class="nav-link" routerLink="login" routerLinkActive="active">Đăng nhập</a>
+      </li>
+      <li  class="nav-item" *ngIf="userService.authenticated()">
+        <a  class="nav-link" routerLink="profile" routerLinkActive="active"><i class="bi bi-person nav-link" style="font-size: 20px;"></i></a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<router-outlet></router-outlet>
