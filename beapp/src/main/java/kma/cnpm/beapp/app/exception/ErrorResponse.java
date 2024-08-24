@@ -1,4 +1,4 @@
-package kma.cnpm.beapp.app.exception;
+package kma.cnwat.be.app.exception;
 
 import lombok.Data;
 

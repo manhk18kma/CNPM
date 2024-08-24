@@ -1,8 +1,9 @@
-package kma.cnpm.beapp.app.exception;
+package kma.cnwat.be.app.exception;
 
 import jakarta.validation.ConstraintViolationException;
-import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnwat.be.domain.common.exception.AppException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,9 +11,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -37,7 +38,6 @@ public class GlobalExceptionHandler {
         return errorResponse;
 
     }
-
     @ExceptionHandler(AppException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleAppException(AppException e, WebRequest request) {
@@ -50,6 +50,17 @@ public class GlobalExceptionHandler {
         return errorResponse;
     }
 
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(new Date());
+        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+        errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.setError(e.getClass().getSimpleName());
+        errorResponse.setMessage(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 
 }
