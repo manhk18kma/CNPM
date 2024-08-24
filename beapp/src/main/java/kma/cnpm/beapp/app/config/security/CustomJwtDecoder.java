@@ -1,4 +1,4 @@
-package kma.cnwat.be.app.config.security;
+package kma.cnpm.beapp.app.config.security;
 
 
 import com.nimbusds.jose.JOSEException;

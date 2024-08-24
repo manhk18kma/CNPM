@@ -1,4 +1,4 @@
-package kma.cnwat.be.app.config.security;
+package kma.cnpm.beapp.app.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

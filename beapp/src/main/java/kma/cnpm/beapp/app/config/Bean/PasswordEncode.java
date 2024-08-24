@@ -1,4 +1,4 @@
-package kma.cnwat.be.app.config.Bean;
+package kma.cnpm.beapp.app.config.Bean;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

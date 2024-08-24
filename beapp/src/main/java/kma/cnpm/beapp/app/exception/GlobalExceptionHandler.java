@@ -1,4 +1,4 @@
-package kma.cnwat.be.app.exception;
+package kma.cnpm.beapp.app.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import kma.cnwat.be.domain.common.exception.AppException;

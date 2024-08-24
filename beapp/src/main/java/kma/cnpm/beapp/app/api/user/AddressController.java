@@ -1,4 +1,4 @@
-package kma.cnwat.be.app.api.user;
+package kma.cnpm.beapp.app.api.user;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

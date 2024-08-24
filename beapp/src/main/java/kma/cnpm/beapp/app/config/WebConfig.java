@@ -1,4 +1,4 @@
-package kma.cnwat.be.app.config;
+package kma.cnpm.beapp.app.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

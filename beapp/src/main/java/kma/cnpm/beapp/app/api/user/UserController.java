@@ -1,4 +1,4 @@
-package kma.cnwat.be.app.api.user;
+package kma.cnpm.beapp.app.api.user;
 
 import com.nimbusds.jose.JOSEException;
 import io.swagger.v3.oas.annotations.Operation;
