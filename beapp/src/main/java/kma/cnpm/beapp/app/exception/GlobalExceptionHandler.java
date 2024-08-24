@@ -1,7 +1,7 @@
 package kma.cnpm.beapp.app.exception;
 
 import jakarta.validation.ConstraintViolationException;
-import kma.cnwat.be.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.exception.AppException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

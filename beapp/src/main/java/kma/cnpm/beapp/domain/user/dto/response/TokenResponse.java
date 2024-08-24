@@ -1,7 +1,6 @@
 package kma.cnpm.beapp.domain.user.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import kma.cnwat.be.domain.common.enumType.TokenType;
 import lombok.Builder;
 
 

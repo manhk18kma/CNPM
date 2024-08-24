@@ -1,7 +1,8 @@
 package kma.cnpm.beapp.domain.user.repository;
 
-import kma.cnwat.be.domain.user.dto.response.PDWResponse;
-import kma.cnwat.be.domain.user.entity.District;
+import kma.cnpm.beapp.domain.user.dto.response.PDWResponse;
+import kma.cnpm.beapp.domain.user.entity.District;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

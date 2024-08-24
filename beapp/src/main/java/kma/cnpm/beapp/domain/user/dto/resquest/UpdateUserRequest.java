@@ -1,21 +1,13 @@
 package kma.cnpm.beapp.domain.user.dto.resquest;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-import kma.cnwat.be.domain.common.enumType.Gender;
-import kma.cnwat.be.domain.common.enumType.UserStatus;
-import kma.cnwat.be.domain.common.validation.DateAnnotationCus;
-import kma.cnwat.be.domain.common.validation.EnumValue;
-import kma.cnwat.be.domain.common.validation.PhoneNumber;
-import kma.cnwat.be.domain.user.entity.Address;
-import lombok.Getter;
-import org.hibernate.usertype.UserType;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import kma.cnpm.beapp.domain.common.enumType.Gender;
+import kma.cnpm.beapp.domain.common.validation.DateAnnotationCus;
+import kma.cnpm.beapp.domain.common.validation.EnumValue;
+import kma.cnpm.beapp.domain.common.validation.PhoneNumber;
+import lombok.Getter;
 
 @Getter
 public class UpdateUserRequest {
