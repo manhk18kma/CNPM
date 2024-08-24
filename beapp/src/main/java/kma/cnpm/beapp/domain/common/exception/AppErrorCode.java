@@ -13,6 +13,7 @@ public enum AppErrorCode {
     USERNAME_NOT_EXISTED(3 , "Username not existed" , HttpStatus.BAD_REQUEST),
     USER_ACTIVATED(5,"User has been activated" , HttpStatus.BAD_REQUEST),
     INVALID_USERNAME_PASSWORD(1, "Username or password incorrect" , HttpStatus.BAD_REQUEST),
+    ADDRESS_NOT_EXISTED(3,"Address not existed" , HttpStatus.BAD_REQUEST),
 
     Passwords_Not_Match(6,"Password and confirm password not match" ,HttpStatus.BAD_REQUEST ),
     EMAIL_NOT_EXISTED(7,"Email not existed" ,HttpStatus.BAD_REQUEST ),
