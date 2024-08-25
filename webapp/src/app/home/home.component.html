@@ -1,26 +1,27 @@
-
-
-  <div id="myCarousel" class="carousel slide background-secondary w-100" data-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img class="first-slide" src="https://www.ssi-schaefer.com/resource/blob/1444662/b5bdadcababc0904a574ea9d675870c3/e-commerce-hero-dam-image-en-31561--data.jpg" alt="First slide">
-        <div class="container">
-<!--          <div class="carousel-caption text-left">-->
-<!--            <h1>Example headline.</h1>-->
-<!--            <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>-->
-<!--            <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>-->
-<!--          </div>-->
-        </div>
-      </div>
+<div id="myCarousel" class="carousel slide background-secondary w-100" data-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <h1 class="text-banner">
+        Giao dịch một chạm
+      </h1>
+      <p class="decor-text-0 m-lg-3">
+        An toàn - Tiện ích - Nhanh chóng
+      </p>
+    </div>
+    <div class="carousel-item active">
+      <img src="https://img.freepik.com/premium-vector/mobile-shopping-hand-with-phone-shopping-basket-screen-flat-design-isolated-white-background_647322-254.jpg"/>
     </div>
 
-  <div class="container marketing my-4 background-secondary">
+    <button class="button1" style="position: absolute;bottom: 20%;left: 15%"><i class="bi bi-cart3"></i> Mua ngay</button>
+  </div>
+
+  <div class="container my-4">
     <div class="container decor-text">
-      <div class="row g-4">
+      <div class="row">
         <div class="col text-center">
           <div class="p-3 border bg-light">
             <i class="bi bi-truck" style="font-size: 2rem;"></i>
-            <p class="mt-2">Giao hàng trên toàn thế giới</p>
+            <p class="mt-2">Vận chyển nhanh chóng</p>
           </div>
         </div>
         <div class="col text-center">
@@ -36,6 +37,54 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="card">
+      <div style="display: flex;">
+        <span *ngIf="!isCommentsHidden" class="title">Đăng bài</span>
+        <span *ngIf="isCommentsHidden" class="title">
+           <i class="bi bi-person-circle"><span> Khánh</span></i>
+        </span>
+        <i (click)="toggleComments()" class="bi bi-caret-down" style="padding: 10px;margin-right: 10px"></i>
+      </div>
+      <div class="comments hide" [ngClass]="{'hide': isCommentsHidden}">
+        <div class="comment-react">
+        </div>
+        <div class="comment-container">
+          <div class="user">
+            <div class="user-pic">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <div class="user-info">
+              <span>Khánh</span>
+            </div>
+          </div>
+        <div class="text-box">
+          <div class="box-container">
+            <textarea style="overflow: hidden" placeholder="Nội dung bài đăng"></textarea>
+            <div>
+              <div class="formatting">
+                <button class="button2" type="button">
+                  <i class="bi bi-card-image"></i>
+                </button>
+                <button class="button2" type="button">
+                  <i class="bi bi-geo-alt-fill"></i>
+                </button>
+                <button class="button2" type="button">
+                  <i class="bi bi-emoji-smile"></i>
+                </button>
+              </div>
+              <button type="submit" class="button1"  style="float: right" title="Đăng bài">
+                Đăng bài
+              </button>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+
+
     </div>
   </div>
 </div>
