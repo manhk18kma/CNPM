@@ -50,9 +50,7 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .group("api-service-identity")
                 .packagesToScan(
-                        "kma.cnwat.be.app.api.user",
-                        "TTCS.IdentityService.presentation.command",
-                        "TTCS.IdentityService.presentation.query")
+                        "kma.cnpm.beapp.app.api.user")
                 .build();
     }
     @Bean

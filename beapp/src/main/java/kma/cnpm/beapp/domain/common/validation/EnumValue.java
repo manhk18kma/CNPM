@@ -16,8 +16,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = EnumValueValidator.class)
 public @interface EnumValue {
     String name();
-    String message() default "{name} must be any of enum {enumClass}";
     Class<? extends Enum<?>> enumClass();
+    String message() default "{name} must be one of {acceptedValues}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
