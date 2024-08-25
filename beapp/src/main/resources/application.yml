@@ -1,0 +1,16 @@
+jwt:
+  # Access token
+  valid-duration: 20000 # Thời gian hiệu lực của Access Token (tính bằng giây)
+  accessKey: 517264d32494bb4ea58285e92954e010595800e80a5f9c45fd48f762cbbf16de
+
+  # Refresh token
+  refreshable-duration: 400000 # Thời gian hiệu lực của Refresh Token (tính bằng giây)
+  refreshKey: d145e5cd2265b82f2118672125dff2f4a1321d5bf0c3f8a90c74c85833c36b68
+
+  # Reset password token
+  reset-password-duration: 400000 # Thời gian hiệu lực của Reset Password Token (tính bằng giây)
+  resetKey: d145e5cd2265b82f2118672125dff2f4a1321d5bf0c3f8a90c74c85833c36b68
+
+  # Active user token
+  active-user-duration: 400000 # Thời gian hiệu lực của Active User Token (tính bằng giây)
+  activeKey: d145e5cd2265b82f2118672125dff2f4a1321d5bf0c3f8a90c74c85833c36b68
