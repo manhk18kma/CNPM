@@ -24,9 +24,9 @@ public interface ProvinceRepository extends JpaRepository<Province, String> {
                           @Param("districtId") String districtId,
                           @Param("wardId") String wardId);
 
-    @Query("SELECT new kma.cnpm.beapp.domain.user.dto.response.PDWResponse(p.id, p.name) FROM Province p ORDER BY p.name ASC")
+    @Query("SELECT new kma.cnpm.beapp.domain.user.dto.response.PDWResponse(p.id, p.name) " +
+            "FROM Province p ORDER BY p.name ASC")
     List<PDWResponse> getAllProvinces();
-
 
 //    @Query("SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END " +
 //            "FROM (" +
