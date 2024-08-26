@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,15 +31,17 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserService {
-    UserRepository userRepository;
-    NotificationService notificationService;
-    AuthService authService;
-    ActiveResetTokenRepository activeResetTokenRepository;
-    PasswordEncoder passwordEncoder;
+    @Value("${urlClient}")
+    String urlClient;
+   final UserRepository userRepository;
+    final NotificationService notificationService;
+     final AuthService authService;
+    final ActiveResetTokenRepository activeResetTokenRepository;
+    final PasswordEncoder passwordEncoder;
     @Transactional
-    public UserResponse saveUser(CreateUserRequest request) throws ParseException, JOSEException {
+    public UserResponse saveUser(CreateUserRequest request) {
         String username = request.getUsername();
         String email = request.getEmail();
         String phone = request.getPhone();
@@ -47,12 +50,10 @@ public class UserService {
             throw  new AppException(AppErrorCode.Passwords_Not_Match);
         }
 
-        // Kiểm tra sự tồn tại của username, email, và phone
         checkIfExists(userRepository.existsUserByUsername(username), AppErrorCode.USERNAME_IS_USED);
         checkIfExists(userRepository.existsUserByEmail(email), AppErrorCode.EMAIL_IS_USED);
         checkIfExists(userRepository.existsUserByPhone(phone), AppErrorCode.PHONE_IS_USED);
 
-        // Xóa toàn bộ người dùng chưa active có cùng username, email, hoặc phone
         List<User> inactiveUsers = userRepository.findByUsernameNotActivateByPhoneEmailUsername(username, email, phone);
         inactiveUsers.forEach(user -> {
             activeResetTokenRepository.deleteTokenBySub(user.getUsername() , TokenType.ACTIVE_TOKEN);
@@ -68,7 +69,7 @@ public class UserService {
 
         // Tạo token kích hoạt và liên kết kích hoạt
         String activeToken = authService.generateToken(savedUser, TokenType.ACTIVE_TOKEN);
-        String activateLink = "http://localhost:3000/activate?token=" + activeToken;
+        String activateLink = urlClient + "/activate?token=" + activeToken;
         String subject = "Account Activation";
 
         // Lưu token và gửi email kích hoạt
@@ -124,7 +125,7 @@ public class UserService {
                 .orElseThrow(() -> new AppException(AppErrorCode.EMAIL_NOT_EXISTED));
 
         String resetToken = authService.generateToken(user, TokenType.RESET_TOKEN);
-        String resetLink = "http://localhost:4200/reset-password?token=" + resetToken;
+        String resetLink =urlClient + "/reset-password?token=" + resetToken;
         String subject = "Reset Password";
 
         activeResetTokenRepository.deleteTokenBySub(user.getUsername(), TokenType.RESET_TOKEN);
