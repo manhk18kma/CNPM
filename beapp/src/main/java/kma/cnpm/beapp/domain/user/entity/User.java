@@ -19,8 +19,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "tbl_user")
 public class User extends AbstractEntity<Long> {
-    @Column(name = "username",  length = 50)
-    private String username;
 
     @Column(name = "password",  length = 255)
     private String password;

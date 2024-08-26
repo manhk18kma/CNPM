@@ -22,11 +22,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -35,14 +38,17 @@ import java.util.List;
 public class UserService {
     @Value("${urlClient}")
     String urlClient;
-   final UserRepository userRepository;
+    @Value("${recaptcha.secret-key}")
+    private String secretKey;
+    @Value("${recaptcha.verify-url}")
+    private  String VERIFY_URL;
+    final UserRepository userRepository;
     final NotificationService notificationService;
      final AuthService authService;
     final ActiveResetTokenRepository activeResetTokenRepository;
     final PasswordEncoder passwordEncoder;
     @Transactional
     public UserResponse saveUser(CreateUserRequest request) {
-        String username = request.getUsername();
         String email = request.getEmail();
         String phone = request.getPhone();
 
@@ -50,13 +56,12 @@ public class UserService {
             throw  new AppException(AppErrorCode.Passwords_Not_Match);
         }
 
-        checkIfExists(userRepository.existsUserByUsername(username), AppErrorCode.USERNAME_IS_USED);
         checkIfExists(userRepository.existsUserByEmail(email), AppErrorCode.EMAIL_IS_USED);
         checkIfExists(userRepository.existsUserByPhone(phone), AppErrorCode.PHONE_IS_USED);
 
-        List<User> inactiveUsers = userRepository.findByUsernameNotActivateByPhoneEmailUsername(username, email, phone);
+        List<User> inactiveUsers = userRepository.findByUsernameNotActivateByPhoneEmailUsername(email, phone);
         inactiveUsers.forEach(user -> {
-            activeResetTokenRepository.deleteTokenBySub(user.getUsername() , TokenType.ACTIVE_TOKEN);
+            activeResetTokenRepository.deleteTokenBySub(user.getEmail() , TokenType.ACTIVE_TOKEN);
             userRepository.delete(user);
         });
 
@@ -75,13 +80,27 @@ public class UserService {
         // Lưu token và gửi email kích hoạt
         ActiveResetToken activeResetToken = ActiveResetToken.builder()
                 .tokenType(TokenType.ACTIVE_TOKEN)
-                .sub(username)
+                .sub(email)
                 .build();
         activeResetTokenRepository.save(activeResetToken);
 
         notificationService.sendActivationEmail(email, subject, activateLink);
 
         return UserResponse.builder().id(savedUser.getId()).build();
+    }
+
+
+    public boolean submitCaptcha(String captchaToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = String.format("%s?secret=%s&response=%s", VERIFY_URL, secretKey, captchaToken);
+        String response = restTemplate.getForObject(url, String.class);
+
+        System.out.println(response);
+        if (response != null && response.contains("\"success\": true")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -128,11 +147,11 @@ public class UserService {
         String resetLink =urlClient + "/reset-password?token=" + resetToken;
         String subject = "Reset Password";
 
-        activeResetTokenRepository.deleteTokenBySub(user.getUsername(), TokenType.RESET_TOKEN);
+        activeResetTokenRepository.deleteTokenBySub(user.getEmail(), TokenType.RESET_TOKEN);
 
         ActiveResetToken activeResetToken = ActiveResetToken.builder()
                 .tokenType(TokenType.RESET_TOKEN)
-                .sub(user.getUsername())
+                .sub(user.getEmail())
                 .build();
         activeResetTokenRepository.save(activeResetToken);
 

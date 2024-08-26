@@ -73,7 +73,7 @@ public class AuthService {
 
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .issuer("KMA_CNPM_DREAM_TEAM")
                 .issueTime(new Date())
                 .expirationTime(new Date(
