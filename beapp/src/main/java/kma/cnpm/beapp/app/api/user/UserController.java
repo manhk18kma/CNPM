@@ -22,9 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -42,7 +44,7 @@ public class UserController {
     @PostMapping
     public ResponseData<UserResponse> createUser(
             @Parameter(description = "User creation request payload with user details", required = true)
-            @RequestBody @Valid CreateUserRequest request) throws ParseException, JOSEException {
+            @RequestBody @Valid CreateUserRequest request)  {
         UserResponse response = userService.saveUser(request);
         return new ResponseData<>(HttpStatus.CREATED.value(),
                 "User created successfully, check your email to activate",
@@ -84,5 +86,11 @@ public class UserController {
                 "Address added successfully",
                 new Date(),
                 response);
+    }
+
+    @PostMapping("/submit")
+    public void submitCaptcha(@RequestBody Map<String, String> payload) {
+        String captchaResponse = payload.get("captchaToken");
+        System.out.println(userService.submitCaptcha(captchaResponse));
     }
 }

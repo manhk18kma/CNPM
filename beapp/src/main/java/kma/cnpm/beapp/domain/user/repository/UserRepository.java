@@ -14,19 +14,19 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END" +
             " FROM User u " +
-            "WHERE u.username = :username  AND u.status = 'ACTIVE'")
-    boolean existsUserByUsername(@Param("username") String username);
+            "WHERE u.email = :email  AND u.status = 'ACTIVE'")
+    boolean existsUserByUsername(@Param("email") String email);
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END" +
             " FROM User u " +
             "WHERE u.email = :email  AND u.status = 'ACTIVE'")
-    boolean existsUserByEmail(@Param("email") String username);
+    boolean existsUserByEmail(@Param("email") String email);
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END" +
             " FROM User u " +
             "WHERE u.phone = :phone  AND u.status = 'ACTIVE'")
-    boolean existsUserByPhone(@Param("phone") String username);
+    boolean existsUserByPhone(@Param("phone") String phone);
 
-    @Query("SELECT u FROM User u WHERE u.username = :username AND u.status = 'ACTIVE'")
-    Optional<User> findByUsername(@Param("username") String username);
+    @Query("SELECT u FROM User u WHERE u.email = :email AND u.status = 'ACTIVE'")
+    Optional<User> findByUsername(@Param("email") String email);
 
     @Query("SELECT r FROM Role r " +
             "LEFT JOIN UserHasRole uhr ON r.id = uhr.role.id " +
@@ -39,15 +39,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE rhp.role.id = :id")
     List<Permission> getPermissionByRoleId(@Param("id") Long id);
 
-    @Query("SELECT u FROM User u WHERE u.username = :username")
-    Optional<User> findByUsernameNotActivate(String username);
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    Optional<User> findByUsernameNotActivate(String email);
 
 
     @Query("SELECT u FROM User u " +
-            "WHERE (u.username = :username OR u.email = :email OR u.phone = :phone) " +
+            "WHERE ( u.email = :email OR u.phone = :phone) " +
             "AND u.status = 'INACTIVE'")
-    List<User> findByUsernameNotActivateByPhoneEmailUsername(@Param("username") String username,
-                                                             @Param("email") String email,
+    List<User> findByUsernameNotActivateByPhoneEmailUsername(@Param("email") String email,
                                                              @Param("phone") String phone);
 
 
