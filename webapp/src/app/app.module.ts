@@ -16,13 +16,15 @@ import { ProfileComponent } from './profile/profile.component';
 import {CookieService} from "ngx-cookie-service";
 import {AuthGuard} from "./service/auth/auth.guard";
 import {TokenInterceptor} from "./service/token/token.interceptor";
+import { SignupComponent } from './signup/signup.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    ProfileComponent
+    ProfileComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
