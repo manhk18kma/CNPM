@@ -65,34 +65,34 @@ public class GlobalExceptionHandler {
 
 
 //    could not execute statement [Duplicate entry 'manhk18kma@gmai1l.com' for key 'tbl_user.email_UNIQUE'] [insert into tbl_user (create_by,created_at,date_of_birth,email,full_name,type,password,phone,status,token_device,updated_at,updated_by,username) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; SQL [insert into tbl_user (create_by,created_at,date_of_birth,email,full_name,type,password,phone,status,token_device,updated_at,updated_by,username) values (?,?,?,?,?,?,?,?,?,?,?,?,?)]; constraint [tbl_user.email_UNIQUE]
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException e, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setTimestamp(new Date());
-        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
-        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setError("Invalid Data");
-
-        String message = e.getMessage();
-        String constraintInfo = extractConstraintInfo(message);
-        String tableName = extractTableName(constraintInfo);
-        String constraintName = extractConstraintName(constraintInfo);
-        String columnName = extractColumnName(constraintName);
-
-        if ("tbl_user".equals(tableName)) {
-            if ("email_UNIQUE".equals(constraintName)) {
-                errorResponse.setMessage("Email is already used.");
-            } else if ("username_UNIQUE".equals(constraintName)) {
-                errorResponse.setMessage("Username is already used.");
-            } else if ("phone_UNIQUE".equals(constraintName)) {
-                errorResponse.setMessage("Phone number is already used.");
-            }
-        } else {
-            errorResponse.setMessage("Data integrity violation.");
-        }
-        return errorResponse;
-    }
-
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException e, WebRequest request) {
+//        ErrorResponse errorResponse = new ErrorResponse();
+//        errorResponse.setTimestamp(new Date());
+//        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+//        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+//        errorResponse.setError("Invalid Data");
+//
+//        String message = e.getMessage();
+//        String constraintInfo = extractConstraintInfo(message);
+//        String tableName = extractTableName(constraintInfo);
+//        String constraintName = extractConstraintName(constraintInfo);
+//        String columnName = extractColumnName(constraintName);
+//
+//        if ("tbl_user".equals(tableName)) {
+//            if ("email_UNIQUE".equals(constraintName)) {
+//                errorResponse.setMessage("Email is already used.");
+//            } else if ("username_UNIQUE".equals(constraintName)) {
+//                errorResponse.setMessage("Username is already used.");
+//            } else if ("phone_UNIQUE".equals(constraintName)) {
+//                errorResponse.setMessage("Phone number is already used.");
+//            }
+//        } else {
+//            errorResponse.setMessage("Data integrity violation.");
+//        }
+//        return errorResponse;
+//    }
+//
 
 
 
@@ -124,3 +124,19 @@ public class GlobalExceptionHandler {
 
 
 }
+
+
+
+
+//
+//   if ("tbl_user".equals(tableName)) {
+//           if ("email_UNIQUE".equals(constraintName)) {
+//           errorResponse.setMessage("Email is already used.");
+//           } else if ("username_UNIQUE".equals(constraintName)) {
+//           errorResponse.setMessage("Username is already used.");
+//           } else if ("phone_UNIQUE".equals(constraintName)) {
+//           errorResponse.setMessage("Phone number is already used.");
+//           }
+//           } else {
+//           errorResponse.setMessage("Data integrity violation.");
+//           }

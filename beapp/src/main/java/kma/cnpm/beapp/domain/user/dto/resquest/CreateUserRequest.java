@@ -29,8 +29,8 @@ public class CreateUserRequest {
     @Size(min = 2, max = 50, message = "Full name must be between 2 and 50 characters")
     private String fullName;
 
-    @PhoneNumber(message = "Phone number must be in a valid format")
-    private String phone;
+//    @PhoneNumber(message = "Phone number must be in a valid format")
+//    private String phone;
 
     @NotBlank(message = "captchaToken is required")
     private String captchaToken;

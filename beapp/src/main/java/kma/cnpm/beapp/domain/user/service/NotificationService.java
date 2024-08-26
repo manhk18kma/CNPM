@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,7 +15,7 @@ public class NotificationService {
     public NotificationService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }
-
+    @Async
     public void sendActivationEmail(String to, String subject, String activateLink) {
         try {
             // Tạo một đối tượng MimeMessage

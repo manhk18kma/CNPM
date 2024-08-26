@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsUserByPhone(@Param("phone") String phone);
 
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.status = 'ACTIVE'")
-    Optional<User> findByUsername(@Param("email") String email);
+    Optional<User> findByEmail(@Param("email") String email);
 
     @Query("SELECT r FROM Role r " +
             "LEFT JOIN UserHasRole uhr ON r.id = uhr.role.id " +
@@ -40,18 +40,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<Permission> getPermissionByRoleId(@Param("id") Long id);
 
     @Query("SELECT u FROM User u WHERE u.email = :email")
-    Optional<User> findByUsernameNotActivate(String email);
+    Optional<User> findByEmailActivateOrInactive(String email);
 
 
     @Query("SELECT u FROM User u " +
-            "WHERE ( u.email = :email OR u.phone = :phone) " +
-            "AND u.status = 'INACTIVE'")
-    List<User> findByUsernameNotActivateByPhoneEmailUsername(@Param("email") String email,
-                                                             @Param("phone") String phone);
+            "WHERE  u.email = :email AND u.status = 'INACTIVE'")
+    List<User> findUserNotActivateByEmail(@Param("email") String email);
 
 
-    @Query("SELECT u FROM User u WHERE u.email = :email AND u.status = 'ACTIVE'")
-    Optional<User> findByEmail(@Param("email") String email);
 
 
 }

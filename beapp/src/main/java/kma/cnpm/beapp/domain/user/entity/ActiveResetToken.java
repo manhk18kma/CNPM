@@ -20,6 +20,6 @@ public class ActiveResetToken extends AbstractEntity<Long>{
     @Column(name = "type")
     TokenType tokenType;
 
-//    @Column(name = "jwt_id")
-//    String jwtId;
+    @Column(name = "jwt_id")
+    String jwtId;
 }
