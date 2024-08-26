@@ -2,9 +2,9 @@ package kma.cnpm.beapp.domain.user.dto.resquest;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import kma.cnwat.be.domain.common.enumType.AddressType;
-import kma.cnwat.be.domain.common.enumType.Gender;
-import kma.cnwat.be.domain.common.validation.EnumValue;
+
+import kma.cnpm.beapp.domain.common.enumType.AddressType;
+import kma.cnpm.beapp.domain.common.validation.EnumValue;
 import lombok.Getter;
 import lombok.Setter;
 

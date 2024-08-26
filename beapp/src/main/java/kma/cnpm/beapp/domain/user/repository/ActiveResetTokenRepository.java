@@ -1,7 +1,7 @@
 package kma.cnpm.beapp.domain.user.repository;
 
-import kma.cnwat.be.domain.common.enumType.TokenType;
-import kma.cnwat.be.domain.user.entity.ActiveResetToken;
+import kma.cnpm.beapp.domain.common.enumType.TokenType;
+import kma.cnpm.beapp.domain.user.entity.ActiveResetToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -2,11 +2,9 @@ package kma.cnpm.beapp.app.config.security;
 
 
 import com.nimbusds.jose.JOSEException;
-import kma.cnwat.be.domain.common.enumType.TokenType;
-import kma.cnwat.be.domain.common.exception.AppErrorCode;
-import kma.cnwat.be.domain.common.exception.AppException;
-import kma.cnwat.be.domain.user.dto.resquest.IntrospectRequest;
-import kma.cnwat.be.domain.user.service.AuthService;
+
+import kma.cnpm.beapp.domain.common.enumType.TokenType;
+import kma.cnpm.beapp.domain.user.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

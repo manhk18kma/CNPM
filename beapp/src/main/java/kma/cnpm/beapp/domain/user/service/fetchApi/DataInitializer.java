@@ -1,12 +1,12 @@
 package kma.cnpm.beapp.domain.user.service.fetchApi;
 
-import kma.cnwat.be.domain.user.entity.District;
-import kma.cnwat.be.domain.user.entity.Province;
-import kma.cnwat.be.domain.user.entity.Ward;
-import kma.cnwat.be.domain.user.repository.DistrictRepository;
-import kma.cnwat.be.domain.user.repository.ProvinceRepository;
-import kma.cnwat.be.domain.user.repository.WardRepository;
-import kma.cnwat.be.domain.user.service.AddressService;
+import kma.cnpm.beapp.domain.user.entity.District;
+import kma.cnpm.beapp.domain.user.entity.Province;
+import kma.cnpm.beapp.domain.user.entity.Ward;
+import kma.cnpm.beapp.domain.user.repository.DistrictRepository;
+import kma.cnpm.beapp.domain.user.repository.ProvinceRepository;
+import kma.cnpm.beapp.domain.user.repository.WardRepository;
+import kma.cnpm.beapp.domain.user.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.ParameterizedTypeReference;

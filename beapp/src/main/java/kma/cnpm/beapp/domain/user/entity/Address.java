@@ -1,7 +1,7 @@
 package kma.cnpm.beapp.domain.user.entity;
 
 import jakarta.persistence.*;
-import kma.cnwat.be.domain.common.enumType.AddressType;
+import kma.cnpm.beapp.domain.common.enumType.AddressType;
 import lombok.*;
 
 @Setter

@@ -1,14 +1,11 @@
 package kma.cnpm.beapp.domain.user.dto.resquest;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+
 import jakarta.validation.constraints.Size;
-import kma.cnwat.be.domain.common.enumType.Gender;
-import kma.cnwat.be.domain.common.validation.PhoneNumber;
+import kma.cnpm.beapp.domain.common.validation.PhoneNumber;
 import lombok.Getter;
 
 import java.util.Date;

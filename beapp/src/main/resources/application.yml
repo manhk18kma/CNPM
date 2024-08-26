@@ -1,6 +1,8 @@
+urlClient: http://localhost:4000
+
 jwt:
   # Access token
-  valid-duration: 20 # Thời gian hiệu lực của Access Token (tính bằng giây)
+  valid-duration: 20000 # Thời gian hiệu lực của Access Token (tính bằng giây)
   accessKey: 517264d32494bb4ea58285e92954e010595800e80a5f9c45fd48f762cbbf16de
 
   # Refresh token

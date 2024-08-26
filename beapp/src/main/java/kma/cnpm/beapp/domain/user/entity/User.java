@@ -1,8 +1,9 @@
 package kma.cnpm.beapp.domain.user.entity;
 
 import jakarta.persistence.*;
-import kma.cnwat.be.domain.common.enumType.Gender;
-import kma.cnwat.be.domain.common.enumType.UserStatus;
+import kma.cnpm.beapp.domain.common.enumType.Gender;
+import kma.cnpm.beapp.domain.common.enumType.UserStatus;
+
 import lombok.*;
 
 import java.util.Date;

@@ -1,7 +1,8 @@
 package kma.cnpm.beapp.domain.user.repository;
 
-import kma.cnwat.be.domain.user.dto.response.PDWResponse;
-import kma.cnwat.be.domain.user.entity.Province;
+import kma.cnpm.beapp.domain.user.dto.response.PDWResponse;
+import kma.cnpm.beapp.domain.user.entity.Province;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,9 +24,9 @@ public interface ProvinceRepository extends JpaRepository<Province, String> {
                           @Param("districtId") String districtId,
                           @Param("wardId") String wardId);
 
-    @Query("SELECT new kma.cnwat.be.domain.user.dto.response.PDWResponse(p.id, p.name) FROM Province p ORDER BY p.name ASC")
+    @Query("SELECT new kma.cnpm.beapp.domain.user.dto.response.PDWResponse(p.id, p.name) " +
+            "FROM Province p ORDER BY p.name ASC")
     List<PDWResponse> getAllProvinces();
-
 
 //    @Query("SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END " +
 //            "FROM (" +
