@@ -5,4 +5,5 @@ import lombok.Getter;
 @Getter
 public class ActiveUserRequest {
     String token;
+    String tokenDevice;
 }

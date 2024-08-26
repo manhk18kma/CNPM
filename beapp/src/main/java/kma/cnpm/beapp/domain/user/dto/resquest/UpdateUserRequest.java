@@ -1,13 +1,20 @@
 package kma.cnpm.beapp.domain.user.dto.resquest;
 
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import kma.cnpm.beapp.domain.common.enumType.Gender;
+import kma.cnpm.beapp.domain.common.enumType.UserStatus;
 import kma.cnpm.beapp.domain.common.validation.DateAnnotationCus;
 import kma.cnpm.beapp.domain.common.validation.EnumValue;
 import kma.cnpm.beapp.domain.common.validation.PhoneNumber;
+import kma.cnpm.beapp.domain.user.entity.Address;
 import lombok.Getter;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 public class UpdateUserRequest {
@@ -23,5 +30,6 @@ public class UpdateUserRequest {
 
     @PhoneNumber(message = "Phone number must be in a valid format")
     private String phone;
+
 
 }
