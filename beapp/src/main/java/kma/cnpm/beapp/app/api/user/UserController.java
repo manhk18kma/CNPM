@@ -44,7 +44,7 @@ public class UserController {
     @PostMapping
     public ResponseData<UserResponse> createUser(
             @Parameter(description = "User creation request payload with user details", required = true)
-            @RequestBody @Valid CreateUserRequest request)  {
+            @RequestBody @Valid CreateUserRequest request) throws ParseException, JOSEException {
         UserResponse response = userService.saveUser(request);
         return new ResponseData<>(HttpStatus.CREATED.value(),
                 "User created successfully, check your email to activate",
@@ -91,6 +91,6 @@ public class UserController {
     @PostMapping("/submit")
     public void submitCaptcha(@RequestBody Map<String, String> payload) {
         String captchaResponse = payload.get("captchaToken");
-        System.out.println(userService.submitCaptcha(captchaResponse));
+        System.out.println(captchaResponse);
     }
 }
