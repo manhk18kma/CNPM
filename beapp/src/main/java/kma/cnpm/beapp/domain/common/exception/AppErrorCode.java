@@ -20,7 +20,10 @@ public enum AppErrorCode {
     //    Impl error code
     UNCATEGORIZED_EXCEPTION(1999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHENTICATED(1007, "Unauthenticated", HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED(1008, "You do not have permission", HttpStatus.FORBIDDEN);
+    UNAUTHORIZED(1008, "You do not have permission", HttpStatus.FORBIDDEN),
+
+    CATEGORY_NOT_EXISTED(2001, "Category not existed", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_EXISTED(3001, "Category not existed", HttpStatus.BAD_REQUEST);
 
     AppErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

@@ -124,7 +124,7 @@ public class UserService {
                 .orElseThrow(() -> new AppException(AppErrorCode.EMAIL_NOT_EXISTED));
 
         String resetToken = authService.generateToken(user, TokenType.RESET_TOKEN);
-        String resetLink = "http://localhost:3000/reset-password?token=" + resetToken;
+        String resetLink = "http://localhost:4200/reset-password?token=" + resetToken;
         String subject = "Reset Password";
 
         activeResetTokenRepository.deleteTokenBySub(user.getUsername(), TokenType.RESET_TOKEN);
@@ -189,7 +189,7 @@ public class UserService {
 
 
 
-    User findUserByUsername(String username) {
+    public User findUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(AppErrorCode.USERNAME_NOT_EXISTED));
     }
