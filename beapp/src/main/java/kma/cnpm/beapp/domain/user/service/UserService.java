@@ -190,7 +190,7 @@ public class UserService {
 
 
 
-    User findUserByUsername(String username) {
+    public User findUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(AppErrorCode.USERNAME_NOT_EXISTED));
     }
