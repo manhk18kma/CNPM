@@ -22,7 +22,8 @@ public enum AppErrorCode {
     UNCATEGORIZED_EXCEPTION(1999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHENTICATED(1007, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1008, "You do not have permission", HttpStatus.FORBIDDEN),
-    CAPTCHA_INVALID(12,"Captcha invalid" , HttpStatus.BAD_REQUEST);
+    CAPTCHA_INVALID(12,"Captcha invalid" , HttpStatus.BAD_REQUEST),
+
 
 
     CATEGORY_NOT_EXISTED(2001, "Category not existed", HttpStatus.BAD_REQUEST),
