@@ -25,6 +25,9 @@ public enum AppErrorCode {
     CAPTCHA_INVALID(12,"Captcha invalid" , HttpStatus.BAD_REQUEST);
 
 
+    CATEGORY_NOT_EXISTED(2001, "Category not existed", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_EXISTED(3001, "Category not existed", HttpStatus.BAD_REQUEST);
+
     AppErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
         this.message = message;
