@@ -42,10 +42,10 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse save(ProductRequest productRequest) {
         Product product = productMapper.map(productRequest);
         //set seller id by authService
-        User user = userService.findUserByUsername(authService.getAuthenticationName());
+        User user = userService.findUserByEmail(authService.getAuthenticationName());
         product.setSellerId(user.getId());
         productRepository.save(product);
-        return productMapper.map(product, user.getUsername());
+        return productMapper.map(product, user.getFullName());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_EXISTED));
 
-        User user = userService.findUserByUsername(authService.getAuthenticationName());
+        User user = userService.findUserByEmail(authService.getAuthenticationName());
         if (!user.getId().equals(product.getSellerId()))
             throw new AppException(UNAUTHORIZED);
 
@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
                         .orElseThrow(() -> new AppException(AppErrorCode.CATEGORY_NOT_EXISTED));
         product.setCategory(category);
         productRepository.save(product);
-        return productMapper.map(product, user.getUsername());
+        return productMapper.map(product, user.getFullName());
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_EXISTED));
 
-        User user = userService.findUserByUsername(authService.getAuthenticationName());
+        User user = userService.findUserByEmail(authService.getAuthenticationName());
         if (!user.getId().equals(product.getSellerId()))
             throw new AppException(UNAUTHORIZED);
         productRepository.deleteById(id);
