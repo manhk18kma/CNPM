@@ -209,7 +209,7 @@ public class UserService {
 
 
 
-    User findUserByEmail(String email) {
+    public User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
     }
