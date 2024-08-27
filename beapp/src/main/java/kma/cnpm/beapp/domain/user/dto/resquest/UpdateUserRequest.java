@@ -31,5 +31,8 @@ public class UpdateUserRequest {
     @PhoneNumber(message = "Phone number must be in a valid format")
     private String phone;
 
+//    string base 64 nếu là tạo mới , cái cũ thì cứ gửi url lên bình thường
+    private String urlAvtOrBase64;
+
 
 }
