@@ -6,6 +6,7 @@ import kma.cnpm.beapp.domain.common.enumType.TokenType;
 import kma.cnpm.beapp.domain.common.enumType.UserStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.upload.ImageService;
 import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.*;
@@ -48,6 +49,7 @@ public class UserService {
      final AuthService authService;
     final ActiveResetTokenRepository activeResetTokenRepository;
     final PasswordEncoder passwordEncoder;
+    final ImageService imageService;
 
 //    Register new user
     @Transactional
@@ -196,14 +198,39 @@ public class UserService {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = formatter.parse(request.getDateOfBirth());
 
+        String urlOrBase64 = request.getUrlAvtOrBase64();
+        String oldUrlAvt = user.getAvt();
+
+        if (urlOrBase64 != null && !urlOrBase64.isEmpty() && !urlOrBase64.startsWith("http")) {
+            try {
+                if (oldUrlAvt != null) {
+                    imageService.deleteImage(oldUrlAvt);
+                }
+                String newUrl = imageService.getUrlImage(urlOrBase64);
+                user.setAvt(newUrl);
+            } catch (Exception e) {
+                System.out.println("-----------");
+                setDefaultAvatar(user, oldUrlAvt);
+            }
+        } else {
+            setDefaultAvatar(user, oldUrlAvt);
+        }
+
         user.setFullName(request.getFullName());
         user.setGender(Gender.valueOf(request.getGender()));
         user.setDateOfBirth(date);
         user.setPhone(request.getPhone());
+
         return UserResponse.builder()
                 .id(userRepository.save(user).getId())
                 .build();
+    }
 
+    private void setDefaultAvatar(User user, String oldUrlAvt) {
+        if (oldUrlAvt != null) {
+            imageService.deleteImage(oldUrlAvt);
+        }
+        user.setAvt("https://tse1.mm.bing.net/th?id=OIP._prlVvISXU3EfqFW3GF-RwHaHa&pid=Api&P=0&h=220");
     }
 
 

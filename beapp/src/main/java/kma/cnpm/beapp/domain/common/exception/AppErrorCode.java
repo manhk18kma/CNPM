@@ -22,11 +22,13 @@ public enum AppErrorCode {
     UNCATEGORIZED_EXCEPTION(1999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHENTICATED(1007, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1008, "You do not have permission", HttpStatus.FORBIDDEN),
-    CAPTCHA_INVALID(12,"Captcha invalid" , HttpStatus.BAD_REQUEST);
+    CAPTCHA_INVALID(12,"Captcha invalid" , HttpStatus.BAD_REQUEST),
+
 
 
     CATEGORY_NOT_EXISTED(2001, "Category not existed", HttpStatus.BAD_REQUEST),
-    PRODUCT_NOT_EXISTED(3001, "Category not existed", HttpStatus.BAD_REQUEST);
+    PRODUCT_NOT_EXISTED(3001, "Category not existed", HttpStatus.BAD_REQUEST),
+    FAILD_UPLOAD_CLOUD(13,"Error  to upload cloud" ,HttpStatus.BAD_REQUEST );
 
     AppErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
