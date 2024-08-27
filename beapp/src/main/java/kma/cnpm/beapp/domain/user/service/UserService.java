@@ -22,11 +22,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -35,53 +39,73 @@ import java.util.List;
 public class UserService {
     @Value("${urlClient}")
     String urlClient;
-   final UserRepository userRepository;
+    @Value("${recaptcha.secret-key}")
+    private String secretKey;
+    @Value("${recaptcha.verify-url}")
+    private  String VERIFY_URL;
+    final UserRepository userRepository;
     final NotificationService notificationService;
      final AuthService authService;
     final ActiveResetTokenRepository activeResetTokenRepository;
     final PasswordEncoder passwordEncoder;
+
+//    Register new user
     @Transactional
     public UserResponse saveUser(CreateUserRequest request) {
-        String username = request.getUsername();
-        String email = request.getEmail();
-        String phone = request.getPhone();
-
-        if (!request.getPassword().equals(request.getConfirmPassword())){
-            throw  new AppException(AppErrorCode.Passwords_Not_Match);
+        if (!submitCaptcha(request.getCaptchaToken())){
+            throw  new AppException(AppErrorCode.CAPTCHA_INVALID);
         }
-
-        checkIfExists(userRepository.existsUserByUsername(username), AppErrorCode.USERNAME_IS_USED);
-        checkIfExists(userRepository.existsUserByEmail(email), AppErrorCode.EMAIL_IS_USED);
-        checkIfExists(userRepository.existsUserByPhone(phone), AppErrorCode.PHONE_IS_USED);
-
-        List<User> inactiveUsers = userRepository.findByUsernameNotActivateByPhoneEmailUsername(username, email, phone);
+        String email = request.getEmail();
+        if (!request.getPassword().equals(request.getConfirmPassword())){
+            throw  new AppException(AppErrorCode.PASSWORDS_NOT_MATCH);
+        }
+//        Remove expired register time or other user is in process time
+        List<User> inactiveUsers = userRepository.findUserNotActivateByEmail(email);
         inactiveUsers.forEach(user -> {
-            activeResetTokenRepository.deleteTokenBySub(user.getUsername() , TokenType.ACTIVE_TOKEN);
-            userRepository.delete(user);
+            if (isExpireTime(user.getCreatedAt())) {
+                userRepository.delete(user);
+            } else {
+                throw new AppException(AppErrorCode.EMAIL_IS_IN_PROCESS);
+            }
         });
 
-        // Tạo và lưu người dùng mới
+
         User user = new User();
         BeanUtils.copyProperties(request, user);
         user.setStatus(UserStatus.INACTIVE);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
 
-        // Tạo token kích hoạt và liên kết kích hoạt
+//        Send active link
         String activeToken = authService.generateToken(savedUser, TokenType.ACTIVE_TOKEN);
         String activateLink = urlClient + "/activate?token=" + activeToken;
         String subject = "Account Activation";
-
-        // Lưu token và gửi email kích hoạt
-        ActiveResetToken activeResetToken = ActiveResetToken.builder()
-                .tokenType(TokenType.ACTIVE_TOKEN)
-                .sub(username)
-                .build();
-        activeResetTokenRepository.save(activeResetToken);
-
-        notificationService.sendActivationEmail(email, subject, activateLink);
-
+        notificationService.sendActivationEmail(user.getEmail(), subject, activateLink);
         return UserResponse.builder().id(savedUser.getId()).build();
+    }
+
+//    Check register process in 3 minutes
+    private boolean isExpireTime(Date createdAt) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(createdAt);
+        calendar.add(Calendar.MINUTE, 3);
+
+        Date createdAtPlus3Minutes = calendar.getTime();
+        Date now = new Date();
+        return createdAtPlus3Minutes.before(now);
+    }
+//    Validate captcha
+    public boolean submitCaptcha(String captchaToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = String.format("%s?secret=%s&response=%s", VERIFY_URL, secretKey, captchaToken);
+        String response = restTemplate.getForObject(url, String.class);
+
+        System.out.println(response);
+        if (response != null && response.contains("\"success\": true")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -92,70 +116,68 @@ public class UserService {
     }
 
     @Transactional
-    public TokenResponse activateUser(ActiveUserRequest request) throws ParseException, JOSEException {
-        String username = authService.extractUsername(request.getToken(), TokenType.ACTIVE_TOKEN);
+    public TokenResponse activateUser(ActiveUserRequest request) {
+        String email = authService.extractEmail(request.getToken(), TokenType.ACTIVE_TOKEN);
 
-        activeResetTokenRepository.findTokenBySub(username,TokenType.ACTIVE_TOKEN)
-                .orElseThrow(() -> new AppException(AppErrorCode.UNAUTHENTICATED));
-
-        User user = userRepository.findByUsernameNotActivate(username)
-                .orElseThrow(() -> new AppException(AppErrorCode.USERNAME_NOT_EXISTED));
-
+//        Email not existed or is activated
+        User user = userRepository.findByEmailActivateOrInactive(email)
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
         if (user.getStatus().equals(UserStatus.ACTIVE)) {
             throw new AppException(AppErrorCode.USER_ACTIVATED);
         }
-
         user.setStatus(UserStatus.ACTIVE);
+        user.setTokenDevice(request.getTokenDevice());
         User savedUser = userRepository.save(user);
 
-        activeResetTokenRepository.deleteTokenBySub(username, TokenType.ACTIVE_TOKEN);
-
+//        Generate access , refresh token
         String accessToken = authService.generateToken(savedUser, TokenType.ACCESS_TOKEN);
-
-        var refreshToken = authService.generateToken(savedUser, TokenType.REFRESH_TOKEN);
+        String refreshToken = authService.generateToken(savedUser, TokenType.REFRESH_TOKEN);
         return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
+//    Generate reset password token
     @Transactional
-    public void forgotPassword(ForgotPassRequest request) {
+    public void forgotPassword(ForgotPassRequest request) throws ParseException, JOSEException {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(AppErrorCode.EMAIL_NOT_EXISTED));
 
+//        Remove all last token ensure that in db always 1 reset token and it is the latest token
+        activeResetTokenRepository.deleteTokenBySub(user.getEmail(), TokenType.RESET_TOKEN);
         String resetToken = authService.generateToken(user, TokenType.RESET_TOKEN);
         String resetLink =urlClient + "/reset-password?token=" + resetToken;
         String subject = "Reset Password";
-
-        activeResetTokenRepository.deleteTokenBySub(user.getUsername(), TokenType.RESET_TOKEN);
-
         ActiveResetToken activeResetToken = ActiveResetToken.builder()
                 .tokenType(TokenType.RESET_TOKEN)
-                .sub(user.getUsername())
+                .sub(user.getEmail())
+                .jwtId(authService.getJwtId(resetToken , TokenType.RESET_TOKEN))
                 .build();
         activeResetTokenRepository.save(activeResetToken);
-
         notificationService.sendResetPasswordEmail(user.getEmail(), subject, resetLink);
     }
 
-    @Transactional
-    public TokenResponse resetPassword(ResetPasswordRequest request) {
-        String username = authService.extractUsername(request.getSecretKey(), TokenType.RESET_TOKEN);
 
-        activeResetTokenRepository.findTokenBySub(username, TokenType.RESET_TOKEN)
+    @Transactional
+    public TokenResponse resetPassword(ResetPasswordRequest request) throws ParseException, JOSEException {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(AppErrorCode.PASSWORDS_NOT_MATCH);
+        }
+//       Find only token in db and after use delete to ensure can can change password once
+        String email = authService.extractEmail(request.getSecretKey(), TokenType.RESET_TOKEN);
+        String jwtId = authService.getJwtId(request.getSecretKey() , TokenType.RESET_TOKEN);
+
+        activeResetTokenRepository.findResetTokenBySubAndJwtId(jwtId, email, TokenType.RESET_TOKEN)
                 .orElseThrow(() -> new AppException(AppErrorCode.UNAUTHENTICATED));
 
-        User user = findUserByUsername(username);
-
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new AppException(AppErrorCode.Passwords_Not_Match);
-        }
-
+        User user = findUserByEmail(email);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setTokenDevice(request.getTokenDevice());
         User savedUser = userRepository.save(user);
 
-        activeResetTokenRepository.deleteTokenBySub(username, TokenType.RESET_TOKEN);
+//        Remove after used
+        activeResetTokenRepository.deleteTokenBySub(email, TokenType.RESET_TOKEN);
 
         String accessToken = authService.generateToken(savedUser, TokenType.ACCESS_TOKEN);
         String refreshToken = authService.generateToken(savedUser, TokenType.REFRESH_TOKEN);
@@ -169,10 +191,8 @@ public class UserService {
 
     @Transactional
     public UserResponse updateUser(UpdateUserRequest request) throws ParseException {
-        String username = authService.getAuthenticationName();
-        User user = findUserByUsername(username);
-        checkIfExists(userRepository.existsUserByPhone(request.getPhone()), AppErrorCode.PHONE_IS_USED);
-
+        String email = authService.getAuthenticationName();
+        User user = findUserByEmail(email);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = formatter.parse(request.getDateOfBirth());
 
@@ -180,7 +200,6 @@ public class UserService {
         user.setGender(Gender.valueOf(request.getGender()));
         user.setDateOfBirth(date);
         user.setPhone(request.getPhone());
-
         return UserResponse.builder()
                 .id(userRepository.save(user).getId())
                 .build();
@@ -190,8 +209,8 @@ public class UserService {
 
 
 
-    public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(AppErrorCode.USERNAME_NOT_EXISTED));
+    User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
     }
 }

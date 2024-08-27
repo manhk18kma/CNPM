@@ -11,6 +11,7 @@ import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.LoginRequest;
+import kma.cnpm.beapp.domain.user.dto.resquest.LogoutRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.RefreshTokenRequest;
 import kma.cnpm.beapp.domain.user.entity.InvalidatedToken;
 import kma.cnpm.beapp.domain.user.entity.Permission;
@@ -19,9 +20,7 @@ import kma.cnpm.beapp.domain.user.entity.User;
 import kma.cnpm.beapp.domain.user.repository.InvalidateTokenRepository;
 import kma.cnpm.beapp.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -70,10 +69,9 @@ public class AuthService {
     public String generateToken(User user , TokenType tokenType) {
         long validTime = getDuration(tokenType);
         String key = getKey(tokenType);
-
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .issuer("KMA_CNPM_DREAM_TEAM")
                 .issueTime(new Date())
                 .expirationTime(new Date(
@@ -193,7 +191,7 @@ public class AuthService {
         return stringJoiner.toString();
     }
 
-    String extractUsername(String token, TokenType type) {
+    String extractEmail(String token, TokenType type) {
         SignedJWT signedJWT = null;
         try {
             signedJWT = verifyToken(token, type);
@@ -218,12 +216,13 @@ public class AuthService {
 
     public TokenResponse login(LoginRequest request) {
         var user = userRepository
-                .findByUsername(request.getUsername())
+                .findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(AppErrorCode.INVALID_USERNAME_PASSWORD));
+        boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
+
+//        Login successfully -> add token device
         user.setTokenDevice(request.getDeviceToken());
         userRepository.save(user);
-
-        boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 //
         if (!authenticated) throw new AppException(AppErrorCode.INVALID_USERNAME_PASSWORD);
 //
@@ -235,17 +234,9 @@ public class AuthService {
 
     public TokenResponse refreshToken(RefreshTokenRequest request) throws ParseException, JOSEException {
         var signedRefreshJWT = verifyToken(request.getRefreshToken(), TokenType.REFRESH_TOKEN);
-        var signedAccessJWT = verifyToken(request.getAccessToken(), TokenType.ACCESS_TOKEN);
-        String accessJit = signedAccessJWT.getJWTClaimsSet().getJWTID();
-        var accessExpiryTime = signedAccessJWT.getJWTClaimsSet().getExpirationTime();
-
-        InvalidatedToken invalidatedAccessToken = InvalidatedToken.builder()
-                .id(accessJit)
-                .expiryTime(accessExpiryTime)
-                .build();
-
-        invalidateTokenRepository.save(invalidatedAccessToken);
-
+//        if logged out the refresh token
+        if (invalidateTokenRepository.existsById(signedRefreshJWT.getJWTClaimsSet().getJWTID()))
+            throw new AppException(AppErrorCode.UNAUTHENTICATED);
 //        var signedAccessJWT = verifyToken(request.getAccessToken(), TokenType.ACCESS_TOKEN);
 //
 //        var jit = signedAccessJWT.getJWTClaimsSet().getJWTID();
@@ -255,20 +246,16 @@ public class AuthService {
 //                InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
 //
 //        invalidateTokenRepository.save(invalidatedToken);
-
-        var username = signedRefreshJWT.getJWTClaimsSet().getSubject();
-
-        var user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(AppErrorCode.UNAUTHENTICATED));
-
+        var email = signedRefreshJWT.getJWTClaimsSet().getSubject();
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(AppErrorCode.UNAUTHENTICATED));
         var accessToken = generateToken(user , TokenType.ACCESS_TOKEN);
-
         return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(request.getRefreshToken())
                 .build();
     }
 
-    public void logout(RefreshTokenRequest request) throws ParseException, JOSEException {
+    public void logout(LogoutRequest request) throws ParseException, JOSEException {
             // Verify the refresh token and access token
             var signedRefreshJWT = verifyToken(request.getRefreshToken(), TokenType.REFRESH_TOKEN);
             var signedAccessJWT = verifyToken(request.getAccessToken(), TokenType.ACCESS_TOKEN);

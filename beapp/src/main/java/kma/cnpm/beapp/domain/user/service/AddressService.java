@@ -43,8 +43,8 @@ public class AddressService {
         District district = districtRepository.findById(districtId).get();
         Province province = provinceRepository.findById(provinceId).get();
 
-        String username = authService.getAuthenticationName();
-        User user = userService.findUserByUsername(username);
+        String email = authService.getAuthenticationName();
+        User user = userService.findUserByEmail(email);
 
 
 

@@ -11,8 +11,11 @@ import java.util.Optional;
 
 public interface ActiveResetTokenRepository extends JpaRepository<ActiveResetToken , Long> {
 
-    @Query("SELECT a FROM ActiveResetToken a WHERE a.sub = :sub AND a.tokenType = :token_type")
-    Optional<ActiveResetToken> findTokenBySub(@Param("sub") String sub, @Param("token_type") TokenType tokenType);
+    @Query("SELECT a FROM ActiveResetToken a WHERE a.jwtId = :jwtID AND a.sub = :sub" +
+            " AND a.tokenType = :token_type")
+    Optional<ActiveResetToken> findResetTokenBySubAndJwtId(@Param("jwtID") String jwtID,
+                                                           @Param("sub") String sub,
+                                                           @Param("token_type") TokenType tokenType);
     @Modifying
     @Query("DELETE FROM ActiveResetToken a WHERE a.sub = :sub AND a.tokenType = :token_type")
     void deleteTokenBySub(@Param("sub") String sub, @Param("token_type") TokenType tokenType);

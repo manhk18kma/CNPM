@@ -22,9 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -42,7 +44,7 @@ public class UserController {
     @PostMapping
     public ResponseData<UserResponse> createUser(
             @Parameter(description = "User creation request payload with user details", required = true)
-            @RequestBody @Valid CreateUserRequest request) throws ParseException, JOSEException {
+            @RequestBody @Valid CreateUserRequest request) {
         UserResponse response = userService.saveUser(request);
         return new ResponseData<>(HttpStatus.CREATED.value(),
                 "User created successfully, check your email to activate",
@@ -54,7 +56,7 @@ public class UserController {
     @PostMapping("/activate")
     public ResponseData<TokenResponse> activateUser(
             @Parameter(description = "User activation request payload containing activation token", required = true)
-            @RequestBody @Valid ActiveUserRequest request) throws ParseException, JOSEException {
+            @RequestBody @Valid ActiveUserRequest request) {
         TokenResponse response = userService.activateUser(request);
         return new ResponseData<>(HttpStatus.CREATED.value(),
                 "User activated successfully",
@@ -85,4 +87,10 @@ public class UserController {
                 new Date(),
                 response);
     }
+
+//    @PostMapping("/submit")
+//    public void submitCaptcha(@RequestBody Map<String, String> payload) {
+//        String captchaResponse = payload.get("captchaToken");
+//        System.out.println(userService.submitCaptcha(captchaResponse));
+//    }
 }
