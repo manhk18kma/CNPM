@@ -52,6 +52,9 @@ public class User extends AbstractEntity<Long> {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private Set<Address> addresses = new HashSet<>();
 
+    @Column(name = "url_avt")
+    private String avt;
+
     public void addAddress(Address address) {
         addresses.add(address);
         address.setUser(this);
