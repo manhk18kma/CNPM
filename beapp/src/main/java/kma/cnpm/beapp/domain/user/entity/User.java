@@ -36,9 +36,6 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "type")
     private Gender gender;
 
-    @Column(name = "token_device")
-    private String tokenDevice;
-
     @Column(name = "phone")
     private String phone;
 
@@ -46,6 +43,11 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "status")
     private UserStatus status;
 
+    @Column(name = "token_device")
+    private String tokenDevice;
+
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+//    private Set<TokenDevice> tokenDevices;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private Set<Address> addresses = new HashSet<>();

@@ -62,7 +62,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseData<Void> logout(
             @Parameter(description = "Request payload containing the refresh token for logout", required = true)
-            @RequestBody RefreshTokenRequest request) throws ParseException, JOSEException {
+            @RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authService.logout(request);
         return new ResponseData<>(HttpStatus.NO_CONTENT.value(),
                 "Logout successfully",
@@ -73,7 +73,7 @@ public class AuthController {
     @PostMapping("/passwords-forgot")
     public ResponseData<Void> forgotPassword(
             @Parameter(description = "Request payload containing email for password recovery", required = true)
-            @RequestBody ForgotPassRequest request) {
+            @RequestBody ForgotPassRequest request) throws ParseException, JOSEException {
         userService.forgotPassword(request);
         return new ResponseData<>(HttpStatus.NO_CONTENT.value(),
                 "Please check your email for password reset instructions.",
@@ -84,7 +84,7 @@ public class AuthController {
     @PostMapping("/passwords-reset")
     public ResponseData<TokenResponse> resetPassword(
             @Parameter(description = "Request payload containing new password and reset token", required = true)
-            @RequestBody ResetPasswordRequest request) {
+            @RequestBody ResetPasswordRequest request) throws ParseException, JOSEException {
         TokenResponse response = userService.resetPassword(request);
         return new ResponseData<>(HttpStatus.CREATED.value(),
                 "Password reset successfully",

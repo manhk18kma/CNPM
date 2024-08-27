@@ -6,7 +6,9 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ResetPasswordRequest {
-    public String secretKey;
-    public String password;
-    public String confirmPassword;
+    private String secretKey;
+    private String password;
+    private String confirmPassword;
+    private String tokenDevice;
+
 }
