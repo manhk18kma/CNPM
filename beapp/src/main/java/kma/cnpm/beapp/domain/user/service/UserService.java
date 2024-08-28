@@ -62,14 +62,18 @@ public class UserService {
             throw  new AppException(AppErrorCode.PASSWORDS_NOT_MATCH);
         }
 //        Remove expired register time or other user is in process time
-        List<User> inactiveUsers = userRepository.findUserNotActivateByEmail(email);
+        List<User> inactiveUsers = userRepository.findUsersByEmail(email);
         inactiveUsers.forEach(user -> {
+            if (UserStatus.ACTIVE.equals(user.getStatus())) {
+                throw new AppException(AppErrorCode.EMAIL_IS_USED);
+            }
             if (isExpireTime(user.getCreatedAt())) {
                 userRepository.delete(user);
             } else {
                 throw new AppException(AppErrorCode.EMAIL_IS_IN_PROCESS);
             }
         });
+
 
 
         User user = new User();

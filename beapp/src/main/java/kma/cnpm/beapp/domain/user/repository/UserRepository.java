@@ -44,8 +44,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     @Query("SELECT u FROM User u " +
-            "WHERE  u.email = :email AND u.status = 'INACTIVE'")
-    List<User> findUserNotActivateByEmail(@Param("email") String email);
+            "WHERE  u.email = :email")
+    List<User> findUsersByEmail(@Param("email") String email);
 
 
 
