@@ -50,7 +50,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE  u.email = :email")
     List<User> findUsersByEmail(@Param("email") String email);
 
-
-
-
+    @Query("SELECT u FROM User u " +
+            "WHERE  u.id = :id")
+    Optional<User> findUserById(Long id);
 }

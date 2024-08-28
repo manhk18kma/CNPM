@@ -239,8 +239,10 @@ public class UserService {
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
     }
 
-    public UserDTO getUserInfo(String email){
-        User user = userRepository.findByEmail(email)
+
+//    use this method in other services
+    public UserDTO getUserInfo(String id){
+        User user = userRepository.findUserById(Long.valueOf(id))
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
         return UserDTO.builder()
                 .userId(user.getId())
