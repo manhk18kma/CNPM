@@ -1,12 +1,14 @@
 package kma.cnpm.beapp.domain.user.service;
 
 import com.nimbusds.jose.JOSEException;
+import kma.cnpm.beapp.domain.common.dto.UserDTO;
 import kma.cnpm.beapp.domain.common.enumType.Gender;
 import kma.cnpm.beapp.domain.common.enumType.TokenType;
 import kma.cnpm.beapp.domain.common.enumType.UserStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.common.upload.ImageService;
+import kma.cnpm.beapp.domain.payment.service.AccountService;
 import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.*;
@@ -23,7 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
@@ -31,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +50,7 @@ public class UserService {
     final ActiveResetTokenRepository activeResetTokenRepository;
     final PasswordEncoder passwordEncoder;
     final ImageService imageService;
+    final AccountService accountService;
 
 //    Register new user
     @Transactional
@@ -62,14 +63,18 @@ public class UserService {
             throw  new AppException(AppErrorCode.PASSWORDS_NOT_MATCH);
         }
 //        Remove expired register time or other user is in process time
-        List<User> inactiveUsers = userRepository.findUserNotActivateByEmail(email);
+        List<User> inactiveUsers = userRepository.findUsersByEmail(email);
         inactiveUsers.forEach(user -> {
+            if (UserStatus.ACTIVE.equals(user.getStatus())) {
+                throw new AppException(AppErrorCode.EMAIL_IS_USED);
+            }
             if (isExpireTime(user.getCreatedAt())) {
                 userRepository.delete(user);
             } else {
                 throw new AppException(AppErrorCode.EMAIL_IS_IN_PROCESS);
             }
         });
+
 
 
         User user = new User();
@@ -110,13 +115,6 @@ public class UserService {
         }
     }
 
-
-    private void checkIfExists(boolean exists, AppErrorCode errorCode) {
-        if (exists) {
-            throw new AppException(errorCode);
-        }
-    }
-
     @Transactional
     public TokenResponse activateUser(ActiveUserRequest request) {
         String email = authService.extractEmail(request.getToken(), TokenType.ACTIVE_TOKEN);
@@ -130,6 +128,7 @@ public class UserService {
         user.setStatus(UserStatus.ACTIVE);
         user.setTokenDevice(request.getTokenDevice());
         User savedUser = userRepository.save(user);
+        accountService.initAccount(savedUser.getId());
 
 //        Generate access , refresh token
         String accessToken = authService.generateToken(savedUser, TokenType.ACCESS_TOKEN);
@@ -238,5 +237,13 @@ public class UserService {
      public User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+    }
+
+    public UserDTO getUserInfo(String email){
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+        return UserDTO.builder()
+                .userId(user.getId())
+                .build();
     }
 }

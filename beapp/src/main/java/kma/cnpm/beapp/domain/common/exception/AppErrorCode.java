@@ -17,7 +17,7 @@ public enum AppErrorCode {
     USER_ACTIVATED(9, "User has been activated", HttpStatus.BAD_REQUEST),
     ADDRESS_NOT_EXISTED(10, "Address not existed", HttpStatus.BAD_REQUEST),
     PASSWORDS_NOT_MATCH(11, "Password and confirm password do not match", HttpStatus.BAD_REQUEST),
-
+    ACCOUNT_NOT_EXIST(14 , "Account not existed" , HttpStatus.BAD_REQUEST),
     // Implementation error codes
     UNCATEGORIZED_EXCEPTION(1999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHENTICATED(1007, "Unauthenticated", HttpStatus.UNAUTHORIZED),
@@ -28,7 +28,9 @@ public enum AppErrorCode {
 
     CATEGORY_NOT_EXISTED(2001, "Category not existed", HttpStatus.BAD_REQUEST),
     PRODUCT_NOT_EXISTED(3001, "Category not existed", HttpStatus.BAD_REQUEST),
-    FAILD_UPLOAD_CLOUD(13,"Error  to upload cloud" ,HttpStatus.BAD_REQUEST );
+    FAILD_UPLOAD_CLOUD(13,"Error  to upload cloud" ,HttpStatus.BAD_REQUEST ),
+    PAYMENT_GATEWAY_NOT_EXIST(15,"PaymentGateway not existed" ,HttpStatus.BAD_REQUEST ),
+    VNPAY_SIGNING_FAILED(16,"Vn pay singe fail" ,HttpStatus.INTERNAL_SERVER_ERROR  );
 
     AppErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

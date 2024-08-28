@@ -36,3 +36,16 @@ jwt:
   # Active user token
   active-user-duration: 400000
   activeKey: a3f21633fa82c60e2c70821c8dc38d568e9a2dc898a0721e72da5c1320ab7f72fba7188876920a5cbc60a960482acabe1760bb1bcfa541728ce265806ffe0f39
+
+
+payment:
+  vnpay:
+    #    tmn-code: SRIE0UKK
+    #    secret-key: YSUHAOQNTRVAVYYWKOCMBXJAEFLQQXSA
+    secret-key: 0367160USC4HWRPLJPLH6JM17OUJQFZ0
+    tmn-code: PTM242XE
+
+    init-payment-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    return-url: https://dev.roninhub.com/order/%s/status
+    timeout: 15 # in minutes
+
