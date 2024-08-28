@@ -20,10 +20,12 @@ import kma.cnpm.beapp.domain.user.entity.User;
 import kma.cnpm.beapp.domain.user.repository.InvalidateTokenRepository;
 import kma.cnpm.beapp.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -79,6 +81,7 @@ public class AuthService {
                 ))
                 .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
+                .claim("userId", user.getId().toString())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -284,16 +287,30 @@ public class AuthService {
     }
 
 
+    public JWTClaimsSet extractClaims(String token, TokenType tokenType) throws ParseException, JOSEException {
+        SignedJWT signedJWT = verifyToken(token, tokenType);
+        System.out.println(signedJWT.getJWTClaimsSet());
+        return signedJWT.getJWTClaimsSet();
+    }
+    @SneakyThrows
     public String getAuthenticationName() {
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        // Kiểm tra nếu không có authentication hoặc không phải là JwtAuthenticationToken
+        if (authentication == null || !(authentication instanceof JwtAuthenticationToken)) {
             throw new AppException(AppErrorCode.UNAUTHENTICATED);
         }
-        log.info("Username : {}", authentication.getName());
-        return authentication.getName();
+        JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) authentication;
+        String token = jwtAuth.getToken().getTokenValue();
+        JWTClaimsSet jwtClaimsSet;
+        try {
+            jwtClaimsSet = extractClaims(token, TokenType.ACCESS_TOKEN);
+        } catch (ParseException | JOSEException e) {
+            log.error("Error extracting claims from token", e);
+            throw new AppException(AppErrorCode.INVALID_TOKEN_TYPE);
+        }
+        String userId = jwtClaimsSet.getStringClaim("userId");
+        return userId;
     }
-
 
 
 }
