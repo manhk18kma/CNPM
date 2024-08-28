@@ -243,4 +243,5 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
     }
+
 }
