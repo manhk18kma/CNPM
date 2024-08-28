@@ -8,6 +8,8 @@ import kma.cnpm.beapp.app.service.RequestUtil;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
 import kma.cnpm.beapp.domain.payment.dto.request.DepositRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.DepositResponse;
+import kma.cnpm.beapp.domain.payment.dto.response.VnpayResponse;
+import kma.cnpm.beapp.domain.payment.service.AccountService;
 import kma.cnpm.beapp.domain.payment.service.PaymentService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -44,11 +46,12 @@ public class PaymentController {
     }
 
     @GetMapping("/vnpay_ipn")
-    public String handleCallback(
+    public void handleCallback(
             @Parameter(description = "Callback data from VNPay", required = true)
             @RequestParam Map<String, String> params) {
+        VnpayResponse vnpayResponse = new VnpayResponse(params);
         log.info("[VNPay Ipn] Params: {}", params);
-        return "1";
+        paymentService.handleCallback(vnpayResponse);
     }
 
 }

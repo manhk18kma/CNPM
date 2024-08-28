@@ -8,6 +8,7 @@ import kma.cnpm.beapp.domain.payment.dto.request.DepositRequest;
 import kma.cnpm.beapp.domain.payment.dto.request.InitDepositRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.DepositResponse;
 import kma.cnpm.beapp.domain.payment.dto.response.InitDepositResponse;
+import kma.cnpm.beapp.domain.payment.dto.response.VnpayResponse;
 import kma.cnpm.beapp.domain.payment.entity.Account;
 import kma.cnpm.beapp.domain.payment.entity.PaymentGateway;
 import kma.cnpm.beapp.domain.payment.entity.Transaction;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +42,7 @@ public class PaymentService {
         UserDTO userDTO = userService.getUserInfo(email);
 
         Account account = accountRepository.findAccountByUserId(userDTO.getUserId()).orElseThrow(()->new AppException(AppErrorCode.ACCOUNT_NOT_EXIST));
-        PaymentGateway paymentGateway = accountRepository.findPaymentGatewayById(userDTO.getUserId()).orElseThrow(()->new AppException(AppErrorCode.PAYMENT_GATEWAY_NOT_EXIST));
+//        PaymentGateway paymentGateway = accountRepository.findPaymentGatewayById(userDTO.getUserId()).orElseThrow(()->new AppException(AppErrorCode.PAYMENT_GATEWAY_NOT_EXIST));
 
         TransactionHistory transactionHistory = TransactionHistory.builder()
                 .status(TransactionStatus.PENDING)
@@ -50,7 +52,8 @@ public class PaymentService {
                 .amount(BigDecimal.valueOf(depositRequest.getAmount()))
                 .ipAddress(depositRequest.getIpAddress())
                 .account(account)
-                .paymentGateway(paymentGateway)
+                .status(TransactionStatus.PENDING)
+//                .paymentGateway(paymentGateway)
                 .build();
         transaction.addStatus(transactionHistory);
 
@@ -68,5 +71,13 @@ public class PaymentService {
         return DepositResponse.builder()
                 .vnpUrl(response.getVnpUrl())
                 .idTransaction(initDepositRequest.getTxnRef()).build();
+    }
+
+    public void handleCallback(VnpayResponse vnpayResponse) {
+        Optional<Transaction> optionalTransaction = transactionRepository.findTranById(Long.valueOf(vnpayResponse.getVnpTxnRef()));
+        Transaction transaction = optionalTransaction.orElseThrow(() ->
+                new AppException(AppErrorCode.TRANSACTION_NOT_EXISTED)
+        );
+
     }
 }

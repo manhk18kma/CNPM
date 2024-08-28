@@ -21,6 +21,9 @@ public class Transaction extends AbstractEntity<Long>{
     @Column(name = "amount" , precision = 19, scale = 3)
     private BigDecimal amount;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private TransactionStatus status;
 
     @Column(name = "ip_address")
     private String ipAddress;
@@ -38,8 +41,11 @@ public class Transaction extends AbstractEntity<Long>{
     private Set<TransactionHistory> transactionHistories = new HashSet<>();
 
     public void addStatus(TransactionHistory transactionHistory) {
+        if(this.transactionHistories==null){
+            this.transactionHistories = new HashSet<>();
+        }
         transactionHistory.setTransaction(this);
-        transactionHistories.add(transactionHistory);
+        this.transactionHistories.add(transactionHistory);
     }
 }
 

@@ -42,8 +42,8 @@ payment:
   vnpay:
     #    tmn-code: SRIE0UKK
     #    secret-key: YSUHAOQNTRVAVYYWKOCMBXJAEFLQQXSA
-    secret-key: 0367160USC4HWRPLJPLH6JM17OUJQFZ0
-    tmn-code: PTM242XE
+    secret-key: YSUHAOQNTRVAVYYWKOCMBXJAEFLQQXSA
+    tmn-code: SRIE0UKK
 
     init-payment-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
     return-url: https://dev.roninhub.com/order/%s/status

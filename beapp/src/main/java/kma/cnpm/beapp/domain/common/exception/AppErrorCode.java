@@ -30,7 +30,8 @@ public enum AppErrorCode {
     PRODUCT_NOT_EXISTED(3001, "Category not existed", HttpStatus.BAD_REQUEST),
     FAILD_UPLOAD_CLOUD(13,"Error  to upload cloud" ,HttpStatus.BAD_REQUEST ),
     PAYMENT_GATEWAY_NOT_EXIST(15,"PaymentGateway not existed" ,HttpStatus.BAD_REQUEST ),
-    VNPAY_SIGNING_FAILED(16,"Vn pay singe fail" ,HttpStatus.INTERNAL_SERVER_ERROR  );
+    VNPAY_SIGNING_FAILED(16,"Vn pay singe fail" ,HttpStatus.INTERNAL_SERVER_ERROR  ),
+    TRANSACTION_NOT_EXISTED(17,"Transaction not existed" , HttpStatus.BAD_REQUEST);
 
     AppErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
