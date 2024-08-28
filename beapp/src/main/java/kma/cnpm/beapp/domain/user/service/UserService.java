@@ -1,6 +1,7 @@
 package kma.cnpm.beapp.domain.user.service;
 
 import com.nimbusds.jose.JOSEException;
+import kma.cnpm.beapp.domain.common.dto.UserDTO;
 import kma.cnpm.beapp.domain.common.enumType.Gender;
 import kma.cnpm.beapp.domain.common.enumType.TokenType;
 import kma.cnpm.beapp.domain.common.enumType.UserStatus;
@@ -242,6 +243,14 @@ public class UserService {
      public User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+    }
+
+    public UserDTO getUserInfo(String id){
+        User user = userRepository.findUserById(Long.valueOf(id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+        return UserDTO.builder()
+                .userId(user.getId())
+                .build();
     }
 
 
