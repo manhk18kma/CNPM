@@ -43,11 +43,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmailActivateOrInactive(String email);
 
 
+//    @Query("SELECT u FROM User u " +
+//            "WHERE  u.email = :email AND u.status = 'INACTIVE'")
     @Query("SELECT u FROM User u " +
             "WHERE  u.email = :email")
     List<User> findUsersByEmail(@Param("email") String email);
 
-
-
+    @Query("SELECT u FROM User u " +
+            "WHERE  u.id = :id")
+    Optional<User> findUserById(Long id);
 
 }

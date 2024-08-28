@@ -1,6 +1,7 @@
 package kma.cnpm.beapp.domain.user.service;
 
 import com.nimbusds.jose.JOSEException;
+import kma.cnpm.beapp.domain.common.dto.UserDTO;
 import kma.cnpm.beapp.domain.common.enumType.Gender;
 import kma.cnpm.beapp.domain.common.enumType.TokenType;
 import kma.cnpm.beapp.domain.common.enumType.UserStatus;
@@ -197,8 +198,8 @@ public class UserService {
 
     @Transactional
     public UserResponse updateUser(UpdateUserRequest request) throws ParseException {
-        String email = authService.getAuthenticationName();
-        User user = findUserByEmail(email);
+        String id = authService.getAuthenticationName();
+        User user = findUserById(id);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = formatter.parse(request.getDateOfBirth());
 
@@ -244,4 +245,23 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
     }
+
+    public User findUserById(String id) {
+        return userRepository.findUserById(Long.valueOf(id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+    }
+
+
+
+
+    public UserDTO getUserInfo(String id){
+        User user = userRepository.findUserById(Long.valueOf(id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+        return UserDTO.builder()
+                .userId(user.getId())
+                .build();
+    }
+
+
+
 }
