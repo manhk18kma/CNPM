@@ -32,16 +32,15 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentService {
     final AuthService authService;
-    final UserService userService;
     final AccountRepository accountRepository;
     final TransactionRepository transactionRepository;
     final  VnpayService vnpayService;
 
     public DepositResponse deposit(DepositRequest depositRequest) {
-        String email = authService.getAuthenticationName();
-        UserDTO userDTO = userService.getUserInfo(email);
+        String userId = authService.getAuthenticationName();
+//        UserDTO userDTO = userService.getUserInfo(userId);
 
-        Account account = accountRepository.findAccountByUserId(userDTO.getUserId()).orElseThrow(()->new AppException(AppErrorCode.ACCOUNT_NOT_EXIST));
+        Account account = accountRepository.findAccountByUserId(Long.valueOf(userId)).orElseThrow(()->new AppException(AppErrorCode.ACCOUNT_NOT_EXIST));
 //        PaymentGateway paymentGateway = accountRepository.findPaymentGatewayById(userDTO.getUserId()).orElseThrow(()->new AppException(AppErrorCode.PAYMENT_GATEWAY_NOT_EXIST));
 
         TransactionHistory transactionHistory = TransactionHistory.builder()
@@ -79,5 +78,14 @@ public class PaymentService {
                 new AppException(AppErrorCode.TRANSACTION_NOT_EXISTED)
         );
 
+
+        TransactionHistory transactionHistory = TransactionHistory.builder().status(TransactionStatus.COMPLETED).build();
+        transaction.addStatus(transactionHistory);
+//        transaction.setS
+
+        Account account = transaction.getAccount();
+        account.setBalance(account.getBalance().add(BigDecimal.valueOf(Long.valueOf(vnpayResponse.getVnpAmount())).divide(BigDecimal.valueOf(100))));
+        accountRepository.save(account);
+        transactionRepository.save(transaction);
     }
 }

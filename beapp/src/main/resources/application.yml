@@ -1,4 +1,4 @@
-urlClient: http://localhost:4200
+urlClient: http://localhost:3000
 recaptcha:
   verify-url: https://www.google.com/recaptcha/api/siteverify
   secret-key: 6LfSCS8qAAAAANeOWUAucnmphneM9MHTMbPIrGcr
@@ -49,3 +49,7 @@ payment:
     return-url: https://dev.roninhub.com/order/%s/status
     timeout: 15 # in minutes
 
+paypal:
+  client-id: AQRh76tofCg634fmMdi8OPYaoi071Ztc5AF0vhm_veIlBWvimaln1OhaHEy-Iotjbgqjt729429nZAmw
+  client-secret: EIAt-1JCfWCGIpMZru1BkZCWOLpukjQkI375pNnpjZv1qYap2bMLSUMpq2eDSaM4UXh6OR_9mqiIZgkO
+  mode: sandbox # Use #sandbox' for testing and 'live' for Production

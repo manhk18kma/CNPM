@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/payments")
+@RequestMapping("/api/v1/vnpays")
 @Validated
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -53,5 +53,8 @@ public class PaymentController {
         log.info("[VNPay Ipn] Params: {}", params);
         paymentService.handleCallback(vnpayResponse);
     }
+
+
+
 
 }
