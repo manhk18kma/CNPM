@@ -1,30 +1,15 @@
 package kma.cnpm.beapp.domain.payment.service.FetchRating;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.math.BigDecimal;
+@Data
+@AllArgsConstructor
 public class ExchangeRate {
-    private double usdToEur;
-    private double usdToVnd;
-
-    public ExchangeRate(double usdToEur, double usdToVnd) {
-        this.usdToEur = usdToEur;
-        this.usdToVnd = usdToVnd;
-    }
-
-    public double getUsdToEur() {
-        return usdToEur;
-    }
-
-    public void setUsdToEur(double usdToEur) {
-        this.usdToEur = usdToEur;
-    }
-
-    public double getUsdToVnd() {
-        return usdToVnd;
-    }
-
-    public void setUsdToVnd(double usdToVnd) {
-        this.usdToVnd = usdToVnd;
-    }
+    private BigDecimal usdToEur;
+    private BigDecimal usdToVnd;
 
     @Override
     public String toString() {

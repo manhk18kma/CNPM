@@ -2,6 +2,8 @@ package kma.cnpm.beapp.domain.payment.service.FetchRating;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class ExchangeRateService {
 
@@ -19,8 +21,8 @@ public class ExchangeRateService {
         ApiResponse response = apiClient.fetchData(url);
 
         // Extract rates
-        double usdToEur = (double) response.getRates().get("EUR");
-        double usdToVnd = (double) response.getRates().get("VND");
+        BigDecimal usdToEur = (BigDecimal) response.getRates().get("EUR");
+        BigDecimal usdToVnd = (BigDecimal) response.getRates().get("VND");
 
         // Return ExchangeRates object
         return new ExchangeRate(usdToEur, usdToVnd);

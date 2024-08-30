@@ -3,6 +3,17 @@ package kma.cnpm.beapp.domain.payment.service;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import kma.cnpm.beapp.domain.common.enumType.TransactionStatus;
+import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
+import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.payment.dto.response.PaypalResponse;
+import kma.cnpm.beapp.domain.payment.entity.Account;
+import kma.cnpm.beapp.domain.payment.entity.PaypalTransaction;
+import kma.cnpm.beapp.domain.payment.repository.AccountRepository;
+import kma.cnpm.beapp.domain.payment.repository.PaypalTransactionRepository;
+import kma.cnpm.beapp.domain.payment.service.FetchRating.ExchangeRate;
+import kma.cnpm.beapp.domain.payment.service.FetchRating.ExchangeRateService;
+import kma.cnpm.beapp.domain.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +27,10 @@ public class PaypalService {
 
     private final APIContext apiContext; // Đối tượng APIContext dùng để kết nối với PayPal API
 
+    private final AuthService authService;
+    private final AccountRepository accountRepository;
+    private final PaypalTransactionRepository paypalTransactionRepository;
+    private final ExchangeRateService exchangeRateService;
     /**
      * Tạo một yêu cầu thanh toán mới trên PayPal.
      *
@@ -38,7 +53,8 @@ public class PaypalService {
             String cancelUrl,
             String successUrl
     ) throws PayPalRESTException {
-        System.out.println("createPaymentcreatePaymentcreatePaymentcreatePaymentcreatePaymentcreatePaymentcreatePaymentcreatePayment");
+        System.out.println("Creating payment...");
+
         // Tạo đối tượng Amount chứa thông tin về số tiền và loại tiền tệ
         Amount amount = new Amount();
         amount.setCurrency(currency);
@@ -69,9 +85,41 @@ public class PaypalService {
         redirectUrls.setReturnUrl(successUrl);
         payment.setRedirectUrls(redirectUrls);
 
-        // Gọi PayPal API để tạo thanh toán và trả về đối tượng Payment
-        return payment.create(apiContext);
+        // Gọi PayPal API để tạo thanh toán và nhận phản hồi
+        Payment createdPayment = payment.create(apiContext);
+
+        // Log thông tin quan trọng
+        System.out.println("Payment created successfully:");
+        System.out.println("Payment ID: " + createdPayment.getId());
+
+        // Log thông tin payerId nếu có
+        if (createdPayment.getPayer() != null && createdPayment.getPayer().getPayerInfo() != null) {
+            System.out.println("Payer ID: " + createdPayment.getPayer().getPayerInfo().getPayerId());
+        } else {
+            System.out.println("Payer information not available.");
+        }
+
+        String userId = authService.getAuthenticationName();
+//        UserDTO userDTO = userService.getUserInfo(userId);
+
+        Account account = accountRepository.findAccountByUserId(Long.valueOf(userId)).orElseThrow(()->new AppException(AppErrorCode.ACCOUNT_NOT_EXIST));
+
+        ExchangeRate exchangeRate = exchangeRateService.getExchangeRates();
+        PaypalTransaction paypalTransaction = PaypalTransaction.builder()
+                .paymentId(createdPayment.getId())
+                .status(TransactionStatus.PENDING)
+                .ipAddress("1234")
+                .usdToVnd(exchangeRate.getUsdToVnd())
+                .usdToEur(exchangeRate.getUsdToEur())
+                .build();
+
+        System.out.println(paypalTransactionRepository.save(paypalTransaction));;
+
+
+
+        return createdPayment;
     }
+
 
     /**
      * Xác thực và thực hiện thanh toán sau khi người dùng đã chấp thuận trên PayPal.
@@ -86,14 +134,20 @@ public class PaypalService {
             String payerId
     ) throws PayPalRESTException {
         System.out.println("executePaymentexecutePaymentexecutePaymentexecutePaymentexecutePaymentexecutePaymentexecutePayment");
-        // Tạo đối tượng Payment và thiết lập ID của thanh toán
         Payment payment = new Payment();
         payment.setId(paymentId);
-
-        // Tạo đối tượng PaymentExecution để thực hiện thanh toán
         PaymentExecution paymentExecution = new PaymentExecution();
-        paymentExecution.setPayerId(payerId);
-        System.out.println(payment.execute(apiContext, paymentExecution));
+        paymentExecution.setPayerId("BNA4ARBL8JCLU");
         return payment.execute(apiContext, paymentExecution);
     }
+
+
+    public void handleCallbackPayment(PaypalResponse paypalResponse){
+        System.out.println(paypalResponse);
+        PaypalTransaction paypalTransaction = paypalTransactionRepository.findById(paypalResponse.getId()).get();
+        System.out.println(paypalTransaction);
+
+
+    }
+
 }

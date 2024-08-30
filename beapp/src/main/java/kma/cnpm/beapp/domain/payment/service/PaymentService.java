@@ -78,10 +78,8 @@ public class PaymentService {
                 new AppException(AppErrorCode.TRANSACTION_NOT_EXISTED)
         );
 
-
         TransactionHistory transactionHistory = TransactionHistory.builder().status(TransactionStatus.COMPLETED).build();
         transaction.addStatus(transactionHistory);
-//        transaction.setS
 
         Account account = transaction.getAccount();
         account.setBalance(account.getBalance().add(BigDecimal.valueOf(Long.valueOf(vnpayResponse.getVnpAmount())).divide(BigDecimal.valueOf(100))));

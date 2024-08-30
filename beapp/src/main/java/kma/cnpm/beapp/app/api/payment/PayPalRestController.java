@@ -3,6 +3,7 @@ package kma.cnpm.beapp.app.api.payment;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
+import kma.cnpm.beapp.domain.common.upload.ImageService;
 import kma.cnpm.beapp.domain.payment.service.FetchRating.ExchangeRate;
 import kma.cnpm.beapp.domain.payment.service.FetchRating.ExchangeRateService;
 import kma.cnpm.beapp.domain.payment.service.PaypalService;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 public class PayPalRestController {
 
     private final PaypalService paypalService;
-    final ExchangeRateService exchangeRateService;
+    private final ExchangeRateService exchangeRateService;
+    private final ImageService imageService;
+
 
     @GetMapping("/payment/success")
     public ResponseEntity<String> paymentSuccess(
@@ -55,31 +58,31 @@ public class PayPalRestController {
             @RequestParam("currency") String currency,
             @RequestParam("description") String description
     ) {
-        ExchangeRate rates = exchangeRateService.getExchangeRates();
-        System.out.println(rates);
-        return null;
-//        try {
-//            String cancelUrl = "http://localhost:3000/payment/cancel";
-//            String successUrl = "http://localhost:3000/payment/success";
-//            Payment payment = paypalService.createPayment(
-//                    Double.valueOf(amount),
-//                    currency,
-//                    method,
-//                    "sale",
-//                    description,
-//                    cancelUrl,
-//                    successUrl
-//            );
-//
-//            for (Links links : payment.getLinks()) {
-//                if ("approval_url".equals(links.getRel())) {
-//                    return ResponseEntity.ok(links.getHref());
-//                }
-//            }
-//        } catch (PayPalRESTException e) {
-//            log.error("Error occurred:: ", e);
-//        }
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create payment.");
+//        ExchangeRate rates = exchangeRateService.getExchangeRates();
+//        System.out.println(rates);
+//        return null;
+        try {
+            String cancelUrl = "http://localhost:3000/payment/cancel";
+            String successUrl = "http://localhost:3000/payment/success";
+            Payment payment = paypalService.createPayment(
+                    Double.valueOf(amount),
+                    currency,
+                    method,
+                    "sale",
+                    description,
+                    cancelUrl,
+                    successUrl
+            );
+
+            for (Links links : payment.getLinks()) {
+                if ("approval_url".equals(links.getRel())) {
+                    return ResponseEntity.ok(links.getHref());
+                }
+            }
+        } catch (PayPalRESTException e) {
+            log.error("Error occurred:: ", e);
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create payment.");
     }
 }
 

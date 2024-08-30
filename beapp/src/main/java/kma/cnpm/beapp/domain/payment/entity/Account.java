@@ -32,4 +32,8 @@ public class Account extends AbstractEntity<Long> {
 
     @OneToMany(mappedBy = "account")
     private Set<Transaction> transactions = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "account")
+    private Set<PaypalTransaction> paypalTransactions = new HashSet<>();
 }

@@ -1,5 +1,6 @@
 package kma.cnpm.beapp.domain.user.service.fetchApi;
 
+import kma.cnpm.beapp.domain.common.upload.ImageService;
 import kma.cnpm.beapp.domain.user.entity.District;
 import kma.cnpm.beapp.domain.user.entity.Province;
 import kma.cnpm.beapp.domain.user.entity.Ward;
@@ -40,12 +41,15 @@ public class DataInitializer
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+
+
         long totalProvince = provinceRepository.countProvinces();
         long totalDistrict = districtRepository.countDistricts();
         long totalWard = wardRepository.countWards();
         if(totalProvince==63 && totalWard == 10597 && totalDistrict == 700){
             return;
         }else {
+            System.out.println("elses");
             wardRepository.deleteAll();
             districtRepository.deleteAll();
             provinceRepository.deleteAll();
