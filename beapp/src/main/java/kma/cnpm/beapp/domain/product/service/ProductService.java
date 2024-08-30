@@ -1,6 +1,7 @@
 package kma.cnpm.beapp.domain.product.service;
 
 import kma.cnpm.beapp.domain.product.dto.request.ProductRequest;
+import kma.cnpm.beapp.domain.product.dto.request.UploadFileRequest;
 import kma.cnpm.beapp.domain.product.dto.response.ProductResponse;
 
 import java.util.List;
@@ -9,6 +10,7 @@ public interface ProductService {
 
     ProductResponse save(ProductRequest productRequest);
     ProductResponse update(Integer id, ProductRequest productRequest);
+    ProductResponse uploadFile(UploadFileRequest uploadFileRequest);
     void deleteById(Integer id);
 
     List<ProductResponse> getProductsByName(String name);
