@@ -16,17 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
 @Component
 public class DataInitializer
-        implements CommandLineRunner
-{
-
-    @Autowired
-    private ApiClient apiClient;
-
-    @Autowired
-    private AddressService mapService;
-
+        implements CommandLineRunner {
     @Autowired
     private ProvinceRepository provinceRepository;
 
@@ -35,56 +28,58 @@ public class DataInitializer
 
     @Autowired
     private WardRepository wardRepository;
+    @Autowired
+    private ApiClient apiClient;
 
-
+    @Autowired
+    private AddressService databaseService;
 
     @Override
-    @Transactional
     public void run(String... args) throws Exception {
-
 
         long totalProvince = provinceRepository.countProvinces();
         long totalDistrict = districtRepository.countDistricts();
         long totalWard = wardRepository.countWards();
-        if(totalProvince==63 && totalWard == 10597 && totalDistrict == 700){
+        if (totalProvince == 63 && totalWard == 10597 && totalDistrict == 700) {
             return;
-        }else {
+        } else {
             wardRepository.deleteAll();
             districtRepository.deleteAll();
             provinceRepository.deleteAll();
-        ApiResponse<Province> provinceResponse = apiClient.fetchData(
-                "https://esgoo.net/api-tinhthanh/1/0.htm",
-                new ParameterizedTypeReference<ApiResponse<Province>>() {}
-        );
-        List<Province> provinces = provinceResponse.getData();
-
-        for (Province province : provinces) {
-            mapService.saveProvince(province);
-
-            ApiResponse<District> districtResponse = apiClient.fetchData(
-                    "https://esgoo.net/api-tinhthanh/2/" + province.getId() + ".htm",
-                    new ParameterizedTypeReference<ApiResponse<District>>() {}
+            ApiResponse<Province> provinceResponse = apiClient.fetchData(
+                    "https://esgoo.net/api-tinhthanh/1/0.htm",
+                    new ParameterizedTypeReference<ApiResponse<Province>>() {
+                    }
             );
-            List<District> districts = districtResponse.getData();
+            List<Province> provinces = provinceResponse.getData();
 
-            for (District district : districts) {
-                district.setProvince(province);
-                mapService.saveDistrict(district);
+            for (Province province : provinces) {
+                databaseService.saveProvince(province);
 
-                ApiResponse<Ward> wardResponse = apiClient.fetchData(
-                        "https://esgoo.net/api-tinhthanh/3/" + district.getId() + ".htm",
-                        new ParameterizedTypeReference<ApiResponse<Ward>>() {}
+                ApiResponse<District> districtResponse = apiClient.fetchData(
+                        "https://esgoo.net/api-tinhthanh/2/" + province.getId() + ".htm",
+                        new ParameterizedTypeReference<ApiResponse<District>>() {
+                        }
                 );
-                List<Ward> wards = wardResponse.getData();
+                List<District> districts = districtResponse.getData();
 
-                for (Ward ward : wards) {
-                    ward.setDistrict(district);
-                    mapService.saveWard(ward);
+                for (District district : districts) {
+                    district.setProvince(province);
+                    databaseService.saveDistrict(district);
+
+                    ApiResponse<Ward> wardResponse = apiClient.fetchData(
+                            "https://esgoo.net/api-tinhthanh/3/" + district.getId() + ".htm",
+                            new ParameterizedTypeReference<ApiResponse<Ward>>() {
+                            }
+                    );
+                    List<Ward> wards = wardResponse.getData();
+
+                    for (Ward ward : wards) {
+                        ward.setDistrict(district);
+                        databaseService.saveWard(ward);
+                    }
                 }
             }
-        }
-
-
         }
     }
 }
