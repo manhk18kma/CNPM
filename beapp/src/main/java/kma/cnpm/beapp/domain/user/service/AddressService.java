@@ -98,7 +98,7 @@ public class AddressService {
 
     @Transactional
     public void saveProvince(Province province) {
-        provinceRepository.save(province);
+         provinceRepository.save(province);
     }
 
     @Transactional
