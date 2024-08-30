@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
 import kma.cnpm.beapp.domain.product.dto.request.ProductRequest;
+import kma.cnpm.beapp.domain.product.dto.request.UploadFileRequest;
 import kma.cnpm.beapp.domain.product.dto.response.ProductResponse;
 import kma.cnpm.beapp.domain.product.service.ProductService;
 import lombok.AccessLevel;
@@ -43,6 +44,14 @@ public class ProductController {
                 "Product created successfully",
                 new Date(),
                 productService.update(id, productRequest));
+    }
+
+    @PatchMapping
+    public ResponseData<ProductResponse> uploadMediaProduct(@ModelAttribute @Valid UploadFileRequest uploadFileRequest) {
+        return new ResponseData<>(HttpStatus.CREATED.value(),
+                "Product uploaded successfully",
+                new Date(),
+                productService.uploadFile(uploadFileRequest));
     }
 
     @DeleteMapping("/{id}")
