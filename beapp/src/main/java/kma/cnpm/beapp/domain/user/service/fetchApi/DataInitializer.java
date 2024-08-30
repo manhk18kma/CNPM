@@ -49,10 +49,9 @@ public class DataInitializer
         if(totalProvince==63 && totalWard == 10597 && totalDistrict == 700){
             return;
         }else {
-            System.out.println("elses");
-            wardRepository.deleteAll();
-            districtRepository.deleteAll();
-            provinceRepository.deleteAll();
+//            wardRepository.deleteAll();
+//            districtRepository.deleteAll();
+//            provinceRepository.deleteAll();
         ApiResponse<Province> provinceResponse = apiClient.fetchData(
                 "https://esgoo.net/api-tinhthanh/1/0.htm",
                 new ParameterizedTypeReference<ApiResponse<Province>>() {}
