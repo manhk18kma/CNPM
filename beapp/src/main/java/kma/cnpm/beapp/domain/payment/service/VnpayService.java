@@ -4,7 +4,7 @@ import kma.cnpm.beapp.domain.common.enumType.Currency;
 import kma.cnpm.beapp.domain.common.enumType.Locale;
 import kma.cnpm.beapp.domain.payment.constant.Symbol;
 import kma.cnpm.beapp.domain.payment.constant.VNPayParams;
-import kma.cnpm.beapp.domain.payment.dto.request.InitDepositRequest;
+import kma.cnpm.beapp.domain.payment.dto.request.InitDepositVnPayRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.InitDepositResponse;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.RequiredArgsConstructor;
@@ -43,10 +43,9 @@ public class VnpayService {
     protected static final SimpleDateFormat VNPAY_DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
 
 
-    public InitDepositResponse init(InitDepositRequest request) {
+    public InitDepositResponse init(InitDepositVnPayRequest request) {
         // Nhân số tiền trong request với hệ số mặc định (DEFAULT_MULTIPLIER) để tính số tiền thanh toán
         var amount = request.getAmount() * DEFAULT_MULTIPLIER;
-
         // Lấy mã giao dịch từ request
         var txnRef = request.getTxnRef();
 
@@ -132,7 +131,7 @@ public class VnpayService {
         return secureHash.equals(reqSecureHash);
     }
 
-    private String buildPaymentDetail(InitDepositRequest request) {
+    private String buildPaymentDetail(InitDepositVnPayRequest request) {
         return String.format("Pay for deposit %s", request.getTxnRef());
     }
 

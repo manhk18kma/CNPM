@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class DepositResponse {
+public class DepositResponseVnPay {
     Long idTransaction;
     String vnpUrl;
 }

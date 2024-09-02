@@ -1,9 +1,11 @@
 package kma.cnpm.beapp.domain.payment.dto.response;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Map;
 @Getter
+@ToString
 public class VnpayResponse {
     private String vnpAmount;
     private String vnpBankCode;

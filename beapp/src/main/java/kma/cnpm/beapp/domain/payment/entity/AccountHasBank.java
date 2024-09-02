@@ -29,4 +29,30 @@ public class AccountHasBank  extends  AbstractEntity<Long>{
 
     @OneToMany(mappedBy = "accountHasBank")
     private Set<Withdrawal> withdrawals = new HashSet<>();
+
+    public void addAccountHasBank(Account account, Bank bank) {
+        if (this.account != null && this.bank != null) {
+            this.account.getAccountHasBanks().remove(this);
+            this.bank.getAccountHasBanks().remove(this);
+        }
+        this.account = account;
+        this.bank = bank;
+
+        if (account != null && !account.getAccountHasBanks().contains(this)) {
+            account.getAccountHasBanks().add(this);
+        }
+        if (bank != null && !bank.getAccountHasBanks().contains(this)) {
+            bank.getAccountHasBanks().add(this);
+        }
+    }
+
+    public void addWithdrawals(Withdrawal withdrawal) {
+        if (this.withdrawals == null) {
+            this.withdrawals = new HashSet<>();
+        }
+        this.withdrawals.add(withdrawal);
+        withdrawal.setAccountHasBank(this);
+    }
+
+
 }

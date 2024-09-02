@@ -25,6 +25,9 @@ public class Bank extends AbstractEntity<Long> {
     @Column(name = "bank_avt")
     private String bankAvt;
 
+    @Column(name = "bank_code")
+    private String bankCode;
+
     @OneToMany(mappedBy = "bank")
-    private Set<AccountHasBank> accounts = new HashSet<>();
+    private Set<AccountHasBank> accountHasBanks = new HashSet<>();
 }

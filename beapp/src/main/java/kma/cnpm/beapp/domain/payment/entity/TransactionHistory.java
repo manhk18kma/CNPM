@@ -13,8 +13,8 @@ import lombok.*;
 @NoArgsConstructor
 @Table(name = "tbl_transaction_status_history")
 public class TransactionHistory extends AbstractEntity<Long>{
+    @Column(name = "status", length = 20)
     @Enumerated(EnumType.STRING)
-    @Column(name = "new_status")
     private TransactionStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)

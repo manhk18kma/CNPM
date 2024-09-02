@@ -20,7 +20,7 @@ public class Withdrawal extends AbstractEntity<Long> {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", length = 20)
     private WithdrawalStatus status;
 
 //    Relationships
@@ -32,8 +32,8 @@ public class Withdrawal extends AbstractEntity<Long> {
     @JoinColumn(name = "account_has_bank_id")
     private AccountHasBank accountHasBank;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_id")
-    private Transaction transaction;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "transaction_id")
+//    private Transaction transaction;
 
 }

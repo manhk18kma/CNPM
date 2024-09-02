@@ -1,5 +1,6 @@
 package kma.cnpm.beapp.domain.common.exception;
 
+import kma.cnpm.beapp.domain.common.enumType.WithdrawalStatus;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -31,7 +32,18 @@ public enum AppErrorCode {
     FAILD_UPLOAD_CLOUD(13,"Error  to upload cloud" ,HttpStatus.BAD_REQUEST ),
     PAYMENT_GATEWAY_NOT_EXIST(15,"PaymentGateway not existed" ,HttpStatus.BAD_REQUEST ),
     VNPAY_SIGNING_FAILED(16,"Vn pay singe fail" ,HttpStatus.INTERNAL_SERVER_ERROR  ),
-    TRANSACTION_NOT_EXISTED(17,"Transaction not existed" , HttpStatus.BAD_REQUEST);
+    TRANSACTION_NOT_EXISTED(17,"Transaction not existed" , HttpStatus.BAD_REQUEST),
+    BANK_NOT_EXIST(18,"Bank not existed" ,HttpStatus.BAD_REQUEST ),
+    ACCOUNT_HAS_BANK_EXIST(19,"Bank has been added to account" , HttpStatus.BAD_REQUEST ),
+    ACCOUNT_HAS_BANK_NOT_EXIST(20,"Bank not exsiting in this account" ,HttpStatus.BAD_REQUEST ),
+    BALANCE_NOT_ENOUGH(21, "Balance not enough", HttpStatus.BAD_REQUEST),
+    PENDING_WITHDRAWAL_ALREADY_EXISTS(22, "A pending withdrawal already exists for this account", HttpStatus.BAD_REQUEST),
+    WITHDRAWAL_NOT_EXIST(23,"Withdrawal not exist" ,HttpStatus.BAD_REQUEST),
+
+    WITHDRAWAL_APPROVED_ERROR(24, "Withdrawal has been APPROVED", HttpStatus.BAD_REQUEST),
+    WITHDRAWAL_REJECTED_ERROR(25, "Withdrawal has been REJECTED", HttpStatus.BAD_REQUEST),
+    WITHDRAWAL_CANCELLED_ERROR(26, "Withdrawal has been CANCELLED", HttpStatus.BAD_REQUEST);
+
 
     AppErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
@@ -42,4 +54,8 @@ public enum AppErrorCode {
     private final int code;
     private final String message;
     private final HttpStatusCode statusCode;
+
+
+
+
 }

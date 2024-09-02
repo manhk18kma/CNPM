@@ -5,12 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
-
 @Getter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class InitDepositRequest {
+public class InitDepositVnPayRequest {
     private String requestId;
 
     private String ipAddress;
@@ -19,5 +17,5 @@ public class InitDepositRequest {
 
     private Long txnRef;
 
-    private long amount;
+    private Long  amount;
 }

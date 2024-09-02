@@ -1,73 +1,80 @@
 package kma.cnpm.beapp.domain.payment.dto.response;
 
-public class PaypalResponse {
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 
+import java.math.BigDecimal;
+
+@Data
+public class PaypalResponse {
+    private String eventType;
     private String payerId;
     private String id;
     private String state;
-    private String total;
+    private BigDecimal total;
     private String currency;
     private String paymentId;
+    private String description;
 
-    // Getters and Setters
+    public PaypalResponse(String payload) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode root = objectMapper.readTree(payload);
 
-    public String getPayerId() {
-        return payerId;
-    }
+            this.eventType = root.path("event_type").asText();
+            this.id = root.path("id").asText();
 
-    public void setPayerId(String payerId) {
-        this.payerId = payerId;
-    }
+            JsonNode resource = root.path("resource");
 
-    public String getId() {
-        return id;
-    }
+            if ("PAYMENTS.PAYMENT.CREATED".equals(eventType)) {
+                this.paymentId = resource.path("id").asText();
+                this.state = resource.path("state").asText();
 
-    public void setId(String id) {
-        this.id = id;
-    }
+                JsonNode transactions = resource.path("transactions");
+                if (transactions.isArray() && transactions.size() > 0) {
+                    JsonNode amount = transactions.get(0).path("amount");
+                    this.total = BigDecimal.valueOf(Double.valueOf(amount.path("total").asText()));
 
-    public String getState() {
-        return state;
-    }
+//                    this.total = BigDecimal.valueOf(Long.valueOf(amount.path("total").asText()));
+                    this.currency = amount.path("currency").asText();
 
-    public void setState(String state) {
-        this.state = state;
-    }
+                    this.description = transactions.get(0).path("description").asText();
+                }
 
-    public String getTotal() {
-        return total;
-    }
+                this.payerId = resource.path("payer").path("payer_info").path("payer_id").asText();
 
-    public void setTotal(String total) {
-        this.total = total;
-    }
+            } else if ("PAYMENT.SALE.COMPLETED".equals(eventType)) {
+                this.paymentId = resource.path("parent_payment").asText();
+                this.state = resource.path("state").asText();
 
-    public String getCurrency() {
-        return currency;
-    }
+                JsonNode amount = resource.path("amount");
+                this.total = BigDecimal.valueOf(Double.valueOf(amount.path("total").asText()));
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
+//                this.total = BigDecimal.valueOf(Long.valueOf(amount.path("total").asText()));
+                this.currency = amount.path("currency").asText();
 
-    public String getPaymentId() {
-        return paymentId;
-    }
+                // In trường hợp này, description không có, bạn có thể thêm logic tùy chọn nếu cần
 
-    public void setPaymentId(String paymentId) {
-        this.paymentId = paymentId;
+                // Nếu cần lấy thông tin khác từ resource, thêm vào đây
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Xử lý ngoại lệ trong trường hợp parsing không thành công
+        }
     }
 
     @Override
     public String toString() {
         return "PaypalResponse{" +
-                "payerId='" + payerId + '\'' +
+                "eventType='" + eventType + '\'' +
+                ", payerId='" + payerId + '\'' +
                 ", id='" + id + '\'' +
                 ", state='" + state + '\'' +
                 ", total='" + total + '\'' +
                 ", currency='" + currency + '\'' +
                 ", paymentId='" + paymentId + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

@@ -33,7 +33,30 @@ public class Account extends AbstractEntity<Long> {
     @OneToMany(mappedBy = "account")
     private Set<Transaction> transactions = new HashSet<>();
 
-
     @OneToMany(mappedBy = "account")
     private Set<PaypalTransaction> paypalTransactions = new HashSet<>();
+
+    public void addWithdrawals(Withdrawal withdrawal) {
+        if (this.withdrawals == null) {
+            this.withdrawals = new HashSet<>();
+        }
+        this.withdrawals.add(withdrawal);
+        withdrawal.setAccount(this);
+    }
+
+    public void addTransaction(Transaction transaction) {
+        if (this.transactions == null) {
+            this.transactions = new HashSet<>();
+        }
+        this.transactions.add(transaction);
+        transaction.setAccount(this);
+    }
+
+    public void addTransactionPaypal(PaypalTransaction transaction) {
+        if (this.paypalTransactions == null) {
+            this.paypalTransactions = new HashSet<>();
+        }
+        this.paypalTransactions.add(transaction);
+        transaction.setAccount(this);
+    }
 }
