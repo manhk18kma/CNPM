@@ -48,8 +48,10 @@ payment:
     tmn-code: SRIE0UKK
 
     init-payment-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-    return-url: https://dev.roninhub.com/order/%s/status
+#    return-url: https://dev.roninhub.com/order/%s/status
+    return-url: http://localhost:3000/transactions/%s/info
     timeout: 15 # in minutes
+
 
 paypal:
   client-id: AQRh76tofCg634fmMdi8OPYaoi071Ztc5AF0vhm_veIlBWvimaln1OhaHEy-Iotjbgqjt729429nZAmw

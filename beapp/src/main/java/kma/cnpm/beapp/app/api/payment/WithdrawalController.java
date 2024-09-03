@@ -3,6 +3,7 @@ package kma.cnpm.beapp.app.api.payment;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
 import kma.cnpm.beapp.domain.payment.dto.request.AddBankRequest;
 import kma.cnpm.beapp.domain.payment.dto.request.CreateWithdrawalRequest;
@@ -45,7 +46,7 @@ public class WithdrawalController {
     @DeleteMapping("/{id}")
     public ResponseData<Void> cancelWithdrawal(
             @Parameter(description = "The unique identifier of the withdrawal request to be canceled", required = true)
-            @PathVariable Long id) {
+            @PathVariable @NotNull Long id) {
         withdrawalService.cancelWithdrawal(id);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
@@ -59,7 +60,7 @@ public class WithdrawalController {
     @PutMapping("/{id}")
     public ResponseData<Void> approve(
             @Parameter(description = "The unique identifier of the withdrawal request to be approved", required = true)
-            @PathVariable Long id) {
+            @PathVariable @NotNull Long id) {
         withdrawalService.approveWithdrawal(id);
         return new ResponseData<>(
                 HttpStatus.OK.value(),

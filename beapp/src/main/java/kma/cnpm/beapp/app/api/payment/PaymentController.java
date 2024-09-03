@@ -4,6 +4,7 @@ import com.paypal.base.rest.PayPalRESTException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import kma.cnpm.beapp.app.service.RequestUtil;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
 import kma.cnpm.beapp.domain.payment.dto.request.DepositPaypalRequest;
@@ -11,6 +12,7 @@ import kma.cnpm.beapp.domain.payment.dto.request.DepositVnPayRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.DepositResponsePaypal;
 import kma.cnpm.beapp.domain.payment.dto.response.DepositResponseVnPay;
 import kma.cnpm.beapp.domain.payment.dto.response.VnpayResponse;
+import kma.cnpm.beapp.domain.payment.dto.response.VnpayTransactionResponse;
 import kma.cnpm.beapp.domain.payment.service.PaymentService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,7 @@ public class PaymentController {
     public ResponseData<DepositResponseVnPay> depositVnPay(
             HttpServletRequest httpServletRequest,
             @Parameter(description = "Deposit request payload with account ID and amount", required = true)
-            @RequestBody DepositVnPayRequest depositRequest) {
+            @RequestBody @Valid DepositVnPayRequest depositRequest) {
         var ipAddress = RequestUtil.getIpAddress(httpServletRequest);
         DepositResponseVnPay response = paymentService.depositVnPay(depositRequest, ipAddress);
         return new ResponseData<>(HttpStatus.CREATED.value(),
@@ -60,7 +62,7 @@ public class PaymentController {
     public ResponseData<DepositResponsePaypal> depositPaypal(
             HttpServletRequest httpServletRequest,
             @Parameter(description = "Deposit request payload with account ID and amount", required = true)
-            @RequestBody DepositPaypalRequest request) throws PayPalRESTException {
+            @RequestBody @Valid DepositPaypalRequest request) throws PayPalRESTException {
         var ipAddress = RequestUtil.getIpAddress(httpServletRequest);
         DepositResponsePaypal response = paymentService.depositPaypal(request, ipAddress);
         return new ResponseData<>(HttpStatus.CREATED.value(),
@@ -77,4 +79,19 @@ public class PaymentController {
         System.out.println(payload);
         paymentService.handleCallbackPaypal(payload);
     }
+
+    @Operation(summary = "Get VNPay Transaction Info", description = "Retrieve information about a specific VNPay transaction using its unique identifier.")
+    @GetMapping("/vnpays/{idTransaction}")
+    public ResponseData<VnpayTransactionResponse> getVnpayTransactionInfo(
+            @PathVariable("idTransaction") Long id
+    ) {
+        VnpayTransactionResponse response = paymentService.getVnpayTransactionInfo(id);
+        return new ResponseData<>(
+                HttpStatus.OK.value(),
+                "Transaction retrieved successfully",
+                new Date(),
+                response
+        );
+    }
+
 }

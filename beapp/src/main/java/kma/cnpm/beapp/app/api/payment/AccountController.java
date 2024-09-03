@@ -3,6 +3,7 @@ package kma.cnpm.beapp.app.api.payment;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
 import kma.cnpm.beapp.domain.payment.dto.request.AddBankRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.AccountResponse;
@@ -47,7 +48,7 @@ public class AccountController {
     @DeleteMapping("/banks/{id}")
     public ResponseData removeBankAccount(
             @Parameter(description = "The unique identifier of the bank to be removed", required = true)
-            @PathVariable Long id) {
+            @PathVariable @NotNull Long id) {
       accountService.removeBankAccount(id);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
