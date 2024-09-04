@@ -5,4 +5,5 @@ export class User {
   email: any;
   fullName: any;
   phone: any;
+  captchaToken: any;
 }

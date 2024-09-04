@@ -32,7 +32,7 @@ public class CreateUserRequest {
 //    @PhoneNumber(message = "Phone number must be in a valid format")
 //    private String phone;
 
-    @NotBlank(message = "captchaToken is required")
+//    @NotBlank(message = "captchaToken is required")
     private String captchaToken;
 
 }

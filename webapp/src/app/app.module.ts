@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {NgIf} from "@angular/common";
 import {RouterLink, RouterLinkActive} from "@angular/router";
@@ -17,6 +17,7 @@ import {CookieService} from "ngx-cookie-service";
 import {AuthGuard} from "./service/auth/auth.guard";
 import {TokenInterceptor} from "./service/token/token.interceptor";
 import { SignupComponent } from './signup/signup.component';
+import { ActiveComponent } from './active/active.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { SignupComponent } from './signup/signup.component';
     LoginComponent,
     HomeComponent,
     ProfileComponent,
-    SignupComponent
+    SignupComponent,
+    ActiveComponent
   ],
   imports: [
     BrowserModule,

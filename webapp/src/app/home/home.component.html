@@ -39,52 +39,5 @@
       </div>
     </div>
   </div>
-  <div class="container">
-    <div class="card">
-      <div style="display: flex;">
-        <span *ngIf="!isCommentsHidden" class="title">Đăng bài</span>
-        <span *ngIf="isCommentsHidden" class="title">
-           <i class="bi bi-person-circle"><span> Khánh</span></i>
-        </span>
-        <i (click)="toggleComments()" class="bi bi-caret-down" style="padding: 10px;margin-right: 10px"></i>
-      </div>
-      <div class="comments hide" [ngClass]="{'hide': isCommentsHidden}">
-        <div class="comment-react">
-        </div>
-        <div class="comment-container">
-          <div class="user">
-            <div class="user-pic">
-              <i class="bi bi-person-circle"></i>
-            </div>
-            <div class="user-info">
-              <span>Khánh</span>
-            </div>
-          </div>
-        <div class="text-box">
-          <div class="box-container">
-            <textarea style="overflow: hidden" placeholder="Nội dung bài đăng"></textarea>
-            <div>
-              <div class="formatting">
-                <button class="button2" type="button">
-                  <i class="bi bi-card-image"></i>
-                </button>
-                <button class="button2" type="button">
-                  <i class="bi bi-geo-alt-fill"></i>
-                </button>
-                <button class="button2" type="button">
-                  <i class="bi bi-emoji-smile"></i>
-                </button>
-              </div>
-              <button type="submit" class="button1"  style="float: right" title="Đăng bài">
-                Đăng bài
-              </button>
-            </div>
-          </div>
-        </div>
-        </div>
-      </div>
 
-
-    </div>
-  </div>
 </div>

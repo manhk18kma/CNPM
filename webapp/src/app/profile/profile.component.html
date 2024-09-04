@@ -6,74 +6,123 @@
         <!-- begin profile -->
         <div class="profile">
           <div class="profile-header">
-            <!-- BEGIN profile-header-cover -->
             <div class="profile-header-cover"></div>
-            <!-- END profile-header-cover -->
-            <!-- BEGIN profile-header-content -->
-            <div class="profile-header-content">
-              <!-- BEGIN profile-header-img -->
+            <div class="profile-header-content d-flex align-content-center align-items-center">
               <div class="profile-header-img">
-                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                <img
+                  src="https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-1/387179218_1372127113699239_4722949875462203661_n.jpg?stp=cp6_dst-jpg_s200x200&_nc_cat=100&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeEMHzZB9xdzLvgDtt8KlPzBCLmlQ6JZlD4IuaVDolmUPmXPvytvZsC_HWopgnDUpV7nNW21HjjJk9MvkKusJzNc&_nc_ohc=sqvr_3lGhUYQ7kNvgG-n-j3&_nc_ht=scontent.fhan2-4.fna&_nc_gid=ARUnIGg18PX29mgf98A3VQF&oh=00_AYCwyX9nr0P9zxWDWjdXEGmLtEilC7FyjCSyWJU0WU6W8w&oe=66DE4AF3"
+                  alt="">
               </div>
-              <!-- END profile-header-img -->
-              <!-- BEGIN profile-header-info -->
-              <div class="profile-header-info">
-                <h4 class="m-t-10 m-b-5">Sean Ngu</h4>
-                <p class="m-b-10">UXUI + Frontend Developer</p>
-                <a href="#" class="btn btn-sm btn-info mb-2">Edit Profile</a>
+
+              <div class="profile-header-info decor-text-1 m-lg-4" style="margin-left: 20px">
+                <h4 class="m-t-0 m-b-1">Duy Khanh</h4>
+                <p class=" text-secondary">Người mua</p>
+                <i class="bi bi-gear text-blue" style="font-size: 20px"></i>
+
               </div>
               <!-- END profile-header-info -->
             </div>
-            <!-- END profile-header-content -->
-            <!-- BEGIN profile-header-tab -->
-            <ul class="profile-header-tab nav nav-tabs">
-              <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/bs4-profile-with-timeline-posts" target="__blank" class="nav-link_">POSTS</a></li>
-              <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/bs4-profile-about" target="__blank" class="nav-link_">ABOUT</a></li>
-              <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/profile-photos" target="__blank" class="nav-link_">PHOTOS</a></li>
-              <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/profile-videos" target="__blank" class="nav-link_">VIDEOS</a></li>
-              <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/bs4-profile-friend-list" target="__blank" class="nav-link_ active show">FRIENDS</a></li>
+            <ul class="profile-header-tab nav nav-tabs mt-2 decor-text" style="cursor: pointer">
+              <li class="nav-item" >
+                <a #text (click)="directPage(text.innerText)" [class]="tabPost ? 'active' : ''" class="nav-link_">
+                Bài đăng
+                </a>
+              </li>
+              <li class="nav-item" >
+                <a #text1 (click)="directPage(text1.innerText)" [class]="tabInfor ? 'active' : ''" class="nav-link_">
+                  Thông tin cá nhân
+                </a></li>
+              <li class="nav-item" >
+                <a #text2 (click)="directPage(text2.innerText)" [class]="tabImage ? 'active' : ''" class="nav-link_">
+                  Hình Ảnh/Video
+                </a></li>
+              <li class="nav-item" >
+                <a #text3 (click)="directPage(text3.innerText)" [class]="tabHistory ? 'active' : ''" class="nav-link_">
+                  Hoạt động
+                </a></li>
             </ul>
-            <!-- END profile-header-tab -->
+          </div>
+
+        </div>
+        <div class="profile-content decor-text-1">
+          <div class="tab-content p-0">
+            <div class="tab-pane fade active show" id="profile-post1">
+              <i *ngIf="!openPost" (click)="openPost = true" class="bi bi-upload" title="Đăng bài"></i>
+              <ul class="timeline1">
+                <li>
+                  <div class="timeline-body" *ngIf="openPost">
+                    <div class="timeline-header">
+                      <span class="userimage"><img
+                        src="https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-1/387179218_1372127113699239_4722949875462203661_n.jpg?stp=cp6_dst-jpg_s200x200&_nc_cat=100&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeEMHzZB9xdzLvgDtt8KlPzBCLmlQ6JZlD4IuaVDolmUPmXPvytvZsC_HWopgnDUpV7nNW21HjjJk9MvkKusJzNc&_nc_ohc=sqvr_3lGhUYQ7kNvgG-n-j3&_nc_ht=scontent.fhan2-4.fna&_nc_gid=ARUnIGg18PX29mgf98A3VQF&oh=00_AYCwyX9nr0P9zxWDWjdXEGmLtEilC7FyjCSyWJU0WU6W8w&oe=66DE4AF3"
+                        alt=""></span>
+                      <span class="username"><a>Duy Khánh</a> <small></small></span>
+                      <i class="bi bi-x" (click)="openPost = false" style="position: absolute;right: 30px; font-size: 20px"></i>
+                    </div>
+                    <div>
+                      <textarea  (input)="onInput($event)"
+                                 placeholder="Nhập nội dung..."
+                                 [(ngModel)]="textContent" class="auto-resize-textarea text-secondary">
+                      </textarea>
+                    </div>
+                    <input type="file" id="file1" hidden="" (change)="onFileSelected($event)" multiple>
+                    <label for="file1"><i class="bi bi-image-fill"></i></label>
+                    <div class="image-grid">
+                      <div class="image-item" *ngFor="let image of images">
+                        <img [src]="image.url" alt="User uploaded image">
+                      </div>
+                    </div>
+                    <div class="timeline-comment-box">
+                      <div class="input">
+                        <form>
+                          <div class="input-group">
+                            <button class="btn btn-secondary f-s-12 rounded-0 w-100" type="button" [disabled]="!textContent" (click)="sendText()">Gửi</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-        <!-- end profile -->
-        <!-- begin profile-content -->
-        <div class="profile-content">
-          <!-- begin tab-content -->
+        <div *ngIf="tabPost" class="profile-content decor-text-1">
           <div class="tab-content p-0">
-            <!-- begin #profile-post tab -->
             <div class="tab-pane fade active show" id="profile-post">
-              <!-- begin timeline -->
               <ul class="timeline">
                 <li>
-                  <!-- begin timeline-time -->
                   <div class="timeline-time">
-                    <span class="date">today</span>
+                    <span class="date">Hôm nay</span>
                     <span class="time">04:20</span>
                   </div>
-                  <!-- end timeline-time -->
-                  <!-- begin timeline-icon -->
                   <div class="timeline-icon">
                     <a href="javascript:;">&nbsp;</a>
                   </div>
-                  <!-- end timeline-icon -->
-                  <!-- begin timeline-body -->
                   <div class="timeline-body">
                     <div class="timeline-header">
-                      <span class="userimage"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
-                      <span class="username"><a href="javascript:;">Sean Ngu</a> <small></small></span>
+                      <span class="userimage"><img
+                        src="https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-1/387179218_1372127113699239_4722949875462203661_n.jpg?stp=cp6_dst-jpg_s200x200&_nc_cat=100&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeEMHzZB9xdzLvgDtt8KlPzBCLmlQ6JZlD4IuaVDolmUPmXPvytvZsC_HWopgnDUpV7nNW21HjjJk9MvkKusJzNc&_nc_ohc=sqvr_3lGhUYQ7kNvgG-n-j3&_nc_ht=scontent.fhan2-4.fna&_nc_gid=ARUnIGg18PX29mgf98A3VQF&oh=00_AYCwyX9nr0P9zxWDWjdXEGmLtEilC7FyjCSyWJU0WU6W8w&oe=66DE4AF3"
+                        alt=""></span>
+                      <span class="username"><a>Duy Khánh</a> <small></small></span>
                       <span class="pull-right text-muted">18 Views</span>
                     </div>
                     <div class="timeline-content">
                       <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc faucibus turpis quis tincidunt luctus.
-                        Nam sagittis dui in nunc consequat, in imperdiet nunc sagittis.
+                        Mình đang cần bán sản phẩm này
                       </p>
                     </div>
+                    <input type="file" id="file" hidden="" (change)="onFileSelected($event)" multiple>
+                    <label for="file"><i class="bi bi-image-fill"></i></label>
+                    <div class="image-grid">
+                      <div class="image-item" *ngFor="let image of images">
+                        <img [src]="image.url" alt="User uploaded image">
+                      </div>
+                    </div>
+
                     <div class="timeline-likes">
                       <div class="stats-right">
-                        <span class="stats-text">259 Shares</span>
-                        <span class="stats-text">21 Comments</span>
+                        <span class="stats-text">25 Chia sẻ</span>
+                        <span class="stats-text">21 Bình luận</span>
                       </div>
                       <div class="stats">
                                     <span class="fa-stack fa-fw stats-icon">
@@ -87,148 +136,32 @@
                         <span class="stats-total">4.3k</span>
                       </div>
                     </div>
-                    <div class="timeline-footer">
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i> Like</a>
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-comments fa-fw fa-lg m-r-3"></i> Comment</a>
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a>
-                    </div>
+                    <!--                    <div class="timeline-footer">-->
+                    <!--                      <a class="m-r-15"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i></a>-->
+                    <!--                      <a class="m-r-15 text-inverse-lighter"><i class="fa fa-comments fa-fw fa-lg m-r-3"></i></a>-->
+                    <!--                      <a class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i></a>-->
+                    <!--                    </div>-->
                     <div class="timeline-comment-box">
                       <div class="user"><img src="https://bootdey.com/img/Content/avatar/avatar3.png"></div>
                       <div class="input">
                         <form action="">
                           <div class="input-group">
-                            <input type="text" class="form-control rounded-corner" placeholder="Write a comment...">
+                            <input type="text" class="form-control rounded-corner" style="font-size: 12px"
+                                   placeholder="Bình luận gì đó">
                             <span class="input-group-btn p-l-10">
-                                          <button class="btn btn-primary f-s-12 rounded-corner" type="button">Comment</button>
+                                          <button class="btn btn-secondary f-s-12 rounded-0" type="button">Gửi</button>
                                           </span>
                           </div>
                         </form>
                       </div>
                     </div>
                   </div>
-                  <!-- end timeline-body -->
                 </li>
-                <li>
-                  <!-- begin timeline-time -->
-                  <div class="timeline-time">
-                    <span class="date">yesterday</span>
-                    <span class="time">20:17</span>
-                  </div>
-                  <!-- end timeline-time -->
-                  <!-- begin timeline-icon -->
-                  <div class="timeline-icon">
-                    <a href="javascript:;">&nbsp;</a>
-                  </div>
-                  <!-- end timeline-icon -->
-                  <!-- begin timeline-body -->
-                  <div class="timeline-body">
-                    <div class="timeline-header">
-                      <span class="userimage"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
-                      <span class="username">Sean Ngu</span>
-                      <span class="pull-right text-muted">82 Views</span>
-                    </div>
-                    <div class="timeline-content">
-                      <p>Location: United States</p>
-                    </div>
-                    <div class="timeline-footer">
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i> Like</a>
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-comments fa-fw fa-lg m-r-3"></i> Comment</a>
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a>
-                    </div>
-                  </div>
-                  <!-- end timeline-body -->
-                </li>
-                <li>
-                  <!-- begin timeline-time -->
-                  <div class="timeline-time">
-                    <span class="date">24 February 2014</span>
-                    <span class="time">08:17</span>
-                  </div>
-                  <!-- end timeline-time -->
-                  <!-- begin timeline-icon -->
-                  <div class="timeline-icon">
-                    <a href="javascript:;">&nbsp;</a>
-                  </div>
-                  <!-- end timeline-icon -->
-                  <!-- begin timeline-body -->
-                  <div class="timeline-body">
-                    <div class="timeline-header">
-                      <span class="userimage"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
-                      <span class="username">Sean Ngu</span>
-                      <span class="pull-right text-muted">1,282 Views</span>
-                    </div>
-                    <div class="timeline-content">
-                      <p class="lead">
-                        <i class="fa fa-quote-left fa-fw pull-left"></i>
-                        Quisque sed varius nisl. Nulla facilisi. Phasellus consequat sapien sit amet nibh molestie placerat. Donec nulla quam, ullamcorper ut velit vitae, lobortis condimentum magna. Suspendisse mollis in sem vel mollis.
-                        <i class="fa fa-quote-right fa-fw pull-right"></i>
-                      </p>
-                    </div>
-                    <div class="timeline-footer">
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i> Like</a>
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-comments fa-fw fa-lg m-r-3"></i> Comment</a>
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a>
-                    </div>
-                  </div>
-                  <!-- end timeline-body -->
-                </li>
-                <li>
-                  <!-- begin timeline-time -->
-                  <div class="timeline-time">
-                    <span class="date">10 January 2014</span>
-                    <span class="time">20:43</span>
-                  </div>
-                  <!-- end timeline-time -->
-                  <!-- begin timeline-icon -->
-                  <div class="timeline-icon">
-                    <a href="javascript:;">&nbsp;</a>
-                  </div>
-                  <!-- end timeline-icon -->
-                  <!-- begin timeline-body -->
-                  <div class="timeline-body">
-                    <div class="timeline-header">
-                      <span class="userimage"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
-                      <span class="username">Sean Ngu</span>
-                      <span class="pull-right text-muted">1,021,282 Views</span>
-                    </div>
-                    <div class="timeline-content">
-                      <h4 class="template-title">
-                        <i class="fa fa-map-marker text-danger fa-fw"></i>
-                        795 Folsom Ave, Suite 600 San Francisco, CA 94107
-                      </h4>
-                      <p>In hac habitasse platea dictumst. Pellentesque bibendum id sem nec faucibus. Maecenas molestie, augue vel accumsan rutrum, massa mi rutrum odio, id luctus mauris nibh ut leo.</p>
-                      <p class="m-t-20">
-                        <img src="../assets/img/gallery/gallery-5.jpg" alt="">
-                      </p>
-                    </div>
-                    <div class="timeline-footer">
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i> Like</a>
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-comments fa-fw fa-lg m-r-3"></i> Comment</a>
-                      <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a>
-                    </div>
-                  </div>
-                  <!-- end timeline-body -->
-                </li>
-                <li>
-                  <!-- begin timeline-icon -->
-                  <div class="timeline-icon">
-                    <a href="javascript:;">&nbsp;</a>
-                  </div>
-                  <!-- end timeline-icon -->
-                  <!-- begin timeline-body -->
-                  <div class="timeline-body">
-                    Loading...
-                  </div>
-                  <!-- begin timeline-body -->
-                </li>
+
               </ul>
-              <!-- end timeline -->
             </div>
-            <!-- end #profile-post tab -->
           </div>
-          <!-- end tab-content -->
         </div>
-        <!-- end profile-content -->
       </div>
     </div>
   </div>
