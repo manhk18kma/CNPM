@@ -1,4 +1,4 @@
-package kma.cnpm.beapp.domain.product.dto.request;
+package kma.cnpm.beapp.domain.common.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

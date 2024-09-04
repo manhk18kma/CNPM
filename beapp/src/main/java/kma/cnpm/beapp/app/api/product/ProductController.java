@@ -2,10 +2,10 @@ package kma.cnpm.beapp.app.api.product;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import kma.cnpm.beapp.domain.common.dto.ProductRequest;
+import kma.cnpm.beapp.domain.common.dto.ProductResponse;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
-import kma.cnpm.beapp.domain.product.dto.request.ProductRequest;
 import kma.cnpm.beapp.domain.product.dto.request.UploadFileRequest;
-import kma.cnpm.beapp.domain.product.dto.response.ProductResponse;
 import kma.cnpm.beapp.domain.product.service.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseData<ProductResponse> updateProduct(@PathVariable Integer id,
                                                        @RequestBody @Valid ProductRequest productRequest) {
-        return new ResponseData<>(HttpStatus.CREATED.value(),
+        return new ResponseData<>(HttpStatus.OK.value(),
                 "Product created successfully",
                 new Date(),
                 productService.update(id, productRequest));
@@ -57,7 +57,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseData<String> deleteProduct(@PathVariable Integer id) {
         productService.deleteById(id);
-        return new ResponseData<>(HttpStatus.CREATED.value(),
+        return new ResponseData<>(HttpStatus.OK.value(),
                 "Product created successfully",
                 new Date());
     }

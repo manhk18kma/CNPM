@@ -28,6 +28,8 @@ public enum AppErrorCode {
 
     CATEGORY_NOT_EXISTED(2001, "Category not existed", HttpStatus.BAD_REQUEST),
     PRODUCT_NOT_EXISTED(3001, "Product not existed", HttpStatus.BAD_REQUEST),
+    POST_NOT_EXISTED(4001, "Post not existed", HttpStatus.BAD_REQUEST),
+    COMMENT_NOT_EXISTED(4001, "comment not existed", HttpStatus.BAD_REQUEST),
     FAILD_UPLOAD_CLOUD(13,"Error  to upload cloud" ,HttpStatus.BAD_REQUEST );
 
     AppErrorCode(int code, String message, HttpStatusCode statusCode) {

@@ -1,14 +1,10 @@
 package kma.cnpm.beapp.domain.product.mapper;
 
-import kma.cnpm.beapp.domain.product.dto.request.ProductRequest;
-import kma.cnpm.beapp.domain.product.dto.response.ProductResponse;
-import kma.cnpm.beapp.domain.product.entity.Media;
+import kma.cnpm.beapp.domain.common.dto.ProductRequest;
+import kma.cnpm.beapp.domain.common.dto.ProductResponse;
 import kma.cnpm.beapp.domain.product.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring", uses = MediaMapper.class)
 public interface ProductMapper {

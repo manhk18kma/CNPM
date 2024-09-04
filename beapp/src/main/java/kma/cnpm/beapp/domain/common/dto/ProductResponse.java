@@ -1,6 +1,7 @@
-package kma.cnpm.beapp.domain.product.dto.response;
+package kma.cnpm.beapp.domain.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kma.cnpm.beapp.domain.product.dto.response.MediaResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductResponse {
 
+    private Integer id;
     private String name;
     private String description;
     private BigDecimal price;

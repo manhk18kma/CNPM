@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-@Tag(name = "User Controller", description = "APIs for category management")
+@Tag(name = "Category Controller", description = "APIs for category management")
 public class CategoryController {
 
     CategoryService categoryService;
@@ -38,14 +38,14 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public ResponseData<String> deleteCategory(@PathVariable Integer id) {
         categoryService.deleteById(id);
-        return new ResponseData<>(HttpStatus.CREATED.value(),
+        return new ResponseData<>(HttpStatus.OK.value(),
                 "Category deleted successfully",
                 new Date());
     }
 
     @GetMapping
     public ResponseData<List<CategoryDto>> getAllCategories() {
-        return new ResponseData<>(HttpStatus.CREATED.value(),
+        return new ResponseData<>(HttpStatus.OK.value(),
                 "Categories find successfully",
                 new Date(),
                 categoryService.getAllCategories());
@@ -53,7 +53,7 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseData<CategoryDto> getCategoryById(@PathVariable Integer id) {
-        return new ResponseData<>(HttpStatus.CREATED.value(),
+        return new ResponseData<>(HttpStatus.OK.value(),
                 "Category find successfully",
                 new Date(),
                 categoryService.getCategoryById(id));
