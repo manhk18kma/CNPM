@@ -217,8 +217,6 @@ public class UserService {
                 System.out.println("-----------");
                 setDefaultAvatar(user, oldUrlAvt);
             }
-        } else {
-            setDefaultAvatar(user, oldUrlAvt);
         }
 
         user.setFullName(request.getFullName());
