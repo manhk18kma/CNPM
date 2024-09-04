@@ -3,9 +3,9 @@ package kma.cnpm.beapp.domain.product.service.impl;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.common.upload.ImageService;
-import kma.cnpm.beapp.domain.product.dto.request.ProductRequest;
+import kma.cnpm.beapp.domain.common.dto.ProductRequest;
 import kma.cnpm.beapp.domain.product.dto.request.UploadFileRequest;
-import kma.cnpm.beapp.domain.product.dto.response.ProductResponse;
+import kma.cnpm.beapp.domain.common.dto.ProductResponse;
 import kma.cnpm.beapp.domain.product.entity.Category;
 import kma.cnpm.beapp.domain.product.entity.Media;
 import kma.cnpm.beapp.domain.product.entity.Product;
@@ -119,6 +119,15 @@ public class ProductServiceImpl implements ProductService {
         if (!user.getId().equals(product.getSellerId()))
             throw new AppException(UNAUTHORIZED);
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public ProductResponse getProductById(Integer id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_EXISTED));
+        ProductResponse productResponse = productMapper.map(product);
+        productResponse.setSellerName(userService.findUserById(String.valueOf(productResponse.getSellerId())).getFullName());
+        return productResponse;
     }
 
     @Override
