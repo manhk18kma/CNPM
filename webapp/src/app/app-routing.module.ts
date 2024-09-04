@@ -5,6 +5,7 @@ import {LoginComponent} from "./login/login.component";
 import {ProfileComponent} from "./profile/profile.component";
 import {AuthGuard} from "./service/auth/auth.guard";
 import {SignupComponent} from "./signup/signup.component";
+import {ActiveComponent} from "./active/active.component";
 
 const routes: Routes = [
   {path: '',redirectTo: 'home',pathMatch: 'full'},
@@ -12,7 +13,7 @@ const routes: Routes = [
   {path:'login', component: LoginComponent},
   {path:'profile', component: ProfileComponent,},
   {path:'signup', component: SignupComponent,},
-
+  {path:'active/:token', component: ActiveComponent},
 ];
 
 @NgModule({

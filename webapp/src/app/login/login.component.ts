@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {CookieService} from "ngx-cookie-service";
 import {ToastrService} from "ngx-toastr";
 import {catchError, of} from "rxjs";
+import {AuthService} from "../service/auth/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ import {catchError, of} from "rxjs";
 export class LoginComponent {
   user = new User();
 
-  constructor(private userService: UserService,
+  constructor(private authService: AuthService,
               private router: Router,
               private cookieService: CookieService,
               private toastrService: ToastrService) {
@@ -24,17 +25,16 @@ export class LoginComponent {
   }
 
   login() {
-    this.userService.loginUser(this.user).pipe(
+    this.authService.loginUser(this.user).pipe(
       catchError(error => {
         this.showFail()
         return of({error: 'Login failed, please try again later.'});
       })
     ).subscribe(res => {
-      if (res.token) {
         this.showSuccess()
-        this.cookieService.set('accessToken', res.token, {expires: 1, path: '/'});
+        this.cookieService.set('accessToken', res.data.accessToken, {expires: 1, path: '/'});
         this.router.navigate(["/profile"]);
-      }
+
     });
   }
 

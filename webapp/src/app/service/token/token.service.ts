@@ -21,7 +21,7 @@ export class TokenService {
     }
   }
 
-  getUsernameFormToken() {
+  getEmailFormToken() {
     const accessToken = this.cookieService.get('accessToken')
     if (accessToken) {
       const tokenData = JSON.parse(atob(accessToken.split('.')[1]));

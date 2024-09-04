@@ -5,18 +5,18 @@
       <div class="col-12 col-lg-10 col-xl-8">
         <div class="row gy-5 justify-content-center">
           <div class="col-12 col-lg-5 background-white p-3">
-            <form action="#!">
+            <form (ngSubmit)="login()">
               <div class="row gy-3 overflow-hidden">
 
                 <div class="col-12 decor-text-1">
                   <div class="form-floating mb-2">
-                    <input type="email" class="form-control border-0 border-bottom rounded-0" name="username" id="username" placeholder="name@example.com">
-                    <label for="username" class="form-label">Tên tài khoản</label>
+                    <input type="email" class="form-control border-0 border-bottom rounded-0" name="email" id="email" placeholder="name@example.com" [(ngModel)]="user.email">
+                    <label for="email" class="form-label">Email</label>
                   </div>
                 </div>
                 <div class="col-12 decor-text-1">
                   <div class="form-floating mb-2">
-                    <input type="password" class="form-control border-0 border-bottom rounded-0" name="password" id="password" value="" placeholder="Password">
+                    <input type="password" class="form-control border-0 border-bottom rounded-0" name="password" id="password" [(ngModel)]="user.password" placeholder="Password">
                     <label for="password" class="form-label">Mật khẩu</label>
                   </div>
                 </div>
