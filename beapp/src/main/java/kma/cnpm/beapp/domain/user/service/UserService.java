@@ -208,7 +208,6 @@ public class UserService {
                 String newUrl = imageService.getUrlImage(urlOrBase64);
                 user.setAvt(newUrl);
             } catch (Exception e) {
-                System.out.println("-----------");
                 setDefaultAvatar(user, oldUrlAvt);
             }
         } else {
