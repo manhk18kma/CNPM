@@ -51,7 +51,8 @@ public class OpenApiConfig {
                 .group("api-service-identity")
                 .packagesToScan(
                         "kma.cnpm.beapp.app.api.user",
-                        "kma.cnpm.beapp.app.api.product")
+                        "kma.cnpm.beapp.app.api.product",
+                        "kma.cnpm.beapp.app.api.post")
                 .build();
     }
     @Bean
