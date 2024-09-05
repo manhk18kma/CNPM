@@ -30,11 +30,12 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping
-    public ResponseData<ProductResponse> createProduct(@RequestBody @Valid ProductRequest productRequest) {
+    public ResponseData<ProductResponse> createProduct(@RequestBody @Valid ProductRequest productRequest,
+                                                       @RequestBody @Valid UploadFileRequest uploadFileRequest) {
         return new ResponseData<>(HttpStatus.CREATED.value(),
                 "Product created successfully",
                 new Date(),
-                productService.save(productRequest));
+                productService.save(productRequest, uploadFileRequest));
     }
 
     @PutMapping("/{id}")
