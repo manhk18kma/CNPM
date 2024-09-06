@@ -15,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "posts")
 public class Post extends AbstractEntity<Integer> {
-
     private String title;
     private String description;
     private String status;
