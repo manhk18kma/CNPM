@@ -5,6 +5,7 @@ import kma.cnpm.beapp.domain.common.exception.AppException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -50,6 +51,21 @@ public class GlobalExceptionHandler {
         errorResponse.setMessage(e.getMessage());
         return errorResponse;
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleHttpMessageNotReadableException(Exception e, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(new Date());
+        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setError(AppException.class.getSimpleName());
+        errorResponse.setMessage("Data invalid type");
+        return errorResponse;
+    }
+
+
+
 
 
 //    @ExceptionHandler(RuntimeException.class)

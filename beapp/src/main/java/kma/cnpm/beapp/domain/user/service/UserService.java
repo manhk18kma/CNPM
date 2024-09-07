@@ -8,6 +8,7 @@ import kma.cnpm.beapp.domain.common.enumType.UserStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.common.upload.ImageService;
+import kma.cnpm.beapp.domain.payment.service.AccountService;
 import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.*;
@@ -24,7 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +50,7 @@ public class UserService {
     final ActiveResetTokenRepository activeResetTokenRepository;
     final PasswordEncoder passwordEncoder;
     final ImageService imageService;
+    final AccountService accountService;
 
 //    Register new user
     @Transactional
@@ -115,13 +115,6 @@ public class UserService {
         }
     }
 
-
-    private void checkIfExists(boolean exists, AppErrorCode errorCode) {
-        if (exists) {
-            throw new AppException(errorCode);
-        }
-    }
-
     @Transactional
     public TokenResponse activateUser(ActiveUserRequest request) {
         String email = authService.extractEmail(request.getToken(), TokenType.ACTIVE_TOKEN);
@@ -135,6 +128,7 @@ public class UserService {
         user.setStatus(UserStatus.ACTIVE);
         user.setTokenDevice(request.getTokenDevice());
         User savedUser = userRepository.save(user);
+        accountService.initAccount(savedUser.getId());
 
 //        Generate access , refresh token
         String accessToken = authService.generateToken(savedUser, TokenType.ACCESS_TOKEN);
@@ -214,7 +208,6 @@ public class UserService {
                 String newUrl = imageService.getUrlImage(urlOrBase64);
                 user.setAvt(newUrl);
             } catch (Exception e) {
-                System.out.println("-----------");
                 setDefaultAvatar(user, oldUrlAvt);
             }
         }
@@ -260,5 +253,13 @@ public class UserService {
     }
 
 
+//    use this method in other services
+    public UserDTO getUserInfo(String id){
+        User user = userRepository.findUserById(Long.valueOf(id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+        return UserDTO.builder()
+                .userId(user.getId())
+                .build();
+    }
 
 }
