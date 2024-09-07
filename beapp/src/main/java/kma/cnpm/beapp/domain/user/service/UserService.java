@@ -85,7 +85,7 @@ public class UserService {
 
 //        Send active link
         String activeToken = authService.generateToken(savedUser, TokenType.ACTIVE_TOKEN);
-        String activateLink = urlClient + "/activate?token=" + activeToken;
+        String activateLink = urlClient + "/active/" + activeToken;
         String subject = "Account Activation";
         notificationService.sendActivationEmail(user.getEmail(), subject, activateLink);
         return UserResponse.builder().id(savedUser.getId()).build();
@@ -192,8 +192,8 @@ public class UserService {
 
     @Transactional
     public UserResponse updateUser(UpdateUserRequest request) throws ParseException {
-        String email = authService.getAuthenticationName();
-        User user = findUserByEmail(email);
+        String id = authService.getAuthenticationName();
+        User user = findUserById(id);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = formatter.parse(request.getDateOfBirth());
 
@@ -210,8 +210,6 @@ public class UserService {
             } catch (Exception e) {
                 setDefaultAvatar(user, oldUrlAvt);
             }
-        } else {
-            setDefaultAvatar(user, oldUrlAvt);
         }
 
         user.setFullName(request.getFullName());
@@ -236,6 +234,22 @@ public class UserService {
      public User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+    }
+
+    public User findUserById(String id) {
+        return userRepository.findUserById(Long.valueOf(id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+    }
+
+
+
+
+    public UserDTO getUserInfo(String id){
+        User user = userRepository.findUserById(Long.valueOf(id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+        return UserDTO.builder()
+                .userId(user.getId())
+                .build();
     }
 
 
