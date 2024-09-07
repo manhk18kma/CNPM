@@ -42,7 +42,7 @@ public class PostServiceImpl implements PostService {
         Post post = postMapper.map(postRequest);
         post.setUserId(user.getId());
         post.setStatus("ACTIVE");
-        post.setProductId(productService.save(postRequest.getProductRequest()).getId());
+//        post.setProductId(productService.save(postRequest.getProductRequest()).getId());
         postRepository.save(post);
     }
 
@@ -59,7 +59,7 @@ public class PostServiceImpl implements PostService {
         post.setDescription(postRequest.getDescription());
         if (postRequest.getProductRequest() != null) {
             productService.deleteById(post.getProductId());
-            post.setProductId(productService.save(postRequest.getProductRequest()).getId());
+//            post.setProductId(productService.save(postRequest.getProductRequest()).getId());
         }
         postRepository.save(post);
     }
