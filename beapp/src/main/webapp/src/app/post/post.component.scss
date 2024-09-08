@@ -408,7 +408,6 @@ select.form-control:not([size]):not([multiple]) {
   top: 5px;
   bottom: 5px;
   width: 5px;
-  background: #2d353c;
   left: 20%;
   margin-left: -2.5px
 }
@@ -482,16 +481,6 @@ select.form-control:not([size]):not([multiple]) {
   position: relative;
   padding: 20px 25px;
   border-radius: 6px
-}
-
-.timeline1 .timeline-body:before {
-  content: '';
-  display: block;
-  position: absolute;
-  border: 10px solid transparent;
-  border-right-color: #fff;
-  left: -20px;
-  top: 20px
 }
 
 .timeline1 .timeline-body>div+div {
@@ -800,4 +789,8 @@ button:disabled {
     border-top: 1px solid #eee;
     border-left-width: 0;
   }
+}
+.separator {
+  margin: 0 10px; /* Điều chỉnh khoảng cách theo nhu cầu */
+  color: #ccc; /* Màu của thanh ngăn cách */
 }

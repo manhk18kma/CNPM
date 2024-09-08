@@ -1,0 +1,31 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container" style="position: absolute; margin-top: 80px">
+  <div class="row">
+    <div class="col-md-4 static decor-text-1" style="font-size: 15px">
+      <ul class="nav-news-feed" style="cursor: pointer">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="delivery" routerLinkActive="active">
+            <i style="color: #e59a4d" class="bi bi-truck"></i>
+            <div>Vận chuyển</div>
+          </a>
+
+        </li>
+        <li  class="nav-item">
+          <a class="nav-link" routerLink="complete" routerLinkActive="active">
+            <i class="bi bi-check2 text-success"></i>
+            <div>Hoàn thành</div>
+          </a>
+
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="cancel" routerLinkActive="active">
+            <i class="bi bi-x-lg text-danger"></i>
+            <div>Đơn hủy</div>
+          </a>
+
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>
