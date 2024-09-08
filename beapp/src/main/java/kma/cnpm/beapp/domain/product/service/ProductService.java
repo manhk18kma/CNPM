@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    ProductResponse save(ProductRequest productRequest, UploadFileRequest uploadFileRequest);
+    ProductResponse save(ProductRequest productRequest);
     ProductResponse update(Integer id, ProductRequest productRequest);
     ProductResponse uploadFile(UploadFileRequest uploadFileRequest);
     void deleteById(Integer id);
