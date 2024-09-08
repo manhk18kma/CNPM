@@ -45,15 +45,15 @@ public class ProductServiceImpl implements ProductService {
     ImageService imageService;
 
     @Override
-    public ProductResponse save(ProductRequest productRequest, UploadFileRequest uploadFileRequest) {
+    public ProductResponse save(ProductRequest productRequest) {
         Product product = productMapper.map(productRequest);
         //set seller id by authService
         User user = userService.findUserById(authService.getAuthenticationName());
         product.setSellerId(user.getId());
         List<Media> mediaList = new ArrayList<>();
-        if (uploadFileRequest.getImages() != null) {
-            for (MultipartFile image : uploadFileRequest.getImages()) {
-                String imageUrl = imageService.uploadImage(image, UUID.randomUUID().toString());
+        if (productRequest.getImageBase64() != null) {
+            for (String imageBase64 : productRequest.getImageBase64()) {
+                String imageUrl = imageService.getUrlImage(imageBase64);
                 mediaList.add(Media.builder()
                         .product(product)
                         .url(imageUrl)
@@ -61,9 +61,9 @@ public class ProductServiceImpl implements ProductService {
                         .build());
             }
         }
-        if (uploadFileRequest.getVideos() != null) {
-            for (MultipartFile video : uploadFileRequest.getVideos()) {
-                String videoUrl = imageService.uploadVideo(video, UUID.randomUUID().toString());
+        if (productRequest.getImageBase64() != null) {
+            for (String videoBase64 : productRequest.getVideoBase64()) {
+                String videoUrl = imageService.getUrlVideo(videoBase64);
                 mediaList.add(Media.builder()
                         .product(product)
                         .url(videoUrl)

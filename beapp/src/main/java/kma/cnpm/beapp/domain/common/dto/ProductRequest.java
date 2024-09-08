@@ -34,4 +34,8 @@ public class ProductRequest {
     @NotNull(message = "Category ID is required")
     private Integer categoryId;
 
+    private List<String> imageBase64;
+
+    private List<String> videoBase64;
+
 }
