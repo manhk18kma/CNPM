@@ -1,0 +1,115 @@
+body{
+  margin-top:20px;
+  background-color: #f1f3f7;
+}
+
+.avatar-lg {
+  height: 5rem;
+  width: 5rem;
+}
+
+.font-size-18 {
+  font-size: 18px!important;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a {
+  text-decoration: none!important;
+}
+
+.w-xl {
+  min-width: 160px;
+}
+
+.card {
+  margin-bottom: 24px;
+  -webkit-box-shadow: 0 2px 3px #e4e8f0;
+  box-shadow: 0 2px 3px #e4e8f0;
+}
+
+.card {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border-radius: 0px;
+  border: 1px solid #eff0f2;
+}
+/*** Profile: Recent activity ***/
+.profile-comments__item {
+  position: relative;
+  padding: 15px 16px;
+}
+.profile-comments__item:last-child {
+  border-bottom: 0;
+}
+
+.profile-comments__item:hover .profile-comments__controls,
+.profile-comments__item:focus .profile-comments__controls {
+  visibility: visible;
+}
+.profile-comments__controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  visibility: hidden;
+}
+.profile-comments__controls > a {
+  display: inline-block;
+  padding: 2px;
+  color: #999999;
+}
+.profile-comments__controls > a:hover,
+.profile-comments__controls > a:focus {
+  color: #333333;
+}
+.profile-comments__avatar {
+  display: block;
+  float: left;
+  margin-right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.profile-comments__avatar > img {
+  width: 100%;
+  height: auto;
+}
+.profile-comments__body {
+  overflow: hidden;
+}
+.profile-comments__sender {
+  color: #333333;
+  font-weight: 500;
+  margin: 5px 0;
+}
+.profile-comments__sender > small {
+  margin-left: 5px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #999999;
+}
+@media (max-width: 767px) {
+  .profile-comments__sender > small {
+    display: block;
+    margin: 5px 0 10px;
+  }
+}
+.profile-comments__content {
+  color: #999999;
+}

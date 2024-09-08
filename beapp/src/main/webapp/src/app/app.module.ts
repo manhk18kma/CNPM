@@ -18,6 +18,18 @@ import {AuthGuard} from "./service/auth/auth.guard";
 import {TokenInterceptor} from "./service/token/token.interceptor";
 import { SignupComponent } from './signup/signup.component';
 import { ActiveComponent } from './active/active.component';
+import { PostsComponent } from './profile/posts/posts.component';
+import { InforComponent } from './profile/infor/infor.component';
+import { PhotosComponent } from './profile/photos/photos.component';
+import { ActivityComponent } from './profile/activity/activity.component';
+import { PostComponent } from './post/post.component';
+import { CartComponent } from './cart/cart.component';
+import { OrderComponent } from './order/order.component';
+import { MessageComponent } from './message/message.component';
+import { DetailmessageComponent } from './message/detailmessage/detailmessage.component';
+import { DeliveryComponent } from './order/delivery/delivery.component';
+import { CompleteComponent } from './order/complete/complete.component';
+import { CancelComponent } from './order/cancel/cancel.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +38,19 @@ import { ActiveComponent } from './active/active.component';
     HomeComponent,
     ProfileComponent,
     SignupComponent,
-    ActiveComponent
+    ActiveComponent,
+    PostsComponent,
+    InforComponent,
+    PhotosComponent,
+    ActivityComponent,
+    PostComponent,
+    CartComponent,
+    OrderComponent,
+    MessageComponent,
+    DetailmessageComponent,
+    DeliveryComponent,
+    CompleteComponent,
+    CancelComponent
   ],
   imports: [
     BrowserModule,

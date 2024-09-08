@@ -10,23 +10,27 @@
         <a class="nav-link" routerLink="home" routerLinkActive="active">Trang chủ</a>
       </li>
       <li class="nav-item d-flex align-items-center">
-        <a class="nav-link" href="#">Thời trang</a>
-        <i class="bi bi-caret-down-fill"></i>
+        <a class="nav-link" routerLink="post" routerLinkActive="active">Bài đăng</a>
+<!--        <i class="bi bi-caret-down-fill"></i>-->
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Phụ kiện</a>
+        <a class="nav-link" routerLink="home" routerLinkActive="active">Hỗ trợ</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Trang sức</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Hỗ trợ</a>
+        <a class="nav-link" routerLink="order" routerLinkActive="active">Đơn hàng</a>
       </li>
     </ul>
 
     <ul class="navbar-nav d-flex flex-row justify-content-end align-items-center">
       <li class="nav-item">
-        <i (click)="openInputSearch()" class="bi bi-search decor-text" style="cursor: pointer"></i>
+        <i class="bi bi-bell decor-text" style="cursor: pointer;margin-right: 10px"></i>
+      </li>
+      <li class="nav-item decor-text" *ngIf="userService.authenticated()">
+        <a class="nav-link" routerLink="message" routerLinkActive="active">
+          <i class="bi bi-chat-text" style="cursor: pointer;font-size: 20px;margin-right: 5px"></i>
+        </a>
+      <li class="nav-item">
+        <i (click)="openInputSearch()" class="bi bi-search decor-text" style="cursor: pointer;margin-right: 5px"></i>
       </li>
       <li *ngIf="!userService.authenticated()" class="nav-item">
         <a class="nav-link" routerLink="login" routerLinkActive="active">Đăng nhập</a>
@@ -36,8 +40,11 @@
           <i class="bi bi-person" style="font-size: 20px;"></i>
         </a>
       </li>
-      <li class="nav-item decor-text">
-        <i class="bi bi-cart3"></i>
+      <li class="nav-item decor-text" *ngIf="userService.authenticated()">
+        <a class="nav-link" routerLink="cart" routerLinkActive="active">
+          <i class="bi bi-minecart-loaded"  style="font-size: 15px;"></i>
+        </a>
+
       </li>
     </ul>
   </div>
