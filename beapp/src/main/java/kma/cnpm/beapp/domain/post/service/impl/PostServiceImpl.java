@@ -122,4 +122,9 @@ public class PostServiceImpl implements PostService {
                 .toList();
     }
 
+    @Override
+    public int countPostOfUser(long userId) {
+        return postRepository.countPostOfUser(userId);
+    }
+
 }

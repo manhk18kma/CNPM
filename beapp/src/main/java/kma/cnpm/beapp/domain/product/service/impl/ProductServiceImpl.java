@@ -183,4 +183,11 @@ public class ProductServiceImpl implements ProductService {
                         userService.findUserById(String.valueOf(productResponse.getSellerId())).getFullName()))
                 .toList();
     }
+
+//    Refactor this method
+    @Override
+    public int countSoldProductOfUser(Long userId) {
+        return 10;
+//        return productRepository.countSoldProductOfUser(userId);
+    }
 }

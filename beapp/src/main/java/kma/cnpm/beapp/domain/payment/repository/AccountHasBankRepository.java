@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface AccountHasBankRepository  extends JpaRepository<AccountHasBank, Long> {
@@ -21,5 +22,8 @@ public interface AccountHasBankRepository  extends JpaRepository<AccountHasBank,
     @Modifying
     @Query("DELETE FROM AccountHasBank ahb WHERE ahb.id = :id")
     void deleteByIdCus(@Param("id") Long id);
+
+    @Query("SELECT a FROM AccountHasBank a WHERE a.account.userId = :userId")
+    List<AccountHasBank> getBankOfUser(@Param("userId") Long userId);
 
 }

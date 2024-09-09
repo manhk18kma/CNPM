@@ -1,19 +1,21 @@
 package kma.cnpm.beapp.app.api.user;
 
-import com.nimbusds.jose.JOSEException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
+import kma.cnpm.beapp.domain.user.dto.response.PrivateUserDetailResponse;
 import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
+import kma.cnpm.beapp.domain.user.dto.response.UserDetailResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.ActiveUserRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.AddAddressRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.CreateUserRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.UpdateUserRequest;
 import kma.cnpm.beapp.domain.user.service.AddressService;
+import kma.cnpm.beapp.domain.user.service.UserReadService;
 import kma.cnpm.beapp.domain.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -39,8 +39,10 @@ public class UserController {
 
     UserService userService;
     AddressService addressService;
+    UserReadService userReadService;
 
-    @Operation(summary = "Create new user", description = "Register a new user account with provided details.")
+    @Operation(summary = "Create new user",
+            description = "Register a new user account with provided details.")
     @PostMapping
     public ResponseData<UserResponse> createUser(
             @Parameter(description = "User creation request payload with user details", required = true)
@@ -52,7 +54,8 @@ public class UserController {
                 response);
     }
 
-    @Operation(summary = "Activate user", description = "Activate a user account using an activation token sent to the user’s email.")
+    @Operation(summary = "Activate user",
+            description = "Activate a user account using an activation token sent to the user’s email.")
     @PostMapping("/activate")
     public ResponseData<TokenResponse> activateUser(
             @Parameter(description = "User activation request payload containing activation token", required = true)
@@ -64,7 +67,8 @@ public class UserController {
                 response);
     }
 
-    @Operation(summary = "Update user", description = "Update details of an existing user account , call api with BEARER TOKEN")
+    @Operation(summary = "Update user",
+            description = "Update details of an existing user account. Call API with BEARER TOKEN.")
     @PutMapping
     public ResponseData<UserResponse> updateUser(
             @Parameter(description = "User update request payload containing updated user details", required = true)
@@ -76,7 +80,8 @@ public class UserController {
                 response);
     }
 
-    @Operation(summary = "Add address to user", description = "Add a new address for the user. call api with BEARER TOKEN")
+    @Operation(summary = "Add address to user",
+            description = "Add a new address for the user. Call API with BEARER TOKEN.")
     @PostMapping("/addresses")
     public ResponseData<UserResponse> addAddress(
             @Parameter(description = "Add address request payload containing address details", required = true)
@@ -88,9 +93,27 @@ public class UserController {
                 response);
     }
 
-//    @PostMapping("/submit")
-//    public void submitCaptcha(@RequestBody Map<String, String> payload) {
-//        String captchaResponse = payload.get("captchaToken");
-//        System.out.println(userService.submitCaptcha(captchaResponse));
-//    }
+    @Operation(summary = "Get user profile by ID",
+            description = "Retrieve details of a user profile by user ID.")
+    @GetMapping
+    public ResponseData<UserDetailResponse> getProfileById(
+            @Parameter(description = "User ID to retrieve profile details", required = true)
+            @RequestParam("id") Long id) {
+        UserDetailResponse response = userReadService.getProfileById(id);
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Profile retrieved successfully",
+                new Date(),
+                response);
+    }
+
+    @Operation(summary = "Get private user profile",
+            description = "Retrieve details of the currently authenticated user's private profile. Call API with BEARER TOKEN.")
+    @GetMapping("/private-info")
+    public ResponseData<PrivateUserDetailResponse> getPrivateProfile() {
+        PrivateUserDetailResponse response = userReadService.getPrivateProfile();
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Profile retrieved successfully",
+                new Date(),
+                response);
+    }
 }
