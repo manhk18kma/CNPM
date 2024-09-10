@@ -1,5 +1,6 @@
 package kma.cnpm.beapp.domain.payment.service;
 
+import kma.cnpm.beapp.domain.common.dto.BankDTO;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.payment.dto.request.AddBankRequest;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -99,5 +102,21 @@ public class AccountService {
     }
 
 
+    public List<BankDTO> getBanksOfUser(Long userId){
+        List<AccountHasBank> accountHasBanks = accountHasBankRepository.getBankOfUser(userId);
+        return  accountHasBanks.stream().map(accountHasBank -> {
+            return BankDTO.builder()
+                    .accountHasBankId(accountHasBank.getId())
+                    .bankCode(accountHasBank.getBank().getBankCode())
+                    .bankName(accountHasBank.getBank().getBankName())
+                    .bankNumber(accountHasBank.getAccountNumber())
+                    .bankAvt(accountHasBank.getBank().getBankAvt())
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+    public BigDecimal getBalance(Long userId){
+        return accountRepository.getBalance(userId);
+    }
 }
 

@@ -221,6 +221,7 @@ public class AuthService {
         var user = userRepository
                 .findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(AppErrorCode.INVALID_USERNAME_PASSWORD));
+
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
 //        Login successfully -> add token device
@@ -312,5 +313,23 @@ public class AuthService {
         return userId;
     }
 
+    @SneakyThrows
+    public String authNameCanBeNull() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication instanceof JwtAuthenticationToken)) {
+            return null;
+        }
+        JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) authentication;
+        String token = jwtAuth.getToken().getTokenValue();
+        JWTClaimsSet jwtClaimsSet;
+        try {
+            jwtClaimsSet = extractClaims(token, TokenType.ACCESS_TOKEN);
+        } catch (ParseException | JOSEException e) {
+            log.error("Error extracting claims from token", e);
+            throw new AppException(AppErrorCode.INVALID_TOKEN_TYPE);
+        }
+        String userId = jwtClaimsSet.getStringClaim("userId");
+        return userId;
+    }
 
 }

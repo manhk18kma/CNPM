@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -60,11 +61,22 @@ public class GlobalExceptionHandler {
         errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
         errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         errorResponse.setError(AppException.class.getSimpleName());
-        errorResponse.setMessage("Data invalid type");
+        errorResponse.setMessage("Payload invalid");
         return errorResponse;
     }
 
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodArgumentTypeMismatchExceptionn(Exception e, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(new Date());
+        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setError(AppException.class.getSimpleName());
+        errorResponse.setMessage("Data invalid type");
+        return errorResponse;
+    }
 
 
 

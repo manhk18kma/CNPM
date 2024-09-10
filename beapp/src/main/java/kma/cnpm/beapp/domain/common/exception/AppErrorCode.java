@@ -19,6 +19,8 @@ public enum AppErrorCode {
     ADDRESS_NOT_EXISTED(10, "Address not existed", HttpStatus.BAD_REQUEST),
     PASSWORDS_NOT_MATCH(11, "Password and confirm password do not match", HttpStatus.BAD_REQUEST),
     ACCOUNT_NOT_EXIST(14 , "Account not existed" , HttpStatus.BAD_REQUEST),
+    USER_ALREADY_FOLLOWED(15 , "User already followed" , HttpStatus.BAD_REQUEST),
+    FOLLOW_NOT_EXIST(16, "Follow not exist",HttpStatus.BAD_REQUEST ),
 
 
     // Implementation error codes
@@ -45,11 +47,13 @@ public enum AppErrorCode {
 
 
 
+
     PRODUCT_NOT_EXISTED(3001, "Product not existed", HttpStatus.BAD_REQUEST),
     POST_NOT_EXISTED(4001, "Post not existed", HttpStatus.BAD_REQUEST),
     COMMENT_NOT_EXISTED(4001, "comment not existed", HttpStatus.BAD_REQUEST),
 
-    FAILD_UPLOAD_CLOUD(13,"Error  to upload cloud" ,HttpStatus.BAD_REQUEST );
+    FAILD_UPLOAD_CLOUD(13,"Error  to upload cloud" ,HttpStatus.BAD_REQUEST ),
+    INVALID_PARAM(27,"Invalid param" ,HttpStatus.BAD_REQUEST );
 
     AppErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

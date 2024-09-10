@@ -18,4 +18,6 @@ public interface ProductService {
     List<ProductResponse> getProductsBySellerId(Long sellerId);
     List<ProductResponse> getProductsByCategory(Integer categoryId);
 
+    int countSoldProductOfUser(Long userId);
+
 }
