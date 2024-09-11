@@ -1,12 +1,14 @@
 package kma.cnpm.beapp.domain.user.service;
 
 import com.nimbusds.jose.JOSEException;
+import kma.cnpm.beapp.domain.common.dto.UserDTO;
 import kma.cnpm.beapp.domain.common.enumType.Gender;
 import kma.cnpm.beapp.domain.common.enumType.TokenType;
 import kma.cnpm.beapp.domain.common.enumType.UserStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.common.upload.ImageService;
+import kma.cnpm.beapp.domain.payment.service.AccountService;
 import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.*;
@@ -23,15 +25,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -44,19 +46,22 @@ public class UserService {
     private String secretKey;
     @Value("${recaptcha.verify-url}")
     private  String VERIFY_URL;
+    @Value("${urlDefaultAvt}")
+    private String urlDefaultAvt;
     final UserRepository userRepository;
     final NotificationService notificationService;
      final AuthService authService;
     final ActiveResetTokenRepository activeResetTokenRepository;
     final PasswordEncoder passwordEncoder;
     final ImageService imageService;
+    final AccountService accountService;
 
 //    Register new user
     @Transactional
     public UserResponse saveUser(CreateUserRequest request) {
-        if (!submitCaptcha(request.getCaptchaToken())){
-            throw  new AppException(AppErrorCode.CAPTCHA_INVALID);
-        }
+//        if (!submitCaptcha(request.getCaptchaToken())){
+//            throw  new AppException(AppErrorCode.CAPTCHA_INVALID);
+//        }
         String email = request.getEmail();
         if (!request.getPassword().equals(request.getConfirmPassword())){
             throw  new AppException(AppErrorCode.PASSWORDS_NOT_MATCH);
@@ -79,27 +84,32 @@ public class UserService {
         User user = new User();
         BeanUtils.copyProperties(request, user);
         user.setStatus(UserStatus.INACTIVE);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setAvt(urlDefaultAvt);
+        //hanldepassword
+        String salt = generateSalt();
+        String encodedPassword = encodePassword(user.getPassword(), salt);
+        user.setSalt(salt);
+        user.setPassword(encodedPassword);
+
         User savedUser = userRepository.save(user);
+
+
 
 //        Send active link
         String activeToken = authService.generateToken(savedUser, TokenType.ACTIVE_TOKEN);
-        String activateLink = urlClient + "/activate?token=" + activeToken;
+        String activateLink = urlClient + "/active/" + activeToken;
         String subject = "Account Activation";
         notificationService.sendActivationEmail(user.getEmail(), subject, activateLink);
         return UserResponse.builder().id(savedUser.getId()).build();
     }
 
 //    Check register process in 3 minutes
-    private boolean isExpireTime(Date createdAt) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(createdAt);
-        calendar.add(Calendar.MINUTE, 3);
+private boolean isExpireTime(LocalDateTime createdAt) {
+    LocalDateTime createdAtPlus3Minutes = createdAt.plusMinutes(3);
+    LocalDateTime now = LocalDateTime.now();
+    return createdAtPlus3Minutes.isBefore(now);
+}
 
-        Date createdAtPlus3Minutes = calendar.getTime();
-        Date now = new Date();
-        return createdAtPlus3Minutes.before(now);
-    }
 //    Validate captcha
     public boolean submitCaptcha(String captchaToken) {
         RestTemplate restTemplate = new RestTemplate();
@@ -111,13 +121,6 @@ public class UserService {
             return true;
         } else {
             return false;
-        }
-    }
-
-
-    private void checkIfExists(boolean exists, AppErrorCode errorCode) {
-        if (exists) {
-            throw new AppException(errorCode);
         }
     }
 
@@ -134,6 +137,7 @@ public class UserService {
         user.setStatus(UserStatus.ACTIVE);
         user.setTokenDevice(request.getTokenDevice());
         User savedUser = userRepository.save(user);
+        accountService.initAccount(savedUser.getId());
 
 //        Generate access , refresh token
         String accessToken = authService.generateToken(savedUser, TokenType.ACCESS_TOKEN);
@@ -197,8 +201,8 @@ public class UserService {
 
     @Transactional
     public UserResponse updateUser(UpdateUserRequest request) throws ParseException {
-        String email = authService.getAuthenticationName();
-        User user = findUserByEmail(email);
+        String id = authService.getAuthenticationName();
+        User user = findUserById(id);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = formatter.parse(request.getDateOfBirth());
 
@@ -213,11 +217,8 @@ public class UserService {
                 String newUrl = imageService.getUrlImage(urlOrBase64);
                 user.setAvt(newUrl);
             } catch (Exception e) {
-                System.out.println("-----------");
                 setDefaultAvatar(user, oldUrlAvt);
             }
-        } else {
-            setDefaultAvatar(user, oldUrlAvt);
         }
 
         user.setFullName(request.getFullName());
@@ -230,11 +231,27 @@ public class UserService {
                 .build();
     }
 
+
+
+
+
+    ///Helper function
+
+    public String encodePassword(String rawPassword, String salt) {
+        return passwordEncoder.encode(rawPassword + salt);
+    }
+    private String generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return new String(salt);
+    }
+
     private void setDefaultAvatar(User user, String oldUrlAvt) {
         if (oldUrlAvt != null) {
             imageService.deleteImage(oldUrlAvt);
         }
-        user.setAvt("https://tse1.mm.bing.net/th?id=OIP._prlVvISXU3EfqFW3GF-RwHaHa&pid=Api&P=0&h=220");
+        user.setAvt(urlDefaultAvt);
     }
 
 
@@ -243,4 +260,20 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
     }
+
+    public User findUserById(String id) {
+        return userRepository.findUserById(Long.valueOf(id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+    }
+
+    public UserDTO getUserInfo(String id){
+        User user = userRepository.findUserById(Long.valueOf(id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+        return UserDTO.builder()
+                .userId(user.getId())
+                .build();
+    }
+
+
+
 }

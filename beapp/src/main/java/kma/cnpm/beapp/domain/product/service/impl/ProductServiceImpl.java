@@ -2,9 +2,12 @@ package kma.cnpm.beapp.domain.product.service.impl;
 
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
-import kma.cnpm.beapp.domain.product.dto.request.ProductRequest;
-import kma.cnpm.beapp.domain.product.dto.response.ProductResponse;
+import kma.cnpm.beapp.domain.common.upload.ImageService;
+import kma.cnpm.beapp.domain.common.dto.ProductRequest;
+import kma.cnpm.beapp.domain.product.dto.request.UploadFileRequest;
+import kma.cnpm.beapp.domain.common.dto.ProductResponse;
 import kma.cnpm.beapp.domain.product.entity.Category;
+import kma.cnpm.beapp.domain.product.entity.Media;
 import kma.cnpm.beapp.domain.product.entity.Product;
 import kma.cnpm.beapp.domain.product.mapper.ProductMapper;
 import kma.cnpm.beapp.domain.product.repository.CategoryRepository;
@@ -19,11 +22,13 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.CATEGORY_NOT_EXISTED;
-import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.UNAUTHORIZED;
+import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,23 +42,47 @@ public class ProductServiceImpl implements ProductService {
     ProductMapper productMapper;
     AuthService authService;
     UserService userService;
+    ImageService imageService;
 
     @Override
     public ProductResponse save(ProductRequest productRequest) {
         Product product = productMapper.map(productRequest);
         //set seller id by authService
-        User user = userService.findUserByEmail(authService.getAuthenticationName());
+        User user = userService.findUserById(authService.getAuthenticationName());
         product.setSellerId(user.getId());
+        List<Media> mediaList = new ArrayList<>();
+        if (productRequest.getImageBase64() != null) {
+            for (String imageBase64 : productRequest.getImageBase64()) {
+                String imageUrl = imageService.getUrlImage(imageBase64);
+                mediaList.add(Media.builder()
+                        .product(product)
+                        .url(imageUrl)
+                        .type("IMAGE")
+                        .build());
+            }
+        }
+        if (productRequest.getImageBase64() != null) {
+            for (String videoBase64 : productRequest.getVideoBase64()) {
+                String videoUrl = imageService.getUrlVideo(videoBase64);
+                mediaList.add(Media.builder()
+                        .product(product)
+                        .url(videoUrl)
+                        .type("VIDEO")
+                        .build());
+            }
+        }
+        product.setMedias(mediaList);
         productRepository.save(product);
         return productMapper.map(product, user.getFullName());
     }
+
 
     @Override
     public ProductResponse update(Integer id, ProductRequest productRequest) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_EXISTED));
 
-        User user = userService.findUserByEmail(authService.getAuthenticationName());
+        User user = userService.findUserById(authService.getAuthenticationName());
         if (!user.getId().equals(product.getSellerId()))
             throw new AppException(UNAUTHORIZED);
 
@@ -70,14 +99,57 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductResponse uploadFile(UploadFileRequest uploadFileRequest) {
+        Product product = productRepository.findById(uploadFileRequest.getProductId())
+                .orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_EXISTED));
+
+        User user = userService.findUserById(authService.getAuthenticationName());
+        if (!user.getId().equals(product.getSellerId()))
+            throw new AppException(UNAUTHORIZED);
+        List<Media> mediaList = new ArrayList<>();
+        if (uploadFileRequest.getImages() != null) {
+            for (MultipartFile image : uploadFileRequest.getImages()) {
+                String imageUrl = imageService.uploadImage(image, UUID.randomUUID().toString());
+                mediaList.add(Media.builder()
+                        .product(product)
+                        .url(imageUrl)
+                        .type("IMAGE")
+                        .build());
+            }
+        }
+        if (uploadFileRequest.getVideos() != null) {
+            for (MultipartFile video : uploadFileRequest.getVideos()) {
+                String videoUrl = imageService.uploadVideo(video, UUID.randomUUID().toString());
+                mediaList.add(Media.builder()
+                        .product(product)
+                        .url(videoUrl)
+                        .type("VIDEO")
+                        .build());
+            }
+        }
+        product.setMedias(mediaList);
+        productRepository.save(product);
+        return productMapper.map(product, user.getFullName());
+    }
+
+    @Override
     public void deleteById(Integer id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_EXISTED));
 
-        User user = userService.findUserByEmail(authService.getAuthenticationName());
+        User user = userService.findUserById(authService.getAuthenticationName());
         if (!user.getId().equals(product.getSellerId()))
             throw new AppException(UNAUTHORIZED);
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public ProductResponse getProductById(Integer id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_EXISTED));
+        ProductResponse productResponse = productMapper.map(product);
+        productResponse.setSellerName(userService.findUserById(String.valueOf(productResponse.getSellerId())).getFullName());
+        return productResponse;
     }
 
     @Override
@@ -85,6 +157,8 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findByNameContaining(name);
         return products.stream()
                 .map(productMapper::map)
+                .peek(productResponse -> productResponse.setSellerName(
+                        userService.findUserById(String.valueOf(productResponse.getSellerId())).getFullName()))
                 .toList();
     }
 
@@ -93,6 +167,8 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findBySellerId(sellerId);
         return products.stream()
                 .map(productMapper::map)
+                .peek(productResponse -> productResponse.setSellerName(
+                        userService.findUserById(String.valueOf(productResponse.getSellerId())).getFullName()))
                 .toList();
     }
 
@@ -103,6 +179,15 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findByCategory(category);
         return products.stream()
                 .map(productMapper::map)
+                .peek(productResponse -> productResponse.setSellerName(
+                        userService.findUserById(String.valueOf(productResponse.getSellerId())).getFullName()))
                 .toList();
+    }
+
+//    Refactor this method
+    @Override
+    public int countSoldProductOfUser(Long userId) {
+        return 10;
+//        return productRepository.countSoldProductOfUser(userId);
     }
 }

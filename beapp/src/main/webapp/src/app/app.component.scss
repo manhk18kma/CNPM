@@ -1,0 +1,109 @@
+.navbar {
+  height: 70px;
+  position: fixed;
+  width: 100%;
+  padding: 15px 20px;
+  background-color: transparent;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);
+  transition: background-color 0.2s ease-in-out, padding 0.2s ease-in-out, transform 0.2s ease-in-out;
+  z-index: 1000;
+  font-family: 'Comfortaa', cursive;
+  font-weight: lighter;
+  text-transform: uppercase;
+  font-size: 11px;
+  transform: translateX(5px);
+  transform: translateY(0); /* Vị trí mặc định của navbar */
+}
+.navbar1 {
+  height: 60px;
+  position: fixed;
+  width: 100%;
+  padding: 15px 20px;
+  background-color: white;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);
+  transition: background-color 0.2s ease-in-out, padding 0.2s ease-in-out, transform 0.2s ease-in-out;
+  z-index: 1000;
+  font-family: 'Comfortaa', cursive;
+  font-weight: lighter;
+  text-transform: uppercase;
+  font-size: 11px;
+  transform: translateX(5px);
+  transform: translateY(0); /* Vị trí mặc định của navbar */
+}
+.navbar.transparent {
+  background-color: rgb(255, 255, 255);
+  backdrop-filter: blur(5px);
+
+  transform: scale(1);
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.navbar-brand {
+  font-size: 11px;
+  font-weight: bold;
+  color: rgba(35, 1, 1, 0.5);
+  transition: color 0.3s ease-in-out;
+}
+
+.navbar-nav {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 8px 15px;
+  transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  color: #7c5e5e;
+  transform: scale(1.05);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.navbar.transparent .navbar-brand,
+.navbar.transparent .nav-link {
+  color: #000000;
+}
+form{
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.input {
+  width: 40%;
+  height: 80%;
+  padding: 8px 12px;
+  border: none;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  box-shadow: 0px 0px 20px -18px;
+
+}
+
+
+.input:active {
+  transform: scale(0.99);
+}
+
+.input:focus {
+  border: 2px solid #e59a4d;
+}
+

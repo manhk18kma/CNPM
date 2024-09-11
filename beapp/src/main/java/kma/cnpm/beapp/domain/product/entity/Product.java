@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,6 +22,9 @@ public class Product extends AbstractEntity<Integer> {
     private BigDecimal price;
     private Integer quantity;
     private Long sellerId;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Media> medias;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "category_id")

@@ -66,7 +66,6 @@ public String getUrlVideo(String base64Video) {
         MultipartFile multipartFile = Base64ToMultipartFileConverter.convert(base64Video);
         String urlCould =  uploadVideo(multipartFile, "Video_" + uuid);
         return urlCould;
-
     }
 
     private String getPublicId(String url) {
