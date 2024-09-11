@@ -12,4 +12,6 @@ public interface BankRepository extends JpaRepository<Bank, Long> {
 
     @Query("SELECT b FROM  Bank  b WHERE b.id =:bankId")
     Optional<Bank> findBankById(@Param("bankId") Long bankId);
+
+
 }

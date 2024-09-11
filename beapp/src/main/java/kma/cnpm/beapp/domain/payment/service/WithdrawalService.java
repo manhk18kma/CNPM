@@ -1,23 +1,35 @@
 package kma.cnpm.beapp.domain.payment.service;
 
+import kma.cnpm.beapp.domain.common.dto.PageResponse;
+import kma.cnpm.beapp.domain.common.enumType.WithdrawalSort;
 import kma.cnpm.beapp.domain.common.enumType.WithdrawalStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.payment.dto.request.CreateWithdrawalRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.AccountResponse;
+import kma.cnpm.beapp.domain.payment.dto.response.WithdrawalResponse;
 import kma.cnpm.beapp.domain.payment.entity.Account;
 import kma.cnpm.beapp.domain.payment.entity.AccountHasBank;
 import kma.cnpm.beapp.domain.payment.entity.Withdrawal;
-import kma.cnpm.beapp.domain.payment.repository.AccountHasBankRepository;
-import kma.cnpm.beapp.domain.payment.repository.AccountRepository;
 import kma.cnpm.beapp.domain.payment.repository.WithdrawalRepository;
+import kma.cnpm.beapp.domain.user.dto.response.SearchUserResponse;
 import kma.cnpm.beapp.domain.user.service.AuthService;
+import kma.cnpm.beapp.domain.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +38,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class WithdrawalService {
     final WithdrawalRepository withdrawalRepository;
     final AccountService accountService;
+    final AuthService authService;
+    final UserService userService;
 //small function
     void existsPendingWithdrawal(Long accountId){
         if(withdrawalRepository.existsPendingWithdrawal(accountId)){
@@ -42,8 +56,6 @@ public class WithdrawalService {
                 return withdrawal;
             case APPROVED:
                 throw new AppException(AppErrorCode.WITHDRAWAL_APPROVED_ERROR);
-            case REJECTED:
-                throw new AppException(AppErrorCode.WITHDRAWAL_REJECTED_ERROR);
             case CANCELLED:
                 throw new AppException(AppErrorCode.WITHDRAWAL_CANCELLED_ERROR);
             default:
@@ -93,5 +105,45 @@ public class WithdrawalService {
         withdrawal.setStatus(WithdrawalStatus.APPROVED);
         accountService.updateBalance(withdrawal.getAmount() , account , false);
     }
+
+    public PageResponse<List<WithdrawalResponse>> getWithdrawalsOfUser( String status, String sortBy, int page, int size) {
+        Long userId = Long.valueOf(authService.getAuthenticationName());
+
+        WithdrawalStatus withdrawalStatus =  WithdrawalStatus.valueOf(status);
+        WithdrawalSort withdrawalSort =  WithdrawalSort.valueOf(sortBy);
+
+        String fieldSort = withdrawalSort.getField();
+        String orderBy = withdrawalSort.getDirection();
+
+        // Tạo đối tượng Pageable với sắp xếp và phân trang
+        Sort sort = Sort.by(Sort.Order.by(fieldSort).with(Sort.Direction.fromString(orderBy)));
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // Gọi repository để lấy dữ liệu
+        Page<Withdrawal> withdrawalsPage = withdrawalRepository.getWithdrawalsOfUser(userId, withdrawalStatus == WithdrawalStatus.DEFAULT ? null : withdrawalStatus, pageable);
+
+        List<WithdrawalResponse> responses = withdrawalsPage.getContent().stream()
+                .map(withdrawal -> WithdrawalResponse.builder()
+                        .amount(withdrawal.getAmount())
+                        .status(withdrawal.getStatus())
+                        .accountNumber(withdrawal.getAccountHasBank().getAccountNumber())
+                        .bankName(withdrawal.getAccountHasBank().getBank().getBankName())
+                        .bankAvt(withdrawal.getAccountHasBank().getBank().getBankAvt())
+                        .bankCode(withdrawal.getAccountHasBank().getBank().getBankCode())
+                        .createdAt(withdrawal.getCreatedAt())
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+
+        return PageResponse.<List<WithdrawalResponse>>builder()
+                .pageSize(size)
+                .totalElements((int) withdrawalsPage.getTotalElements())
+                .totalPages(withdrawalsPage.getTotalPages())
+                .pageNo(page)
+                .items(responses)
+                .build();
+    }
+
 
 }

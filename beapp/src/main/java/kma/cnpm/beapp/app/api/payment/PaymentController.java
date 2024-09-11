@@ -6,13 +6,15 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kma.cnpm.beapp.app.service.RequestUtil;
+import kma.cnpm.beapp.domain.common.dto.PageResponse;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
+import kma.cnpm.beapp.domain.common.enumType.TransactionStatus;
+import kma.cnpm.beapp.domain.common.enumType.TransactionType;
+import kma.cnpm.beapp.domain.common.enumType.WithdrawalSort;
+import kma.cnpm.beapp.domain.common.validation.EnumValue;
 import kma.cnpm.beapp.domain.payment.dto.request.DepositPaypalRequest;
 import kma.cnpm.beapp.domain.payment.dto.request.DepositVnPayRequest;
-import kma.cnpm.beapp.domain.payment.dto.response.DepositResponsePaypal;
-import kma.cnpm.beapp.domain.payment.dto.response.DepositResponseVnPay;
-import kma.cnpm.beapp.domain.payment.dto.response.VnpayResponse;
-import kma.cnpm.beapp.domain.payment.dto.response.VnpayTransactionResponse;
+import kma.cnpm.beapp.domain.payment.dto.response.*;
 import kma.cnpm.beapp.domain.payment.service.PaymentService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +25,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/payments")
+@RequestMapping("/api/v1/transactions")
 @Validated
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -80,18 +83,17 @@ public class PaymentController {
         paymentService.handleCallbackPaypal(payload);
     }
 
-    @Operation(summary = "Get VNPay Transaction Info", description = "Retrieve information about a specific VNPay transaction using its unique identifier.")
-    @GetMapping("/vnpays/{idTransaction}")
-    public ResponseData<VnpayTransactionResponse> getVnpayTransactionInfo(
-            @PathVariable("idTransaction") Long id
-    ) {
-        VnpayTransactionResponse response = paymentService.getVnpayTransactionInfo(id);
+    @GetMapping
+    @Operation(summary = "Get payments of a user", description = "Returns a paginated list of user payments filtered by status  and sorted by the specified field")
+    public ResponseData<PageResponse<List<TransactionResponse>>> getTransactionInfoOfUser(
+            @RequestParam(defaultValue = "DEFAULT") @EnumValue(name = "status", enumClass = TransactionStatus.class) String status,
+            @RequestParam(defaultValue = "CREATE_DESC") @EnumValue(name = "sortBy", enumClass = WithdrawalSort.class) String sortBy,
+            @RequestParam(defaultValue = "DEFAULT") @EnumValue(name = "type", enumClass = TransactionType.class) String type) {
+        PageResponse<List<TransactionResponse>> response = paymentService.getTransactionInfoOfUser(status, sortBy, type,0 ,100);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
-                "Transaction retrieved successfully",
+                "Withdrawals retrieved successfully",
                 new Date(),
-                response
-        );
+                response);
     }
-
 }

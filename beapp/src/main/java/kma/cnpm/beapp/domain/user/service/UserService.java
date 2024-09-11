@@ -27,8 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +46,8 @@ public class UserService {
     private String secretKey;
     @Value("${recaptcha.verify-url}")
     private  String VERIFY_URL;
+    @Value("${urlDefaultAvt}")
+    private String urlDefaultAvt;
     final UserRepository userRepository;
     final NotificationService notificationService;
      final AuthService authService;
@@ -80,8 +84,16 @@ public class UserService {
         User user = new User();
         BeanUtils.copyProperties(request, user);
         user.setStatus(UserStatus.INACTIVE);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setAvt(urlDefaultAvt);
+        //hanldepassword
+        String salt = generateSalt();
+        String encodedPassword = encodePassword(user.getPassword(), salt);
+        user.setSalt(salt);
+        user.setPassword(encodedPassword);
+
         User savedUser = userRepository.save(user);
+
+
 
 //        Send active link
         String activeToken = authService.generateToken(savedUser, TokenType.ACTIVE_TOKEN);
@@ -92,15 +104,12 @@ public class UserService {
     }
 
 //    Check register process in 3 minutes
-    private boolean isExpireTime(Date createdAt) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(createdAt);
-        calendar.add(Calendar.MINUTE, 3);
+private boolean isExpireTime(LocalDateTime createdAt) {
+    LocalDateTime createdAtPlus3Minutes = createdAt.plusMinutes(3);
+    LocalDateTime now = LocalDateTime.now();
+    return createdAtPlus3Minutes.isBefore(now);
+}
 
-        Date createdAtPlus3Minutes = calendar.getTime();
-        Date now = new Date();
-        return createdAtPlus3Minutes.before(now);
-    }
 //    Validate captcha
     public boolean submitCaptcha(String captchaToken) {
         RestTemplate restTemplate = new RestTemplate();
@@ -222,11 +231,27 @@ public class UserService {
                 .build();
     }
 
+
+
+
+
+    ///Helper function
+
+    public String encodePassword(String rawPassword, String salt) {
+        return passwordEncoder.encode(rawPassword + salt);
+    }
+    private String generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return new String(salt);
+    }
+
     private void setDefaultAvatar(User user, String oldUrlAvt) {
         if (oldUrlAvt != null) {
             imageService.deleteImage(oldUrlAvt);
         }
-        user.setAvt("https://tse1.mm.bing.net/th?id=OIP._prlVvISXU3EfqFW3GF-RwHaHa&pid=Api&P=0&h=220");
+        user.setAvt(urlDefaultAvt);
     }
 
 
@@ -240,9 +265,6 @@ public class UserService {
         return userRepository.findUserById(Long.valueOf(id))
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
     }
-
-
-
 
     public UserDTO getUserInfo(String id){
         User user = userRepository.findUserById(Long.valueOf(id))

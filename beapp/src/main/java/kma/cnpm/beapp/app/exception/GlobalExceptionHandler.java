@@ -12,16 +12,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 //    Handle exception validation
-    @ExceptionHandler({MethodArgumentNotValidException.class , ConstraintViolationException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseMultipleField handleValidationException(Exception exception , WebRequest webRequest , MethodArgumentNotValidException methodArgumentNotValidException){
         methodArgumentNotValidException = (MethodArgumentNotValidException) exception;
@@ -60,10 +62,57 @@ public class GlobalExceptionHandler {
         errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
         errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         errorResponse.setError(AppException.class.getSimpleName());
+        errorResponse.setMessage("Payload invalid");
+        return errorResponse;
+    }
+
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodArgumentTypeMismatchExceptionn(Exception e, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(new Date());
+        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setError(AppException.class.getSimpleName());
         errorResponse.setMessage("Data invalid type");
         return errorResponse;
     }
 
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseMultipleField handleConstraintViolationException(ConstraintViolationException exception, WebRequest webRequest) {
+        ErrorResponseMultipleField errorResponseMultipleField = buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                "Param invalid",
+                webRequest.getDescription(false).replace("uri=", ""),
+                exception.getConstraintViolations().stream()
+                        .collect(Collectors.toMap(
+                                violation -> violation.getPropertyPath().toString(),
+                                violation -> violation.getMessage()
+                        ))
+        );
+        Map<String, String> updatedMessages = new HashMap<>();
+        errorResponseMultipleField.getMessage().forEach((field, message) -> {
+            String[] strings = field.split("\\.");
+            if (strings.length == 2) {
+                field = strings[1];
+            }
+            updatedMessages.put(field, message);
+        });
+        errorResponseMultipleField.setMessage(updatedMessages);
+        return errorResponseMultipleField;
+    }
+    private ErrorResponseMultipleField buildErrorResponse(HttpStatus status, String error, String path, Map<String, String> messages) {
+        ErrorResponseMultipleField response = new ErrorResponseMultipleField();
+        response.setTimestamp(new Date());
+        response.setStatus(status.value());
+        response.setPath(path);
+        response.setError(error);
+        response.setMessage(messages);
+        return response;
+    }
 
 
 
