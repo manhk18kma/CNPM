@@ -13,4 +13,5 @@ public class AddBankRequest {
 
     @NotBlank(message = "Số tài khoản không được để trống")
     private String accountNumber;
+
 }

@@ -37,16 +37,21 @@ import java.util.Map;
 public class PaymentController {
     PaymentService paymentService;
 
-    @Operation(summary = "Deposit funds into an account VNPAY", description = "Deposits the specified amount into the user's account use VNPAY")
+    @Operation(
+            summary = "Deposit funds into an account using VNPAY",
+            description = "Deposits the specified amount into the user's account using VNPAY. Call this API with BEARER TOKEN for authentication."
+    )
     @PostMapping("/vnpay")
     public ResponseData<DepositResponseVnPay> depositVnPay(
             HttpServletRequest httpServletRequest,
             @Parameter(description = "Deposit request payload with account ID and amount", required = true)
             @RequestBody @Valid DepositVnPayRequest depositRequest) {
         var ipAddress = RequestUtil.getIpAddress(httpServletRequest);
+        System.out.println(ipAddress);
         DepositResponseVnPay response = paymentService.depositVnPay(depositRequest, ipAddress);
-        return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Deposit successful",
+        return new ResponseData<>(
+                HttpStatus.CREATED.value(),
+                "Nạp tiền thành công",
                 new Date(),
                 response);
     }
@@ -59,8 +64,10 @@ public class PaymentController {
         paymentService.handleCallbackVNPay(params);
     }
 
-
-    @Operation(summary = "Deposit funds into an account depositPaypal", description = "Deposits the specified amount into the user's account use depositPaypal")
+    @Operation(
+            summary = "Deposit funds into an account using PayPal",
+            description = "Deposits the specified amount into the user's account using PayPal. Call this API with BEARER TOKEN for authentication."
+    )
     @PostMapping("/paypal")
     public ResponseData<DepositResponsePaypal> depositPaypal(
             HttpServletRequest httpServletRequest,
@@ -68,31 +75,34 @@ public class PaymentController {
             @RequestBody @Valid DepositPaypalRequest request) throws PayPalRESTException {
         var ipAddress = RequestUtil.getIpAddress(httpServletRequest);
         DepositResponsePaypal response = paymentService.depositPaypal(request, ipAddress);
-        return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Deposit successful",
+        return new ResponseData<>(
+                HttpStatus.CREATED.value(),
+                "Nạp tiền thành công",
                 new Date(),
                 response);
     }
 
-
-    //
     @PostMapping("/paypal_ipn")
-    public void handleWebhook(@RequestBody String payload) throws PayPalRESTException {
-//        log.info("[Paypal Ipn] Params: {}", payload);
+    public void handleWebhook(
+            @Parameter(description = "Callback data from PayPal", required = true)
+            @RequestBody String payload) throws PayPalRESTException {
         System.out.println(payload);
         paymentService.handleCallbackPaypal(payload);
     }
 
     @GetMapping
-    @Operation(summary = "Get payments of a user", description = "Returns a paginated list of user payments filtered by status  and sorted by the specified field")
+    @Operation(
+            summary = "Get payments of a user",
+            description = "Returns a paginated list of user payments filtered by status and sorted by the specified field. Call this API with BEARER TOKEN for authentication."
+    )
     public ResponseData<PageResponse<List<TransactionResponse>>> getTransactionInfoOfUser(
             @RequestParam(defaultValue = "DEFAULT") @EnumValue(name = "status", enumClass = TransactionStatus.class) String status,
             @RequestParam(defaultValue = "CREATE_DESC") @EnumValue(name = "sortBy", enumClass = WithdrawalSort.class) String sortBy,
             @RequestParam(defaultValue = "DEFAULT") @EnumValue(name = "type", enumClass = TransactionType.class) String type) {
-        PageResponse<List<TransactionResponse>> response = paymentService.getTransactionInfoOfUser(status, sortBy, type,0 ,100);
+        PageResponse<List<TransactionResponse>> response = paymentService.getTransactionInfoOfUser(status, sortBy, type, 0, 100);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
-                "Withdrawals retrieved successfully",
+                "Lấy thông tin giao dịch thành công",
                 new Date(),
                 response);
     }

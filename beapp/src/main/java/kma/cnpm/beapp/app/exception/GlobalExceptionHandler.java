@@ -8,21 +8,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-//    Handle exception validation
+//    Handle exception validation api validation request dto
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseMultipleField handleValidationException(Exception exception , WebRequest webRequest , MethodArgumentNotValidException methodArgumentNotValidException){
@@ -34,7 +37,7 @@ public class GlobalExceptionHandler {
             mess.put(fieldName, errorMessage);
         });
         ErrorResponseMultipleField errorResponse = new ErrorResponseMultipleField();
-        errorResponse.setTimestamp(new Date());
+        errorResponse.setTimestamp(LocalDateTime.now());
         errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         errorResponse.setPath(webRequest.getDescription(false).replace("uri=" , ""));
         errorResponse.setError(HttpStatus.BAD_REQUEST.getReasonPhrase());
@@ -46,7 +49,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleAppException(AppException e, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setTimestamp(new Date());
+        errorResponse.setTimestamp(LocalDateTime.now());
         errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
         errorResponse.setStatus(e.getErrorCode().getCode());
         errorResponse.setError(AppException.class.getSimpleName());
@@ -58,24 +61,36 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleHttpMessageNotReadableException(Exception e, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setTimestamp(new Date());
+        errorResponse.setTimestamp(LocalDateTime.now());
         errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
         errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setError(AppException.class.getSimpleName());
-        errorResponse.setMessage("Payload invalid");
+        errorResponse.setError(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        errorResponse.setMessage("Dữ liệu yêu cầu không hợp lệ. Vui lòng kiểm tra lại định dạng dữ liệu và thử lại.");
         return errorResponse;
     }
-
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+//
+//
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class , NoResourceFoundException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentTypeMismatchExceptionn(Exception e, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setTimestamp(new Date());
+        errorResponse.setTimestamp(LocalDateTime.now());
         errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
         errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        errorResponse.setError(AppException.class.getSimpleName());
-        errorResponse.setMessage("Data invalid type");
+        errorResponse.setError(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        errorResponse.setMessage("Dữ liệu không đúng kiểu");
+        return errorResponse;
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleGlobalException(Exception e, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+        errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        errorResponse.setMessage("Đã xảy ra lỗi hệ thống");
         return errorResponse;
     }
 
@@ -106,7 +121,7 @@ public class GlobalExceptionHandler {
     }
     private ErrorResponseMultipleField buildErrorResponse(HttpStatus status, String error, String path, Map<String, String> messages) {
         ErrorResponseMultipleField response = new ErrorResponseMultipleField();
-        response.setTimestamp(new Date());
+        response.setTimestamp(LocalDateTime.now());
         response.setStatus(status.value());
         response.setPath(path);
         response.setError(error);
@@ -114,6 +129,18 @@ public class GlobalExceptionHandler {
         return response;
     }
 
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException ex ,  WebRequest webRequest) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setPath(webRequest.getDescription(false).replace("uri=", ""));
+        errorResponse.setError(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        errorResponse.setMessage("Thiếu tham số bắt buộc: " + ex.getParameterName());
+        return errorResponse;
+    }
 
 
 

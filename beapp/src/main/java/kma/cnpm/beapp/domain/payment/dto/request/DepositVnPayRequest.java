@@ -13,6 +13,6 @@ public class DepositVnPayRequest {
     @Min(value = 10000, message = "Số tiền phải lớn hơn hoặc bằng 10.000")
     private Long amount;
 
-    @NotNull(message = "Mã cổng thanh toán không được để trống")
+    @NotNull(message = "ID cổng thanh toán không được để trống")
     private Long paymentGatewayId;
 }

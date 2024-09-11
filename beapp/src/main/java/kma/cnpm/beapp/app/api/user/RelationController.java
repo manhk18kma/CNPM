@@ -4,7 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
+import kma.cnpm.beapp.domain.common.enumType.FollowType;
+import kma.cnpm.beapp.domain.common.enumType.TransactionType;
+import kma.cnpm.beapp.domain.common.validation.EnumValue;
 import kma.cnpm.beapp.domain.user.dto.response.FollowResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.CreateFollowRequest;
 import kma.cnpm.beapp.domain.user.service.UserRelationService;
@@ -30,39 +34,45 @@ public class RelationController {
 
     UserRelationService userRelationService;
 
-    @Operation(summary = "Create a follow relationship", description = "Create a new follow relationship between users.")
+    @Operation(summary = "Create a follow relationship", description = "Create a new follow relationship between users. Call this API with BEARER TOKEN for authentication.")
     @PostMapping
     public ResponseData<?> createFollow(
             @Parameter(description = "Request payload to create a follow relationship", required = true)
             @RequestBody @Valid CreateFollowRequest request) {
         userRelationService.createFollow(request);
-        return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Follow relationship created successfully",
-                new Date());
+        return new ResponseData<>(
+                HttpStatus.CREATED.value(),
+                "Tạo mối quan hệ theo dõi thành công",
+                new Date()
+        );
     }
 
-    @Operation(summary = "Remove a follow relationship", description = "Remove an existing follow relationship.")
+    @Operation(summary = "Remove a follow relationship", description = "Remove an existing follow relationship. Call this API with BEARER TOKEN for authentication.")
     @DeleteMapping("/{idFollow}")
     public ResponseData<?> removeFollow(
             @Parameter(description = "ID of the follow relationship to be removed", required = true)
-            @PathVariable Long idFollow) {
+            @PathVariable @NotNull Long idFollow) {
         userRelationService.removeFollow(idFollow);
-        return new ResponseData<>(HttpStatus.OK.value(),
-                "Follow relationship removed successfully",
-                new Date());
+        return new ResponseData<>(
+                HttpStatus.OK.value(),
+                "Xóa mối quan hệ theo dõi thành công",
+                new Date()
+        );
     }
 
     @Operation(summary = "Get a list of follows", description = "Retrieve a list of follows based on the provided user ID and type (followers or following).")
     @GetMapping
     public ResponseData<List<FollowResponse>> getFollows(
             @Parameter(description = "ID of the user whose follows are being retrieved", required = true)
-            @RequestParam Long id,
+            @RequestParam @NotNull Long userId,
             @Parameter(description = "Type of follows to retrieve, can be 'followers' or 'following'", required = true)
-            @RequestParam String type) {
-        List<FollowResponse> responses = userRelationService.getFollows(id, type);
-        return new ResponseData<>(HttpStatus.OK.value(),
-                "Follows retrieved successfully",
+            @RequestParam(defaultValue = "FOLLOWER") @EnumValue(name = "type", enumClass = FollowType.class) String type) {
+        List<FollowResponse> responses = userRelationService.getFollows(userId, type);
+        return new ResponseData<>(
+                HttpStatus.OK.value(),
+                "Danh sách theo dõi được lấy thành công",
                 new Date(),
-                responses);
+                responses
+        );
     }
 }

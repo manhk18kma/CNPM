@@ -1,5 +1,6 @@
 package kma.cnpm.beapp.domain.user.service;
 
+import kma.cnpm.beapp.domain.common.enumType.FollowType;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.user.dto.response.FollowResponse;
@@ -75,7 +76,7 @@ public class UserRelationService {
     public List<FollowResponse> getFollows(Long id, String type) {
         List<Follow> follows = new ArrayList<>();
 
-        if (type.equalsIgnoreCase("followers")) {
+        if (type.equals(FollowType.FOLLOWER)) {
             follows = followRepository.getFollowersOfUser(id);
             return follows.stream().map(follow -> {
                 return FollowResponse.builder()
@@ -86,7 +87,7 @@ public class UserRelationService {
                         .build();
             }).collect(Collectors.toList());
 
-        } else if (type.equalsIgnoreCase("following")) {
+        } else if (type.equals(FollowType.FOLLOWING)) {
             follows = followRepository.getFollowingOfUser(id); // Đúng hàm để lấy following
             return follows.stream().map(follow -> {
                 return FollowResponse.builder()

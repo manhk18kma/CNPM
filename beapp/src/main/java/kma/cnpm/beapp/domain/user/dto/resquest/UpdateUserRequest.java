@@ -18,21 +18,19 @@ import java.util.Set;
 
 @Getter
 public class UpdateUserRequest {
-    @NotBlank(message = "Full name is required")
-    @Size(min = 2, max = 50, message = "Full name must be between 2 and 50 characters")
+    @NotBlank(message = "Họ tên là bắt buộc")
+    @Size(min = 2, max = 50, message = "Họ tên phải có độ dài từ 2 đến 50 ký tự")
     private String fullName;
 
-    @DateAnnotationCus(format = "yyyy-MM-dd", message = "Date of birth must be in the format yyyy-MM-dd and be between 1930 and today")
+    @DateAnnotationCus(format = "yyyy-MM-dd", message = "Ngày sinh phải có định dạng yyyy-MM-dd và nằm trong khoảng từ năm 1930 đến hiện tại")
     private String dateOfBirth;
 
-    @EnumValue(name = "type", enumClass = Gender.class, message = "Type must be a valid GenderType")
+    @EnumValue(name = "Giới tính", enumClass = Gender.class, message = "Giới tính phải là giá trị hợp lệ")
     private String gender;
 
-    @PhoneNumber(message = "Phone number must be in a valid format")
+    @PhoneNumber(message = "Số điện thoại phải đúng định dạng")
     private String phone;
 
-//    string base 64 nếu là tạo mới , cái cũ thì cứ gửi url lên bình thường
+    // String base 64 nếu là tạo mới, cái cũ thì cứ gửi URL lên bình thường
     private String urlAvtOrBase64;
-
-
 }
