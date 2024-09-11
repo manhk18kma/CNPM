@@ -67,4 +67,18 @@ public class AddressController {
                 wardResponses
         );
     }
+
+    @Operation(summary = "Remove address from user", description = "Remove address from user using id of address")
+    @DeleteMapping("{idAddress}")
+    public ResponseData<?> removeAddressFromUser(
+            @Parameter(description = "ID of the address", required = true)
+            @PathVariable Long idAddress){
+        addressService.removeAddressFromUser(idAddress);
+        return new ResponseData<>(
+                HttpStatus.OK.value(),
+                "Address removed successfully",
+                new Date()
+        );
+    }
+
 }

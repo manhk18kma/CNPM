@@ -75,7 +75,6 @@ public class AccountService {
     @Transactional
     public void removeBankAccount(Long id) {
         Account account = getAccount();
-
         AccountHasBank accountHasBank = accountHasBankRepository.findByIdOptional(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.ACCOUNT_HAS_BANK_NOT_EXIST));
 

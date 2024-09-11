@@ -1,5 +1,6 @@
 package kma.cnpm.beapp.domain.user.repository;
 
+import kma.cnpm.beapp.domain.common.enumType.RelationshipType;
 import kma.cnpm.beapp.domain.user.entity.Follow;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,6 +35,15 @@ public interface FollowRepository extends JpaRepository<Follow , Long> {
 
     @Query("SELECT f FROM Follow f WHERE f.follower.id = :userId")
     List<Follow> getFollowingOfUser(@Param("userId") Long userId);
+
+    @Query("SELECT CASE " +
+            "WHEN EXISTS (SELECT 1 FROM Follow f WHERE f.follower.id = :searchUserId AND f.followed.id = :targetUserId) THEN 'FOLLOWING' " +
+            "WHEN EXISTS (SELECT 1 FROM Follow f WHERE f.follower.id = :targetUserId AND f.followed.id = :searchUserId) THEN 'FOLLOWER' " +
+            "ELSE 'NONE' " +
+            "END")
+    RelationshipType getRelationshipTypeBetweenUser(@Param("searchUserId") Long searchUserId,
+                                                    @Param("targetUserId") Long targetUserId);
+
 
 
 }

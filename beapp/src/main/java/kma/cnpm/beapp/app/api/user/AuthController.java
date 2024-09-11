@@ -92,6 +92,7 @@ public class AuthController {
                 response);
     }
 
+
     @Operation(summary = "Introspect token", description = "Check the validity and details of the provided token.")
     @PostMapping("/tokens-introspect")
     public ResponseData<Boolean> introspect(

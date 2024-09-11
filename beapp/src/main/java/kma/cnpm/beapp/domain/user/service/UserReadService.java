@@ -2,12 +2,15 @@ package kma.cnpm.beapp.domain.user.service;
 
 import kma.cnpm.beapp.domain.common.dto.AddressDTO;
 import kma.cnpm.beapp.domain.common.dto.BankDTO;
+import kma.cnpm.beapp.domain.common.dto.PageResponse;
+import kma.cnpm.beapp.domain.common.enumType.RelationshipType;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.payment.service.AccountService;
 import kma.cnpm.beapp.domain.post.service.PostService;
 import kma.cnpm.beapp.domain.product.service.ProductService;
 import kma.cnpm.beapp.domain.user.dto.response.PrivateUserDetailResponse;
+import kma.cnpm.beapp.domain.user.dto.response.SearchUserResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserDetailResponse;
 import kma.cnpm.beapp.domain.user.entity.*;
 import kma.cnpm.beapp.domain.user.repository.AddressRepository;
@@ -140,5 +143,36 @@ public class UserReadService {
                 .build();
 
 
+    }
+
+    public PageResponse<List<SearchUserResponse>> searchByFullName(String fullName) {
+        Long userId = Long.valueOf(authService.getAuthenticationName());
+        User userSearch = getUserById(userId);
+        List<User> users = userRepository.searchByFullName(fullName);
+
+        List<SearchUserResponse> responses =  users.stream()
+                .map(user -> {
+                    RelationshipType type;
+                    if (userId.equals(user.getId())) {
+                        type = RelationshipType.YOU;
+                    } else {
+                        type = followRepository.getRelationshipTypeBetweenUser(userId, user.getId());
+                    }
+                    return SearchUserResponse.builder()
+                            .idUser(user.getId())
+                            .avatar(user.getAvt())
+                            .fullName(user.getFullName())
+                            .type(type)
+                            .build();
+                }).collect(Collectors.toList());
+
+        int totalUsers = (int) userRepository.count();
+        return PageResponse.<List<SearchUserResponse>>builder()
+                .pageSize(totalUsers)
+                .totalElements(totalUsers)
+                .totalPages(1)
+                .pageNo(0)
+                .items(responses)
+                .build();
     }
 }

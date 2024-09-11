@@ -5,11 +5,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+import kma.cnpm.beapp.domain.common.dto.PageResponse;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
-import kma.cnpm.beapp.domain.user.dto.response.PrivateUserDetailResponse;
-import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
-import kma.cnpm.beapp.domain.user.dto.response.UserDetailResponse;
-import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
+import kma.cnpm.beapp.domain.user.dto.response.*;
 import kma.cnpm.beapp.domain.user.dto.resquest.ActiveUserRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.AddAddressRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.CreateUserRequest;
@@ -22,11 +20,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -113,6 +113,18 @@ public class UserController {
         PrivateUserDetailResponse response = userReadService.getPrivateProfile();
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Profile retrieved successfully",
+                new Date(),
+                response);
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Search profiles by name", description = "Returns a paginated list of profiles matching the specified name.")
+    public ResponseData<PageResponse<List<SearchUserResponse>>> searchByName(
+            @Parameter(description = "Name to search for", required = true)
+            @RequestParam String fullName) {
+        PageResponse<List<SearchUserResponse>> response = userReadService.searchByFullName(fullName);
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Searches",
                 new Date(),
                 response);
     }

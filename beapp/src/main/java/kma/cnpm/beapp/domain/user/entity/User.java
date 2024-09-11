@@ -55,6 +55,10 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "url_avt")
     private String avt;
 
+    @Column(name = "salt")
+    private String salt;
+
+
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Follow> following = new HashSet<>(); // Những người mà mình đang theo dõi
 

@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -83,9 +84,16 @@ public class UserService {
         User user = new User();
         BeanUtils.copyProperties(request, user);
         user.setStatus(UserStatus.INACTIVE);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setAvt(urlDefaultAvt);
+        //hanldepassword
+        String salt = generateSalt();
+        String encodedPassword = encodePassword(user.getPassword(), salt);
+        user.setSalt(salt);
+        user.setPassword(encodedPassword);
+
         User savedUser = userRepository.save(user);
+
+
 
 //        Send active link
         String activeToken = authService.generateToken(savedUser, TokenType.ACTIVE_TOKEN);
@@ -221,6 +229,22 @@ private boolean isExpireTime(LocalDateTime createdAt) {
         return UserResponse.builder()
                 .id(userRepository.save(user).getId())
                 .build();
+    }
+
+
+
+
+
+    ///Helper function
+
+    public String encodePassword(String rawPassword, String salt) {
+        return passwordEncoder.encode(rawPassword + salt);
+    }
+    private String generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return new String(salt);
     }
 
     private void setDefaultAvatar(User user, String oldUrlAvt) {

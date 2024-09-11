@@ -4,5 +4,6 @@ public enum TransactionStatus {
     PENDING,
     PROCESSED,
     COMPLETED,
-    FAILED
+    FAILED,
+    DEFAULT //For query
 }
