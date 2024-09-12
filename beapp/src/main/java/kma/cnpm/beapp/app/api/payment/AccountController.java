@@ -50,7 +50,7 @@ public class AccountController {
     @DeleteMapping("/banks/{id}")
     public ResponseData removeBankAccount(
             @Parameter(description = "The unique identifier of the bank to be removed", required = true)
-            @PathVariable @NotNull Long id) {
+            @PathVariable  Long id) {
         accountService.removeBankAccount(id);
         return new ResponseData<>(
                 HttpStatus.NO_CONTENT.value(),
