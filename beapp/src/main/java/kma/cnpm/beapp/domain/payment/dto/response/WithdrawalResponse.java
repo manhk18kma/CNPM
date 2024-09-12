@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @Builder
 @Data
 public class WithdrawalResponse implements Serializable {
+    private Long userId;
+    private Long accountId;
     private BigDecimal amount;
     private WithdrawalStatus status;
     private String accountNumber;

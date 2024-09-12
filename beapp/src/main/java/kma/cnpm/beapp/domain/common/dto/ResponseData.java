@@ -2,13 +2,14 @@ package kma.cnpm.beapp.domain.common.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Builder
 public class ResponseData<T> {
     private int status;
     private String message;
-    private Date timestamp;
+    private LocalDateTime timestamp;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
@@ -17,13 +18,13 @@ public ResponseData(int status, String message) {
     this.message = message;
 }
 
-    public ResponseData(int status, String message, Date timestamp) {
+    public ResponseData(int status, String message, LocalDateTime timestamp) {
         this.status = status;
         this.message = message;
         this.timestamp = timestamp;
     }
 
-    public ResponseData(int status, String message, Date timestamp, T data) {
+    public ResponseData(int status, String message, LocalDateTime timestamp, T data) {
         this.status = status;
         this.message = message;
         this.timestamp = timestamp;
@@ -46,11 +47,11 @@ public void setMessage(String message) {
     this.message = message;
 }
 
-    public Date getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 

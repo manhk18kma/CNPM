@@ -100,7 +100,7 @@ public class UserService {
         String activateLink = urlClient + "/active/" + activeToken;
         String subject = "Account Activation";
         notificationService.sendActivationEmail(user.getEmail(), subject, activateLink);
-        return UserResponse.builder().id(savedUser.getId()).build();
+        return UserResponse.builder().userId(savedUser.getId()).build();
     }
 
 //    Check register process in 3 minutes
@@ -143,6 +143,7 @@ private boolean isExpireTime(LocalDateTime createdAt) {
         String accessToken = authService.generateToken(savedUser, TokenType.ACCESS_TOKEN);
         String refreshToken = authService.generateToken(savedUser, TokenType.REFRESH_TOKEN);
         return TokenResponse.builder()
+                .userId(user.getId())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -195,6 +196,7 @@ private boolean isExpireTime(LocalDateTime createdAt) {
         return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .userId(user.getId())
                 .build();
     }
 
@@ -227,7 +229,7 @@ private boolean isExpireTime(LocalDateTime createdAt) {
         user.setPhone(request.getPhone());
 
         return UserResponse.builder()
-                .id(userRepository.save(user).getId())
+                .userId(userRepository.save(user).getId())
                 .build();
     }
 

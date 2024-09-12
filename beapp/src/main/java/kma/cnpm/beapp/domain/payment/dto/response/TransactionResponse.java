@@ -12,8 +12,8 @@ import java.util.List;
 @Data
 public class TransactionResponse {
     private Long transactionId;
-    Long userId;
-
+    private Long userId;
+    private Long accountId;
     private BigDecimal amount;
 
     private TransactionStatus status;

@@ -26,6 +26,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +53,8 @@ public class UserController {
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
                 "Người dùng đã được tạo thành công, kiểm tra email của bạn để kích hoạt",
-                new Date()
+                LocalDateTime.now(),
+                response
         );
     }
 
@@ -66,7 +68,7 @@ public class UserController {
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
                 "Người dùng đã được kích hoạt thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response
         );
     }
@@ -81,7 +83,8 @@ public class UserController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Người dùng đã được cập nhật thành công",
-                new Date()
+                LocalDateTime.now(),
+                response
         );
     }
 
@@ -91,11 +94,12 @@ public class UserController {
     public ResponseData<?> addAddress(
             @Parameter(description = "Add address request payload containing address details", required = true)
             @RequestBody @Valid AddAddressRequest request) {
-        addressService.addAddressToUser(request);
+        UserResponse response =  addressService.addAddressToUser(request);
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
                 "Địa chỉ đã được thêm thành công",
-                new Date()
+                LocalDateTime.now(),
+                response
         );
     }
 
@@ -104,12 +108,12 @@ public class UserController {
     @GetMapping
     public ResponseData<UserDetailResponse> getProfileById(
             @Parameter(description = "User ID to retrieve profile details", required = true)
-            @RequestParam("id") @NotNull Long id) {
-        UserDetailResponse response = userReadService.getProfileById(id);
+            @RequestParam("userId") @NotNull Long userId) {
+        UserDetailResponse response = userReadService.getProfileById(userId);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Hồ sơ người dùng đã được lấy thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response
         );
     }
@@ -122,7 +126,7 @@ public class UserController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Hồ sơ cá nhân đã được lấy thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response
         );
     }
@@ -136,7 +140,7 @@ public class UserController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Danh sách tìm kiếm được trả về thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response
         );
     }

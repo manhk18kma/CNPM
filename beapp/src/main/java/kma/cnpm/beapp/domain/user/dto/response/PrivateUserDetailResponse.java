@@ -13,6 +13,8 @@ import java.util.List;
 @Data
 @Builder
 public class PrivateUserDetailResponse {
+    private Long userId;
+    private Long accountId;
     private String email;
     private BigDecimal balance;
     private List<AddressDTO> addresses;

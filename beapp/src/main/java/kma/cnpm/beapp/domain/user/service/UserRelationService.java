@@ -4,6 +4,7 @@ import kma.cnpm.beapp.domain.common.enumType.FollowType;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.user.dto.response.FollowResponse;
+import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.CreateFollowRequest;
 import kma.cnpm.beapp.domain.user.entity.Follow;
 import kma.cnpm.beapp.domain.user.entity.User;
@@ -32,7 +33,7 @@ public class UserRelationService {
 
 
     @Transactional
-    public void createFollow(CreateFollowRequest request) {
+    public UserResponse createFollow(CreateFollowRequest request) {
         Long userId = Long.valueOf(authService.getAuthenticationName());
         User user = getUserById(userId);
         User targetUser = getUserById(request.getUserIdTarget());
@@ -42,19 +43,24 @@ public class UserRelationService {
 
         Follow follow = buildFollow(user, targetUser);
         followRepository.save(follow);
+        return UserResponse.builder()
+                .userId(userId)
+                .userTargetId(targetUser.getId())
+                .build();
     }
     @Transactional
-    public void removeFollow(Long idFollow) {
+    public UserResponse removeFollow(Long idFollow) {
         Long userId = Long.valueOf(authService.getAuthenticationName());
         User user = getUserById(userId);
         Follow follow = findFollowById(idFollow);
         validateOwnership(follow, userId);
         followRepository.delete(follow);
+        return UserResponse.builder()
+                .userId(userId)
+                .userTargetId(follow.getFollowed().getId())
+                .build();
     }
 
-    @Transactional
-    public void createUserView(Long idUser ,  Long idUserTarget){
-    }
 
     @Transactional
     public void createOrUpdateUserView(User userViewer, User userTarget) {
@@ -73,28 +79,32 @@ public class UserRelationService {
         }
     }
 
-    public List<FollowResponse> getFollows(Long id, String type) {
+    public List<FollowResponse> getFollows(Long userId, String type) {
         List<Follow> follows = new ArrayList<>();
 
         if (type.equals(FollowType.FOLLOWER)) {
-            follows = followRepository.getFollowersOfUser(id);
+            follows = followRepository.getFollowersOfUser(userId);
             return follows.stream().map(follow -> {
                 return FollowResponse.builder()
                         .followId(follow.getId())
                         .userId(follow.getFollower().getId()) // Người theo dõi
                         .fullName(follow.getFollower().getFullName())
                         .avatar(follow.getFollower().getAvt())
+                        .followerUserId(follow.getFollower().getId())
+                        .followedUserId(userId)
                         .build();
             }).collect(Collectors.toList());
 
         } else if (type.equals(FollowType.FOLLOWING)) {
-            follows = followRepository.getFollowingOfUser(id); // Đúng hàm để lấy following
+            follows = followRepository.getFollowingOfUser(userId); // Đúng hàm để lấy following
             return follows.stream().map(follow -> {
                 return FollowResponse.builder()
                         .followId(follow.getId())
                         .userId(follow.getFollowed().getId()) // Người được theo dõi
                         .fullName(follow.getFollowed().getFullName())
                         .avatar(follow.getFollowed().getAvt())
+                        .followerUserId(userId)
+                        .followedUserId(follow.getFollowed().getId())
                         .build();
             }).collect(Collectors.toList());
 

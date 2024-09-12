@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class TokenResponse {
+    private Long userId;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String accessToken;
     @JsonInclude(JsonInclude.Include.NON_NULL)

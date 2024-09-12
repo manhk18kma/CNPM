@@ -10,6 +10,7 @@ import kma.cnpm.beapp.domain.common.enumType.WithdrawalSort;
 import kma.cnpm.beapp.domain.common.enumType.WithdrawalStatus;
 import kma.cnpm.beapp.domain.common.validation.EnumValue;
 import kma.cnpm.beapp.domain.payment.dto.request.CreateWithdrawalRequest;
+import kma.cnpm.beapp.domain.payment.dto.response.AccountResponse;
 import kma.cnpm.beapp.domain.payment.dto.response.WithdrawalResponse;
 import kma.cnpm.beapp.domain.payment.service.WithdrawalService;
 import lombok.AccessLevel;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -40,11 +42,12 @@ public class WithdrawalController {
     public ResponseData<?> createWithdrawal(
             @Parameter(description = "Request payload containing details for withdrawal", required = true)
             @RequestBody @Valid CreateWithdrawalRequest request) {
-        withdrawalService.createWithdrawal(request);
+        AccountResponse response =  withdrawalService.createWithdrawal(request);
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
                 "Yêu cầu rút tiền đã được tạo thành công",
-                new Date()
+                LocalDateTime.now(),
+                response
         );
     }
 
@@ -60,7 +63,7 @@ public class WithdrawalController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Yêu cầu rút tiền đã được hủy thành công",
-                new Date()
+                LocalDateTime.now()
         );
     }
 
@@ -76,7 +79,7 @@ public class WithdrawalController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Yêu cầu rút tiền đã được chấp thuận thành công",
-                new Date()
+                LocalDateTime.now()
         );
     }
 
@@ -92,7 +95,7 @@ public class WithdrawalController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Danh sách yêu cầu rút tiền đã được lấy thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response);
     }
 }

@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
 import kma.cnpm.beapp.domain.common.enumType.TokenType;
 import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
+import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.*;
 import kma.cnpm.beapp.domain.user.service.AuthService;
 import kma.cnpm.beapp.domain.user.service.UserService;
@@ -21,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @RestController
@@ -44,7 +46,7 @@ public class AuthController {
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
                 "Đăng nhập thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response
         );
     }
@@ -58,21 +60,22 @@ public class AuthController {
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
                 "Làm mới token thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response
         );
     }
 
     @Operation(summary = "Logout", description = "Invalidate the current refresh token and logout the user. Call this API with BEARER TOKEN , BEARER REFRESH TOKEN for authentication.")
     @PostMapping("/logout")
-    public ResponseData<Void> logout(
+    public ResponseData<UserResponse> logout(
             @Parameter(description = "Request payload containing the refresh token for logout", required = true)
             @RequestBody @Valid LogoutRequest request) throws ParseException, JOSEException {
-        authService.logout(request);
+        UserResponse response =  authService.logout(request);
         return new ResponseData<>(
                 HttpStatus.NO_CONTENT.value(),
                 "Đăng xuất thành công",
-                new Date()
+                LocalDateTime.now(),
+                response
         );
     }
 
@@ -85,7 +88,7 @@ public class AuthController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Vui lòng kiểm tra email của bạn để nhận hướng dẫn đặt lại mật khẩu.",
-                new Date()
+                LocalDateTime.now()
         );
     }
 
@@ -98,7 +101,7 @@ public class AuthController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Đặt lại mật khẩu thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response
         );
     }
@@ -112,7 +115,7 @@ public class AuthController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Token đã được kiểm tra thành công",
-                new Date(),
+                LocalDateTime.now(),
                 isValid
         );
     }

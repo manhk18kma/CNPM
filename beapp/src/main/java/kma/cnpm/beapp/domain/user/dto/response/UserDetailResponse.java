@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 @Builder
 public class UserDetailResponse {
-
+    Long userId;
     private String fullName;
     private Date dateOfBirth;
     private Gender gender;

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class PostController {
         postService.createPost(postRequest);
         return new ResponseData<>(HttpStatus.CREATED.value(),
                 "Post created successfully",
-                new Date());
+                LocalDateTime.now());
     }
 
     @PutMapping("/{id}")
@@ -42,7 +43,7 @@ public class PostController {
         postService.updatePost(id, postRequest);
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Post updated successfully",
-                new Date());
+                LocalDateTime.now());
     }
 
     @DeleteMapping("/{id}")
@@ -50,14 +51,14 @@ public class PostController {
         postService.deletePost(id);
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Post deleted successfully",
-                new Date());
+                LocalDateTime.now());
     }
 
     @GetMapping("/{id}")
     public ResponseData<PostResponse> getPostsById(@PathVariable Integer id) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Get posts by id successfully",
-                new Date(),
+                LocalDateTime.now(),
                 postService.getPostById(id));
     }
 
@@ -65,7 +66,7 @@ public class PostController {
     public ResponseData<PostResponse> getPostsByProductId(@PathVariable Integer productId) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Get posts by id successfully",
-                new Date(),
+                LocalDateTime.now(),
                 postService.getPostByProductId(productId));
     }
 
@@ -73,7 +74,7 @@ public class PostController {
     public ResponseData<List<PostResponse>> findPostsByTitle(@PathVariable String title) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Find posts by title successfully",
-                new Date(),
+                LocalDateTime.now(),
                 postService.findPostByTitle(title));
     }
 
@@ -81,7 +82,7 @@ public class PostController {
     public ResponseData<List<PostResponse>> getPostByUserId(@PathVariable Long userId) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "get post by user ID successfully",
-                new Date(),
+                LocalDateTime.now(),
                 postService.getPostsByUserId(userId));
     }
 
@@ -89,7 +90,7 @@ public class PostController {
     public ResponseData<List<PostResponse>> getPostByStatus(@PathVariable String status) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "get post by status successfully",
-                new Date(),
+                LocalDateTime.now(),
                 postService.getPostsByStatus(status));
     }
 

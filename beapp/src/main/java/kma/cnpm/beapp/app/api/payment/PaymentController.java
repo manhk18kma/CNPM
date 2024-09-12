@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class PaymentController {
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
                 "Nạp tiền thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response);
     }
 
@@ -78,7 +79,7 @@ public class PaymentController {
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
                 "Nạp tiền thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response);
     }
 
@@ -86,7 +87,6 @@ public class PaymentController {
     public void handleWebhook(
             @Parameter(description = "Callback data from PayPal", required = true)
             @RequestBody String payload) throws PayPalRESTException {
-        System.out.println(payload);
         paymentService.handleCallbackPaypal(payload);
     }
 
@@ -103,7 +103,7 @@ public class PaymentController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Lấy thông tin giao dịch thành công",
-                new Date(),
+                LocalDateTime.now(),
                 response);
     }
 }

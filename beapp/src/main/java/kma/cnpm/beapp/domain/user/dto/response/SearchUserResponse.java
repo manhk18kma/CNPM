@@ -13,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchUserResponse implements Serializable {
-    Long idUser;
+    Long userId;
     String avatar;
     String fullName;
     RelationshipType type;

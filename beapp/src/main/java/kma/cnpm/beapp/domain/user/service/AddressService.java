@@ -58,7 +58,7 @@ public class AddressService {
         user.addAddress(address);
         addressRepository.save(address);
 
-        return UserResponse.builder().id(user.getId()).build();
+        return UserResponse.builder().userId(user.getId()).build();
 
 
     }
@@ -112,7 +112,7 @@ public class AddressService {
     }
 
 
-    public void removeAddressFromUser(Long idAddress) {
+    public UserResponse removeAddressFromUser(Long idAddress) {
         String id = authService.getAuthenticationName();
         User user = userService.findUserById(id);
         Address address = addressRepository.findById(idAddress)
@@ -122,5 +122,8 @@ public class AddressService {
         }
 
         addressRepository.delete(address);
+        return UserResponse.builder()
+                .userId(user.getId())
+                .build();
     }
 }

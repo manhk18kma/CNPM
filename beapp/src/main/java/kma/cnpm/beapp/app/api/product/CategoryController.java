@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class CategoryController {
     public ResponseData<CategoryDto> createCategory(@RequestBody @Valid CategoryDto categoryDto) {
         return new ResponseData<>(HttpStatus.CREATED.value(),
                 "Category created successfully",
-                new Date(),
+                LocalDateTime.now(),
                 categoryService.save(categoryDto));
     }
 
@@ -40,14 +41,15 @@ public class CategoryController {
         categoryService.deleteById(id);
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Category deleted successfully",
-                new Date());
+                LocalDateTime.now()
+                );
     }
 
     @GetMapping
     public ResponseData<List<CategoryDto>> getAllCategories() {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Categories find successfully",
-                new Date(),
+                LocalDateTime.now(),
                 categoryService.getAllCategories());
     }
 
@@ -55,7 +57,7 @@ public class CategoryController {
     public ResponseData<CategoryDto> getCategoryById(@PathVariable Integer id) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Category find successfully",
-                new Date(),
+                LocalDateTime.now(),
                 categoryService.getCategoryById(id));
     }
 
