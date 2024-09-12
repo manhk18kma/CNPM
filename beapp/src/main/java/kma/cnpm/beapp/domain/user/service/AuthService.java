@@ -10,6 +10,7 @@ import kma.cnpm.beapp.domain.common.enumType.TokenType;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
+import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.LoginRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.LogoutRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.RefreshTokenRequest;
@@ -231,7 +232,11 @@ public class AuthService {
         userRepository.save(user);
         var token = generateToken(user, TokenType.ACCESS_TOKEN);
         var refreshToken = generateToken(user, TokenType.REFRESH_TOKEN);
-        return TokenResponse.builder().accessToken(token).refreshToken(refreshToken).build();
+        return TokenResponse.builder()
+                .accessToken(token)
+                .refreshToken(refreshToken)
+                .userId(user.getId())
+                .build();
     }
 
 
@@ -246,10 +251,12 @@ public class AuthService {
         return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(request.getRefreshToken())
+                .userId(user.getId())
                 .build();
     }
 
-    public void logout(LogoutRequest request) throws ParseException, JOSEException {
+    public UserResponse logout(LogoutRequest request) throws ParseException, JOSEException {
+
             // Verify the refresh token and access token
             var signedRefreshJWT = verifyToken(request.getRefreshToken(), TokenType.REFRESH_TOKEN);
             var signedAccessJWT = verifyToken(request.getAccessToken(), TokenType.ACCESS_TOKEN);
@@ -275,6 +282,9 @@ public class AuthService {
                     .build();
 
             invalidateTokenRepository.save(invalidatedAccessToken);
+            return UserResponse.builder()
+                    .userId(Long.valueOf(getAuthenticationName()))
+                    .build();
     }
 
 

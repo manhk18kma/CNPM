@@ -10,6 +10,7 @@ import kma.cnpm.beapp.domain.common.enumType.FollowType;
 import kma.cnpm.beapp.domain.common.enumType.TransactionType;
 import kma.cnpm.beapp.domain.common.validation.EnumValue;
 import kma.cnpm.beapp.domain.user.dto.response.FollowResponse;
+import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.CreateFollowRequest;
 import kma.cnpm.beapp.domain.user.service.UserRelationService;
 import lombok.AccessLevel;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -39,11 +41,12 @@ public class RelationController {
     public ResponseData<?> createFollow(
             @Parameter(description = "Request payload to create a follow relationship", required = true)
             @RequestBody @Valid CreateFollowRequest request) {
-        userRelationService.createFollow(request);
+        UserResponse response =  userRelationService.createFollow(request);
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
                 "Tạo mối quan hệ theo dõi thành công",
-                new Date()
+                LocalDateTime.now(),
+                response
         );
     }
 
@@ -52,11 +55,12 @@ public class RelationController {
     public ResponseData<?> removeFollow(
             @Parameter(description = "ID of the follow relationship to be removed", required = true)
             @PathVariable @NotNull Long idFollow) {
-        userRelationService.removeFollow(idFollow);
+        UserResponse response = userRelationService.removeFollow(idFollow);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Xóa mối quan hệ theo dõi thành công",
-                new Date()
+                LocalDateTime.now(),
+                response
         );
     }
 
@@ -71,7 +75,7 @@ public class RelationController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Danh sách theo dõi được lấy thành công",
-                new Date(),
+                LocalDateTime.now(),
                 responses
         );
     }

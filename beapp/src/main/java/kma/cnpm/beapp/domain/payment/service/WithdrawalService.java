@@ -82,11 +82,13 @@ public class WithdrawalService {
         withdrawalRepository.save(withdrawal);
         return AccountResponse.builder()
                 .accountId(account.getId())
+                .userId(account.getUserId())
+                .withdrawalId(withdrawal.getId())
                 .build();
     }
 
     @Transactional
-    public void cancelWithdrawal(Long id) {
+    public AccountResponse cancelWithdrawal(Long id) {
         Account account = accountService.getAccount();
         Withdrawal withdrawal = getPendingWithdrawal(id);
 
@@ -95,15 +97,25 @@ public class WithdrawalService {
         }
         withdrawal.setStatus(WithdrawalStatus.CANCELLED);
         withdrawalRepository.save(withdrawal);
+        return AccountResponse.builder()
+                .accountId(account.getId())
+                .userId(account.getUserId())
+                .withdrawalId(withdrawal.getId())
+                .build();
     }
 
 
     @Transactional
-    public void approveWithdrawal(Long id) {
+    public AccountResponse approveWithdrawal(Long id) {
         Account account = accountService.getAccount();
         Withdrawal withdrawal = getPendingWithdrawal(id);
         withdrawal.setStatus(WithdrawalStatus.APPROVED);
         accountService.updateBalance(withdrawal.getAmount() , account , false);
+        return AccountResponse.builder()
+                .accountId(account.getId())
+                .userId(account.getUserId())
+                .withdrawalId(withdrawal.getId())
+                .build();
     }
 
     public PageResponse<List<WithdrawalResponse>> getWithdrawalsOfUser( String status, String sortBy, int page, int size) {
@@ -124,6 +136,8 @@ public class WithdrawalService {
 
         List<WithdrawalResponse> responses = withdrawalsPage.getContent().stream()
                 .map(withdrawal -> WithdrawalResponse.builder()
+                        .userId(userId)
+                        .accountId(withdrawal.getAccount().getId())
                         .amount(withdrawal.getAmount())
                         .status(withdrawal.getStatus())
                         .accountNumber(withdrawal.getAccountHasBank().getAccountNumber())
@@ -143,6 +157,8 @@ public class WithdrawalService {
                 .pageNo(page)
                 .items(responses)
                 .build();
+
+
     }
 
 

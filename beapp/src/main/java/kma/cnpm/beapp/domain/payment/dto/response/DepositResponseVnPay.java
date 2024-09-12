@@ -6,6 +6,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class DepositResponseVnPay {
-    Long idTransaction;
+    private Long userId;
+    private Long accountId;
+    Long transactionId;
     String vnpUrl;
 }

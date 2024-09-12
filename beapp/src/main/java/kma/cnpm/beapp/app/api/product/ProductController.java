@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class ProductController {
     public ResponseData<ProductResponse> createProduct(@RequestBody @Valid ProductRequest productRequest) {
         return new ResponseData<>(HttpStatus.CREATED.value(),
                 "Product created successfully",
-                new Date(),
+                LocalDateTime.now(),
                 productService.save(productRequest));
     }
 
@@ -42,7 +43,7 @@ public class ProductController {
                                                        @RequestBody @Valid ProductRequest productRequest) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Product created successfully",
-                new Date(),
+                LocalDateTime.now(),
                 productService.update(id, productRequest));
     }
 
@@ -50,7 +51,7 @@ public class ProductController {
     public ResponseData<ProductResponse> uploadMediaProduct(@ModelAttribute @Valid UploadFileRequest uploadFileRequest) {
         return new ResponseData<>(HttpStatus.CREATED.value(),
                 "Product uploaded successfully",
-                new Date(),
+                LocalDateTime.now(),
                 productService.uploadFile(uploadFileRequest));
     }
 
@@ -59,14 +60,15 @@ public class ProductController {
         productService.deleteById(id);
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Product created successfully",
-                new Date());
+                LocalDateTime.now()
+        );
     }
 
     @GetMapping("/name/{name}")
     public ResponseData<List<ProductResponse>> getProductsByName(@PathVariable String name) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Get products by name successfully",
-                new Date(),
+                LocalDateTime.now(),
                 productService.getProductsByName(name));
     }
 
@@ -74,7 +76,7 @@ public class ProductController {
     public ResponseData<List<ProductResponse>> getProductsBySellerId(@PathVariable Long sellerId) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Get products by seller successfully",
-                new Date(),
+                LocalDateTime.now(),
                 productService.getProductsBySellerId(sellerId));
     }
 
@@ -82,7 +84,7 @@ public class ProductController {
     public ResponseData<List<ProductResponse>> getProductsByCategory(@PathVariable Integer categoryId) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Get products by category successfully",
-                new Date(),
+                LocalDateTime.now(),
                 productService.getProductsByCategory(categoryId));
     }
 

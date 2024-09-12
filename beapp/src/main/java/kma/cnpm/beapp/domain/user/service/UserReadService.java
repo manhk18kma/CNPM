@@ -1,6 +1,7 @@
 package kma.cnpm.beapp.domain.user.service;
 
 import kma.cnpm.beapp.domain.common.dto.AddressDTO;
+import kma.cnpm.beapp.domain.common.dto.BalanceDTO;
 import kma.cnpm.beapp.domain.common.dto.BankDTO;
 import kma.cnpm.beapp.domain.common.dto.PageResponse;
 import kma.cnpm.beapp.domain.common.enumType.RelationshipType;
@@ -102,6 +103,7 @@ public class UserReadService {
                 .gender(user.getGender())
                 .phone(user.getPhone())
                 .avatar(user.getAvt())
+                .userId(user.getId())
                 .build();
 
 
@@ -121,7 +123,7 @@ public class UserReadService {
 
         List<BankDTO> bankDTOS = accountService.getBanksOfUser(userId);
         List<AddressDTO> addressDTOS = buildAddressResponse(userId);
-        BigDecimal balance = accountService.getBalance(userId);
+        BalanceDTO balanceDTO = accountService.getBalance(userId);
 
         List<PrivateUserDetailResponse.UserViewResponse> userViewResponses = userViewRepository.findUserViewByUserTargetId(userId)
                 .stream()
@@ -135,8 +137,10 @@ public class UserReadService {
                 }).collect(Collectors.toList());
 
         return PrivateUserDetailResponse.builder()
+                .userId(userId)
                 .email(user.getEmail())
-                .balance(balance)
+                .balance(balanceDTO.getBalance())
+                .accountId(balanceDTO.getAccountId())
                 .userViews(userViewResponses)
                 .addresses(addressDTOS)
                 .bankResponses(bankDTOS)
@@ -159,7 +163,7 @@ public class UserReadService {
                         type = followRepository.getRelationshipTypeBetweenUser(userId, user.getId());
                     }
                     return SearchUserResponse.builder()
-                            .idUser(user.getId())
+                            .userId(user.getId())
                             .avatar(user.getAvt())
                             .fullName(user.getFullName())
                             .type(type)

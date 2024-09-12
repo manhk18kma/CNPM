@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
 import kma.cnpm.beapp.domain.payment.dto.request.AddBankRequest;
+import kma.cnpm.beapp.domain.payment.dto.response.AccountResponse;
 import kma.cnpm.beapp.domain.payment.service.AccountService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @RestController
@@ -35,11 +37,12 @@ public class AccountController {
     public ResponseData<?> addBankToAccount(
             @Parameter(description = "Request payload containing bank details to add", required = true)
             @RequestBody @Valid AddBankRequest request) {
-        accountService.addBankToAccount(request);
+        AccountResponse response =  accountService.addBankToAccount(request);
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
                 "Ngân hàng đã được thêm thành công",
-                new Date()
+                LocalDateTime.now(),
+                response
         );
     }
 
@@ -51,11 +54,12 @@ public class AccountController {
     public ResponseData removeBankAccount(
             @Parameter(description = "The unique identifier of the bank to be removed", required = true)
             @PathVariable  Long id) {
-        accountService.removeBankAccount(id);
+        AccountResponse response =  accountService.removeBankAccount(id);
         return new ResponseData<>(
                 HttpStatus.NO_CONTENT.value(),
                 "Ngân hàng đã được xóa thành công",
-                new Date()
+                LocalDateTime.now(),
+                response
         );
     }
 }

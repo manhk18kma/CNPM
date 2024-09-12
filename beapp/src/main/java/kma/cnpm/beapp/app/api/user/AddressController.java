@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class AddressController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Danh sách các tỉnh/thành phố đã được lấy thành công",
-                new Date(),
+                LocalDateTime.now(),
                 provinceResponses
         );
     }
@@ -60,9 +61,8 @@ public class AddressController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Danh sách các quận/huyện của tỉnh đã được lấy thành công",
-                new Date()
-//                ,
-//                districtResponses
+                LocalDateTime.now(),
+                districtResponses
         );
     }
 
@@ -81,7 +81,7 @@ public class AddressController {
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Danh sách các phường/xã của quận/huyện đã được lấy thành công",
-                new Date(),
+                LocalDateTime.now(),
                 wardResponses
         );
     }
@@ -98,7 +98,7 @@ public class AddressController {
         return new ResponseData<>(
                 HttpStatus.NO_CONTENT.value(),
                 "Địa chỉ đã được xóa thành công",
-                new Date()
+                LocalDateTime.now()
         );
     }
 }

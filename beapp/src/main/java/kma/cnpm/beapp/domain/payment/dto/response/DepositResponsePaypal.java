@@ -13,10 +13,13 @@ import java.io.Serializable;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DepositResponsePaypal implements Serializable {
-    @JsonProperty("idTransaction")
-    private Long idTransaction;
 
-    @JsonProperty("paypalUrl")
+    private Long userId;
+
+    private Long accountId;
+
+    private Long transactionId;
+
     private String paypalUrl;
 
     private String cancelUrl;

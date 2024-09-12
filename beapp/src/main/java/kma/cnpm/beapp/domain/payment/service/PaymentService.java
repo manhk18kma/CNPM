@@ -100,7 +100,9 @@ public class PaymentService {
         InitDepositResponse response =  vnpayService.init(initDepositRequest);
         return DepositResponseVnPay.builder()
                 .vnpUrl(response.getVnpUrl())
-                .idTransaction(initDepositRequest.getTxnRef()).build();
+                .userId(account.getUserId())
+                .accountId(account.getId())
+                .transactionId(initDepositRequest.getTxnRef()).build();
     }
 
     public void handleCallbackVNPay(Map<String, String> params) {
@@ -170,7 +172,9 @@ public class PaymentService {
 
         // Trả về đối tượng DepositResponsePaypal với thông tin giao dịch và URL thanh toán
         return DepositResponsePaypal.builder()
-                .idTransaction(transactionSaved.getId())
+                .userId(account.getUserId())
+                .accountId(account.getId())
+                .transactionId(transactionSaved.getId())
                 .paypalUrl(paypalUrl)
                 .cancelUrl(cancelUrl)
                 .successUrl(successUrl)
@@ -382,6 +386,7 @@ public class PaymentService {
                             .transactionId(transaction.getId())
                             .amount(transaction.getAmount())
                             .userId(userId)
+                            .accountId(transaction.getAccount().getId())
                             .status(transaction.getStatus())
                             .ipAddress(transaction.getIpAddress())
                             .currencyPay(transaction.getCurrency())
