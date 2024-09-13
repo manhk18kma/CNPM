@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../service/auth/auth.service";
+import {CategoryService} from "../../category.service";
 
 @Component({
   selector: 'app-posts',
@@ -10,16 +11,23 @@ export class PostsComponent implements OnInit {
   openPost: boolean = false;
   textContent: string = '';
   images: { url: string }[] = [];
-  constructor(public authService: AuthService) {
+  post: any = {};
+  addProduct: boolean = false;
+  product: any = {};
+  categories: any;
+  constructor(public authService: AuthService,
+              private categoryService: CategoryService) {
   }
 
   ngOnInit(): void {
-    const textarea = document.querySelector('.auto-resize-textarea') as HTMLTextAreaElement;
 
-    textarea.addEventListener('input', () => {
-      textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 'px';
-    });
+  }
+  addProd(){
+    this.addProduct = true;
+    this.categoryService.getAllCategories().subscribe(res =>{
+      this.categories = res;
+      console.log(res)
+    })
   }
   onInput(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
@@ -41,5 +49,7 @@ export class PostsComponent implements OnInit {
       reader.readAsDataURL(files[i]);
     }
   }
-
+  onCategoryChange(event: any) {
+    this.product.categoryId = event.target.value;
+  }
 }

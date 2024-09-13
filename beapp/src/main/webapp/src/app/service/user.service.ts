@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {CookieService} from "ngx-cookie-service";
 import {ToastrService} from "ngx-toastr";
@@ -28,5 +28,13 @@ export class UserService {
 
   activeToken(activeToken: any): Observable<any> {
     return this.http.post<User>(`${this.baseURL}/activate`, activeToken);
+  }
+
+  getPrivateProfile(): Observable<any> {
+    return this.http.get(`${this.baseURL}/private-info`);
+  }
+  getPublicProfile(id: number){
+    const params = new HttpParams().set('id', id.toString());
+    return this.http.get(`${this.baseURL}`,{params});
   }
 }

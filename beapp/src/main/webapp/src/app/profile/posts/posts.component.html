@@ -7,29 +7,83 @@
           <div class="timeline-body" *ngIf="openPost">
             <div class="timeline-header">
                       <span class="userimage"><img
-                        src="https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-1/387179218_1372127113699239_4722949875462203661_n.jpg?stp=cp6_dst-jpg_s200x200&_nc_cat=100&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeEMHzZB9xdzLvgDtt8KlPzBCLmlQ6JZlD4IuaVDolmUPmXPvytvZsC_HWopgnDUpV7nNW21HjjJk9MvkKusJzNc&_nc_ohc=sqvr_3lGhUYQ7kNvgG-n-j3&_nc_ht=scontent.fhan2-4.fna&_nc_gid=ARUnIGg18PX29mgf98A3VQF&oh=00_AYCwyX9nr0P9zxWDWjdXEGmLtEilC7FyjCSyWJU0WU6W8w&oe=66DE4AF3"
+                        src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
                         alt=""></span>
               <span class="username"><a>Duy Khánh</a> <small></small></span>
               <i class="bi bi-x" (click)="openPost = false" style="position: absolute;right: 30px; font-size: 20px"></i>
             </div>
             <div>
-                      <textarea  (input)="onInput($event)"
-                                 placeholder="Nhập nội dung..."
-                                 [(ngModel)]="textContent" class="auto-resize-textarea text-secondary">
+              <div>
+                      <textarea (input)="onInput($event)"
+                                placeholder="Tiêu đề"
+                                [(ngModel)]="post.title" class="auto-resize-textarea text-secondary">
                       </textarea>
+              </div>
+              <hr class="faded-line">
+              <div>
+                      <textarea (input)="onInput($event)"
+                                placeholder="Nội dung..."
+                                [(ngModel)]="post.description" class="auto-resize-textarea text-secondary">
+                      </textarea>
+              </div>
             </div>
-            <input type="file" id="file1" hidden="" (change)="onFileSelected($event)" multiple>
-            <label for="file1"><i class="bi bi-image-fill"></i></label>
-            <div class="image-grid">
-              <div class="image-item" *ngFor="let image of images">
-                <img [src]="image.url" alt="User uploaded image">
+            <hr class="faded-line">
+            <i class="bi bi-plus" *ngIf="!addProduct" (click)="addProd()">Thêm sản phẩm</i>
+            <div *ngIf="addProduct">
+              <div style="position: relative">
+                <p class="decor-text" style="font-weight: bold">Thông tin sản phẩm</p>
+                <i class="bi bi-x decor-text" style="position: absolute;right: 10px; top: 0"
+                   (click)="addProduct = false"></i>
+              </div>
+              <hr class="faded-line">
+              <div style="position: relative">
+                      <textarea (input)="onInput($event)"
+                                placeholder="Nhập tên sản phẩm"
+                                [(ngModel)]="product.name" class="auto-resize-textarea text-secondary">
+                      </textarea>
+
+              </div>
+              <hr class="faded-line">
+              <div>
+                      <textarea (input)="onInput($event)"
+                                placeholder="Nhập mô tả sản phẩm..."
+                                [(ngModel)]="product.description" class="auto-resize-textarea text-secondary">
+                      </textarea>
+              </div>
+              <hr class="faded-line">
+              <div class="flex">
+                <div>
+                  Số lượng:
+                  <input class="input-post" type="number" name="quantity" [(ngModel)]="product.quantity">
+                </div>
+                <div>
+                  Loại sản phẩm:
+                  <select class="form-control" (change)="onCategoryChange($event)">
+                    <option *ngFor="let i of categories" [value]="i.id">{{i.description}}</option>
+                  </select>
+                </div>
+                <div>
+                  Giá/sản phẩm:
+                  <input class="input-post" type="number" name="price" [(ngModel)]="product.price">
+                </div>
+              </div>
+              <hr class="faded-line">
+
+              <input type="file" id="file1" hidden="" (change)="onFileSelected($event)" multiple>
+              <label for="file1"><i class="bi bi-image-fill"></i></label>
+              <div class="image-grid">
+                <div class="image-item" *ngFor="let image of images">
+                  <img [src]="image.url" alt="User uploaded image">
+                </div>
               </div>
             </div>
             <div class="timeline-comment-box">
               <div class="input">
                 <form>
                   <div class="input-group">
-                    <button class="btn btn-secondary f-s-12 rounded-0 w-100" type="button" [disabled]="!textContent" (click)="sendText()">Gửi</button>
+                    <button class="btn btn-secondary f-s-12 rounded-0 w-100" type="button" [disabled]="!textContent"
+                            (click)="sendText()">Gửi
+                    </button>
                   </div>
                 </form>
               </div>
@@ -55,7 +109,7 @@
           <div class="timeline-body">
             <div class="timeline-header">
                       <span class="userimage"><img
-                        src="https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-1/387179218_1372127113699239_4722949875462203661_n.jpg?stp=cp6_dst-jpg_s200x200&_nc_cat=100&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeEMHzZB9xdzLvgDtt8KlPzBCLmlQ6JZlD4IuaVDolmUPmXPvytvZsC_HWopgnDUpV7nNW21HjjJk9MvkKusJzNc&_nc_ohc=sqvr_3lGhUYQ7kNvgG-n-j3&_nc_ht=scontent.fhan2-4.fna&_nc_gid=ARUnIGg18PX29mgf98A3VQF&oh=00_AYCwyX9nr0P9zxWDWjdXEGmLtEilC7FyjCSyWJU0WU6W8w&oe=66DE4AF3"
+                        src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
                         alt=""></span>
               <span class="username"><a>Duy Khánh</a> <small></small></span>
               <span class="pull-right text-muted">18 Views</span>

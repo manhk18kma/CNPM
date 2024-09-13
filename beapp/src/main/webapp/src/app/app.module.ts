@@ -7,7 +7,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {NgIf} from "@angular/common";
 import {RouterLink, RouterLinkActive} from "@angular/router";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {BrowserAnimationsModule, provideAnimations} from "@angular/platform-browser/animations";
 import {provideToastr, ToastrModule} from "ngx-toastr";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import { LoginComponent } from './login/login.component';
@@ -30,6 +30,7 @@ import { DetailmessageComponent } from './message/detailmessage/detailmessage.co
 import { DeliveryComponent } from './order/delivery/delivery.component';
 import { CompleteComponent } from './order/complete/complete.component';
 import { CancelComponent } from './order/cancel/cancel.component';
+import {NgxSpinnerModule} from "ngx-spinner";
 
 @NgModule({
   declarations: [
@@ -62,9 +63,11 @@ import { CancelComponent } from './order/cancel/cancel.component';
     RouterLinkActive,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
-    NgbModule
+    NgbModule,
+    NgxSpinnerModule.forRoot({ type: 'ball-clip-rotate' })
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard, provideAnimations(), // required animations providers
+    provideToastr(),
   ],
   bootstrap: [AppComponent]
 })
