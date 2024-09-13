@@ -13,8 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CategoryDto {
 
-    @NotBlank(message = "Category name cannot be blank")
-    @Size(max = 100, message = "Category name must be less than 100 characters")
+    private Integer id;
+
+    @NotBlank(message = "Tên danh mục không được để trống")
+    @Size(max = 100, message = "Tên danh mục phải ít hơn 100 ký tự")
     private String name;
     private String description;
 

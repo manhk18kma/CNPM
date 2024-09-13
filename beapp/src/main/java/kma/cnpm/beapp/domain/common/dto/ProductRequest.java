@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,22 +15,22 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductRequest {
 
-    @NotBlank(message = "Product name cannot be blank")
-    @Size(max = 100, message = "Product name must be less than 100 characters")
+    @NotBlank(message = "Tên sản phẩm không được để trống")
+    @Size(max = 100, message = "Tên sản phẩm phải ít hơn 100 ký tự")
     private String name;
 
-    @Size(max = 500, message = "Description must be less than 500 characters")
+    @Size(max = 500, message = "Mô tả phải ít hơn 500 ký tự")
     private String description;
 
-    @NotNull(message = "Price is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
+    @NotNull(message = "Giá là bắt buộc")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Giá phải lớn hơn 0")
     private BigDecimal price;
 
-    @NotNull(message = "Quantity is required")
-    @Min(value = 1, message = "Quantity must be at least 1")
+    @NotNull(message = "Số lượng là bắt buộc")
+    @Min(value = 1, message = "Số lượng phải ít nhất là 1")
     private Integer quantity;
 
-    @NotNull(message = "Category ID is required")
+    @NotNull(message = "ID danh mục là bắt buộc")
     private Integer categoryId;
 
     private List<String> imageBase64;
