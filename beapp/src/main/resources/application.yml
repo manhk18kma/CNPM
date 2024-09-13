@@ -1,4 +1,4 @@
-urlClient: http://localhost:3000
+urlClient: http://localhost:4000
 urlServer: http://localhost:8080
 urlDefaultAvt : https://tse1.mm.bing.net/th?id=OIP._prlVvISXU3EfqFW3GF-RwHaHa&pid=Api&P=0&h=220
 recaptcha:

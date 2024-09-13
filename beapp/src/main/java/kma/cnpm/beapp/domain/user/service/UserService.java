@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -83,16 +84,23 @@ public class UserService {
         User user = new User();
         BeanUtils.copyProperties(request, user);
         user.setStatus(UserStatus.INACTIVE);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setAvt(urlDefaultAvt);
+        //hanldepassword
+        String salt = generateSalt();
+        String encodedPassword = encodePassword(user.getPassword(), salt);
+        user.setSalt(salt);
+        user.setPassword(encodedPassword);
+
         User savedUser = userRepository.save(user);
+
+
 
 //        Send active link
         String activeToken = authService.generateToken(savedUser, TokenType.ACTIVE_TOKEN);
         String activateLink = urlClient + "/active/" + activeToken;
         String subject = "Account Activation";
         notificationService.sendActivationEmail(user.getEmail(), subject, activateLink);
-        return UserResponse.builder().id(savedUser.getId()).build();
+        return UserResponse.builder().userId(savedUser.getId()).build();
     }
 
 //    Check register process in 3 minutes
@@ -135,6 +143,7 @@ private boolean isExpireTime(LocalDateTime createdAt) {
         String accessToken = authService.generateToken(savedUser, TokenType.ACCESS_TOKEN);
         String refreshToken = authService.generateToken(savedUser, TokenType.REFRESH_TOKEN);
         return TokenResponse.builder()
+                .userId(user.getId())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -187,6 +196,7 @@ private boolean isExpireTime(LocalDateTime createdAt) {
         return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .userId(user.getId())
                 .build();
     }
 
@@ -219,8 +229,24 @@ private boolean isExpireTime(LocalDateTime createdAt) {
         user.setPhone(request.getPhone());
 
         return UserResponse.builder()
-                .id(userRepository.save(user).getId())
+                .userId(userRepository.save(user).getId())
                 .build();
+    }
+
+
+
+
+
+    ///Helper function
+
+    public String encodePassword(String rawPassword, String salt) {
+        return passwordEncoder.encode(rawPassword + salt);
+    }
+    private String generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return new String(salt);
     }
 
     private void setDefaultAvatar(User user, String oldUrlAvt) {

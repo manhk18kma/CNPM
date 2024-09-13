@@ -6,13 +6,15 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kma.cnpm.beapp.app.service.RequestUtil;
+import kma.cnpm.beapp.domain.common.dto.PageResponse;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
+import kma.cnpm.beapp.domain.common.enumType.TransactionStatus;
+import kma.cnpm.beapp.domain.common.enumType.TransactionType;
+import kma.cnpm.beapp.domain.common.enumType.WithdrawalSort;
+import kma.cnpm.beapp.domain.common.validation.EnumValue;
 import kma.cnpm.beapp.domain.payment.dto.request.DepositPaypalRequest;
 import kma.cnpm.beapp.domain.payment.dto.request.DepositVnPayRequest;
-import kma.cnpm.beapp.domain.payment.dto.response.DepositResponsePaypal;
-import kma.cnpm.beapp.domain.payment.dto.response.DepositResponseVnPay;
-import kma.cnpm.beapp.domain.payment.dto.response.VnpayResponse;
-import kma.cnpm.beapp.domain.payment.dto.response.VnpayTransactionResponse;
+import kma.cnpm.beapp.domain.payment.dto.response.*;
 import kma.cnpm.beapp.domain.payment.service.PaymentService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +24,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/payments")
+@RequestMapping("/api/v1/transactions")
 @Validated
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -34,17 +38,22 @@ import java.util.Map;
 public class PaymentController {
     PaymentService paymentService;
 
-    @Operation(summary = "Deposit funds into an account VNPAY", description = "Deposits the specified amount into the user's account use VNPAY")
+    @Operation(
+            summary = "Deposit funds into an account using VNPAY",
+            description = "Deposits the specified amount into the user's account using VNPAY. Call this API with BEARER TOKEN for authentication."
+    )
     @PostMapping("/vnpay")
     public ResponseData<DepositResponseVnPay> depositVnPay(
             HttpServletRequest httpServletRequest,
             @Parameter(description = "Deposit request payload with account ID and amount", required = true)
             @RequestBody @Valid DepositVnPayRequest depositRequest) {
         var ipAddress = RequestUtil.getIpAddress(httpServletRequest);
+        System.out.println(ipAddress);
         DepositResponseVnPay response = paymentService.depositVnPay(depositRequest, ipAddress);
-        return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Deposit successful",
-                new Date(),
+        return new ResponseData<>(
+                HttpStatus.CREATED.value(),
+                "Nạp tiền thành công",
+                LocalDateTime.now(),
                 response);
     }
 
@@ -56,8 +65,10 @@ public class PaymentController {
         paymentService.handleCallbackVNPay(params);
     }
 
-
-    @Operation(summary = "Deposit funds into an account depositPaypal", description = "Deposits the specified amount into the user's account use depositPaypal")
+    @Operation(
+            summary = "Deposit funds into an account using PayPal",
+            description = "Deposits the specified amount into the user's account using PayPal. Call this API with BEARER TOKEN for authentication."
+    )
     @PostMapping("/paypal")
     public ResponseData<DepositResponsePaypal> depositPaypal(
             HttpServletRequest httpServletRequest,
@@ -65,33 +76,34 @@ public class PaymentController {
             @RequestBody @Valid DepositPaypalRequest request) throws PayPalRESTException {
         var ipAddress = RequestUtil.getIpAddress(httpServletRequest);
         DepositResponsePaypal response = paymentService.depositPaypal(request, ipAddress);
-        return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Deposit successful",
-                new Date(),
+        return new ResponseData<>(
+                HttpStatus.CREATED.value(),
+                "Nạp tiền thành công",
+                LocalDateTime.now(),
                 response);
     }
 
-
-    //
     @PostMapping("/paypal_ipn")
-    public void handleWebhook(@RequestBody String payload) throws PayPalRESTException {
-//        log.info("[Paypal Ipn] Params: {}", payload);
-        System.out.println(payload);
+    public void handleWebhook(
+            @Parameter(description = "Callback data from PayPal", required = true)
+            @RequestBody String payload) throws PayPalRESTException {
         paymentService.handleCallbackPaypal(payload);
     }
 
-    @Operation(summary = "Get VNPay Transaction Info", description = "Retrieve information about a specific VNPay transaction using its unique identifier.")
-    @GetMapping("/vnpays/{idTransaction}")
-    public ResponseData<VnpayTransactionResponse> getVnpayTransactionInfo(
-            @PathVariable("idTransaction") Long id
-    ) {
-        VnpayTransactionResponse response = paymentService.getVnpayTransactionInfo(id);
+    @GetMapping
+    @Operation(
+            summary = "Get payments of a user",
+            description = "Returns a paginated list of user payments filtered by status and sorted by the specified field. Call this API with BEARER TOKEN for authentication."
+    )
+    public ResponseData<PageResponse<List<TransactionResponse>>> getTransactionInfoOfUser(
+            @RequestParam(defaultValue = "DEFAULT") @EnumValue(name = "status", enumClass = TransactionStatus.class) String status,
+            @RequestParam(defaultValue = "CREATE_DESC") @EnumValue(name = "sortBy", enumClass = WithdrawalSort.class) String sortBy,
+            @RequestParam(defaultValue = "DEFAULT") @EnumValue(name = "type", enumClass = TransactionType.class) String type) {
+        PageResponse<List<TransactionResponse>> response = paymentService.getTransactionInfoOfUser(status, sortBy, type, 0, 100);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
-                "Transaction retrieved successfully",
-                new Date(),
-                response
-        );
+                "Lấy thông tin giao dịch thành công",
+                LocalDateTime.now(),
+                response);
     }
-
 }

@@ -42,7 +42,10 @@ public class PostServiceImpl implements PostService {
         Post post = postMapper.map(postRequest);
         post.setUserId(user.getId());
         post.setStatus("ACTIVE");
-//        post.setProductId(productService.save(postRequest.getProductRequest()).getId());
+        post.setIsApproved(false);
+        if (postRequest.getProductRequest() != null)
+            post.setProductId(productService.save(postRequest.getProductRequest()).getId());
+
         postRepository.save(post);
     }
 
@@ -55,8 +58,7 @@ public class PostServiceImpl implements PostService {
         if (!user.getId().equals(post.getUserId()))
             throw new AppException(UNAUTHORIZED);
 
-        post.setTitle(postRequest.getTitle());
-        post.setDescription(postRequest.getDescription());
+        post.setContent(postRequest.getContent());
         if (postRequest.getProductRequest() != null) {
             productService.deleteById(post.getProductId());
 //            post.setProductId(productService.save(postRequest.getProductRequest()).getId());
@@ -93,8 +95,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse> findPostByTitle(String title) {
-        List<Post> posts = postRepository.findByTitleContaining(title);
+    public List<PostResponse> findPostByTitle(String content) {
+        List<Post> posts = postRepository.findByContentContaining(content);
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> postResponse.setProductResponse(
@@ -125,6 +127,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public int countPostOfUser(long userId) {
         return postRepository.countPostOfUser(userId);
+    }
+
+    @Override
+    public List<PostResponse> getPostsByApproved(Boolean isApproved) {
+        List<Post> posts = postRepository.findByIsApprovedOrderByUpdatedAt(isApproved);
+        return posts.stream()
+                .map(postMapper::map)
+                .peek(postResponse -> postResponse.setProductResponse(
+                        productService.getProductById(postResponse.getProductResponse().getId())))
+                .toList();
     }
 
 }

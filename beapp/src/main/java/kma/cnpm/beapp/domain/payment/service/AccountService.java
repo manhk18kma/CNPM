@@ -1,5 +1,6 @@
 package kma.cnpm.beapp.domain.payment.service;
 
+import kma.cnpm.beapp.domain.common.dto.BalanceDTO;
 import kma.cnpm.beapp.domain.common.dto.BankDTO;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
@@ -70,12 +71,12 @@ public class AccountService {
 
         return AccountResponse.builder()
                 .accountId(account.getId())
+                .userId(account.getUserId())
                 .build();
     }
     @Transactional
-    public void removeBankAccount(Long id) {
+    public AccountResponse removeBankAccount(Long id) {
         Account account = getAccount();
-
         AccountHasBank accountHasBank = accountHasBankRepository.findByIdOptional(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.ACCOUNT_HAS_BANK_NOT_EXIST));
 
@@ -84,6 +85,10 @@ public class AccountService {
         }
 
         accountHasBankRepository.deleteByIdCus(accountHasBank.getId());
+        return AccountResponse.builder()
+                .accountId(account.getId())
+                .userId(account.getUserId())
+                .build();
     }
 
     @Transactional
@@ -115,8 +120,12 @@ public class AccountService {
         }).collect(Collectors.toList());
     }
 
-    public BigDecimal getBalance(Long userId){
-        return accountRepository.getBalance(userId);
+    public BalanceDTO getBalance(Long userId){
+        Account account = getAccount();
+        return BalanceDTO.builder()
+                .balance( accountRepository.getBalance(userId))
+                .accountId(account.getId())
+                .build();
     }
 }
 

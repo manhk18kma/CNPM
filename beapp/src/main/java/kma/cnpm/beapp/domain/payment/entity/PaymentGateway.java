@@ -26,6 +26,10 @@ public class PaymentGateway extends AbstractEntity<Long>{
     @Column(name = "fee_rate", precision = 5, scale = 2)
     private BigDecimal feeRate;
 
+    @Column(name = "payment_gateway_avt")
+    private String paymentGatewayAvt;
+
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "paymentGateway")
     private Set<Transaction> transactions = new HashSet<>();
 

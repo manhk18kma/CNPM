@@ -4,11 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import kma.cnpm.beapp.domain.common.dto.PageResponse;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
-import kma.cnpm.beapp.domain.payment.dto.request.AddBankRequest;
+import kma.cnpm.beapp.domain.common.enumType.WithdrawalSort;
+import kma.cnpm.beapp.domain.common.enumType.WithdrawalStatus;
+import kma.cnpm.beapp.domain.common.validation.EnumValue;
 import kma.cnpm.beapp.domain.payment.dto.request.CreateWithdrawalRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.AccountResponse;
-import kma.cnpm.beapp.domain.payment.entity.Withdrawal;
+import kma.cnpm.beapp.domain.payment.dto.response.WithdrawalResponse;
 import kma.cnpm.beapp.domain.payment.service.WithdrawalService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/withdrawals")
@@ -28,21 +33,28 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class WithdrawalController {
     WithdrawalService withdrawalService;
-    @Operation(summary = "Create Withdrawal Request", description = "Create a withdrawal request for the user's account. Call this API with BEARER TOKEN for authentication.")
+
+    @Operation(
+            summary = "Create Withdrawal Request",
+            description = "Create a withdrawal request for the user's account. Call this API with BEARER TOKEN for authentication."
+    )
     @PostMapping()
-    public ResponseData<AccountResponse> createWithdrawal(
+    public ResponseData<?> createWithdrawal(
             @Parameter(description = "Request payload containing details for withdrawal", required = true)
             @RequestBody @Valid CreateWithdrawalRequest request) {
-        AccountResponse response = withdrawalService.createWithdrawal(request);
+        AccountResponse response =  withdrawalService.createWithdrawal(request);
         return new ResponseData<>(
                 HttpStatus.CREATED.value(),
-                "Withdrawal request created successfully",
-                new Date(),
+                "Yêu cầu rút tiền đã được tạo thành công",
+                LocalDateTime.now(),
                 response
         );
     }
 
-    @Operation(summary = "Cancel Withdrawal", description = "Cancel an existing withdrawal request. Call this API with BEARER TOKEN for authentication.")
+    @Operation(
+            summary = "Cancel Withdrawal",
+            description = "Cancel an existing withdrawal request. Call this API with BEARER TOKEN for authentication."
+    )
     @DeleteMapping("/{id}")
     public ResponseData<Void> cancelWithdrawal(
             @Parameter(description = "The unique identifier of the withdrawal request to be canceled", required = true)
@@ -50,13 +62,15 @@ public class WithdrawalController {
         withdrawalService.cancelWithdrawal(id);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
-                "Withdrawal request canceled successfully",
-                new Date()
+                "Yêu cầu rút tiền đã được hủy thành công",
+                LocalDateTime.now()
         );
     }
 
-
-    @Operation(summary = "Approve Withdrawal", description = "Approve an existing withdrawal request. Call this API with BEARER TOKEN for authentication.")
+    @Operation(
+            summary = "Approve Withdrawal",
+            description = "Approve an existing withdrawal request. This API is intended for employee implementation later."
+    )
     @PutMapping("/{id}")
     public ResponseData<Void> approve(
             @Parameter(description = "The unique identifier of the withdrawal request to be approved", required = true)
@@ -64,11 +78,24 @@ public class WithdrawalController {
         withdrawalService.approveWithdrawal(id);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
-                "Withdrawal request approved successfully",
-                new Date()
+                "Yêu cầu rút tiền đã được chấp thuận thành công",
+                LocalDateTime.now()
         );
     }
 
-
-
+    @GetMapping
+    @Operation(
+            summary = "Get withdrawals of a user",
+            description = "Returns a paginated list of user withdrawals filtered by status and sorted by the specified field. Call this API with BEARER TOKEN for authentication."
+    )
+    public ResponseData<PageResponse<List<WithdrawalResponse>>> getWithdrawalsOfUser(
+            @RequestParam(defaultValue = "DEFAULT") @EnumValue(name = "status", enumClass = WithdrawalStatus.class) String status,
+            @RequestParam(defaultValue = "CREATE_DESC") @EnumValue(name = "sortBy", enumClass = WithdrawalSort.class) String sortBy) {
+        PageResponse<List<WithdrawalResponse>> response = withdrawalService.getWithdrawalsOfUser(status, sortBy, 0, 100);
+        return new ResponseData<>(
+                HttpStatus.OK.value(),
+                "Danh sách yêu cầu rút tiền đã được lấy thành công",
+                LocalDateTime.now(),
+                response);
+    }
 }

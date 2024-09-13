@@ -58,7 +58,7 @@ public class AddressService {
         user.addAddress(address);
         addressRepository.save(address);
 
-        return UserResponse.builder().id(user.getId()).build();
+        return UserResponse.builder().userId(user.getId()).build();
 
 
     }
@@ -112,4 +112,18 @@ public class AddressService {
     }
 
 
+    public UserResponse removeAddressFromUser(Long idAddress) {
+        String id = authService.getAuthenticationName();
+        User user = userService.findUserById(id);
+        Address address = addressRepository.findById(idAddress)
+                .orElseThrow(() -> new AppException(AppErrorCode.ADDRESS_NOT_EXISTED));
+        if (!user.getId().equals(address.getUser().getId())) {
+            throw new AppException(AppErrorCode.UNAUTHORIZED);
+        }
+
+        addressRepository.delete(address);
+        return UserResponse.builder()
+                .userId(user.getId())
+                .build();
+    }
 }

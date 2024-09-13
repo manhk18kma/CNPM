@@ -11,6 +11,7 @@ public class EnumValueValidator implements ConstraintValidator<EnumValue, CharSe
     private List<String> acceptedValues;
     private String name;
 
+
     @Override
     public void initialize(EnumValue enumValue) {
         acceptedValues = Stream.of(enumValue.enumClass().getEnumConstants())
@@ -30,7 +31,7 @@ public class EnumValueValidator implements ConstraintValidator<EnumValue, CharSe
         if (!isValid) {
             context.disableDefaultConstraintViolation();
 
-            String message = String.format("%s must be one of %s", name, String.join(", ", acceptedValues));
+            String message = String.format("%s phải là một trong các giá trị được chấp nhận %s", name, String.join(", ", acceptedValues));
 
             context.buildConstraintViolationWithTemplate(message)
                     .addConstraintViolation();

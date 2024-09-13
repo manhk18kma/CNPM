@@ -1,8 +1,12 @@
 package kma.cnpm.beapp.domain.common.enumType;
 
 public enum WithdrawalStatus {
-    PENDING,    // Yêu cầu đang chờ xử lý
-    APPROVED,   // Yêu cầu đã được chấp nhận
-    REJECTED,    // Yêu cầu bị từ chối
-    CANCELLED
+        PENDING,
+    APPROVED,
+    CANCELLED,
+    DEFAULT; //For sorting
+
+    public static boolean isDefault(WithdrawalStatus status) {
+        return status == DEFAULT;
+    }
 }

@@ -15,6 +15,8 @@ import kma.cnpm.beapp.domain.common.enumType.WithdrawalStatus;
 @NoArgsConstructor
 @Table(name = "tbl_withdrawal_requests")
 public class Withdrawal extends AbstractEntity<Long> {
+    @Column(name = "employee_id")
+    private Long employeeId;
 
     @Column(name = "amount" , precision = 19, scale = 3)
     private BigDecimal amount;
