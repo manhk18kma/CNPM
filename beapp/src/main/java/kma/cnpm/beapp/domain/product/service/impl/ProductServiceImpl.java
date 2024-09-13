@@ -50,6 +50,28 @@ public class ProductServiceImpl implements ProductService {
         //set seller id by authService
         User user = userService.findUserById(authService.getAuthenticationName());
         product.setSellerId(user.getId());
+        List<Media> mediaList = new ArrayList<>();
+        if (productRequest.getImageBase64() != null) {
+            for (String imageBase64 : productRequest.getImageBase64()) {
+                String imageUrl = imageService.getUrlImage(imageBase64);
+                mediaList.add(Media.builder()
+                        .product(product)
+                        .url(imageUrl)
+                        .type("IMAGE")
+                        .build());
+            }
+        }
+        if (productRequest.getImageBase64() != null) {
+            for (String videoBase64 : productRequest.getVideoBase64()) {
+                String videoUrl = imageService.getUrlVideo(videoBase64);
+                mediaList.add(Media.builder()
+                        .product(product)
+                        .url(videoUrl)
+                        .type("VIDEO")
+                        .build());
+            }
+        }
+        product.setMedias(mediaList);
         productRepository.save(product);
         return productMapper.map(product, user.getFullName());
     }
@@ -160,5 +182,12 @@ public class ProductServiceImpl implements ProductService {
                 .peek(productResponse -> productResponse.setSellerName(
                         userService.findUserById(String.valueOf(productResponse.getSellerId())).getFullName()))
                 .toList();
+    }
+
+//    Refactor this method
+    @Override
+    public int countSoldProductOfUser(Long userId) {
+        return 10;
+//        return productRepository.countSoldProductOfUser(userId);
     }
 }

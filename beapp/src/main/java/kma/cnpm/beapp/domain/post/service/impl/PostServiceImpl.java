@@ -45,6 +45,7 @@ public class PostServiceImpl implements PostService {
         post.setIsApproved(false);
         if (postRequest.getProductRequest() != null)
             post.setProductId(productService.save(postRequest.getProductRequest()).getId());
+
         postRepository.save(post);
     }
 
@@ -60,7 +61,7 @@ public class PostServiceImpl implements PostService {
         post.setContent(postRequest.getContent());
         if (postRequest.getProductRequest() != null) {
             productService.deleteById(post.getProductId());
-            post.setProductId(productService.save(postRequest.getProductRequest()).getId());
+//            post.setProductId(productService.save(postRequest.getProductRequest()).getId());
         }
         postRepository.save(post);
     }
@@ -121,6 +122,11 @@ public class PostServiceImpl implements PostService {
                 .peek(postResponse -> postResponse.setProductResponse(
                         productService.getProductById(postResponse.getProductResponse().getId())))
                 .toList();
+    }
+
+    @Override
+    public int countPostOfUser(long userId) {
+        return postRepository.countPostOfUser(userId);
     }
 
     @Override

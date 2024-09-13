@@ -1,0 +1,204 @@
+<div class="profile-content decor-text-1">
+  <div class="tab-content p-0">
+    <div class="tab-pane fade active show" id="profile-post1">
+      <i *ngIf="!openPost" (click)="openPost = true" class="bi bi-upload" title="Đăng bài"></i>
+      <ul class="timeline1">
+        <li>
+          <div class="timeline-body" *ngIf="openPost">
+            <div class="timeline-header">
+                      <span class="userimage"><img
+                        src="https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-1/387179218_1372127113699239_4722949875462203661_n.jpg?stp=cp6_dst-jpg_s200x200&_nc_cat=100&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeEMHzZB9xdzLvgDtt8KlPzBCLmlQ6JZlD4IuaVDolmUPmXPvytvZsC_HWopgnDUpV7nNW21HjjJk9MvkKusJzNc&_nc_ohc=sqvr_3lGhUYQ7kNvgG-n-j3&_nc_ht=scontent.fhan2-4.fna&_nc_gid=ARUnIGg18PX29mgf98A3VQF&oh=00_AYCwyX9nr0P9zxWDWjdXEGmLtEilC7FyjCSyWJU0WU6W8w&oe=66DE4AF3"
+                        alt=""></span>
+              <span class="username"><a>Duy Khánh</a> <small></small></span>
+              <i class="bi bi-x" (click)="openPost = false" style="position: absolute;right: 30px; font-size: 20px"></i>
+            </div>
+            <div>
+                      <textarea  (input)="onInput($event)"
+                                 placeholder="Nhập nội dung..."
+                                 [(ngModel)]="textContent" class="auto-resize-textarea text-secondary">
+                      </textarea>
+            </div>
+            <input type="file" id="file1" hidden="" (change)="onFileSelected($event)" multiple>
+            <label for="file1"><i class="bi bi-image-fill"></i></label>
+            <div class="image-grid">
+              <div class="image-item" *ngFor="let image of images">
+                <img [src]="image.url" alt="User uploaded image">
+              </div>
+            </div>
+            <div class="timeline-comment-box">
+              <div class="input">
+                <form>
+                  <div class="input-group">
+                    <button class="btn btn-secondary f-s-12 rounded-0 w-100" type="button" [disabled]="!textContent" (click)="sendText()">Gửi</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="profile-content decor-text-1">
+  <div class="tab-content p-0">
+    <div class="tab-pane fade active show " id="profile-post">
+      <ul class="timeline">
+        <li>
+          <div class="timeline-body">
+            <div class="timeline-header">
+                      <span class="userimage"><img
+                        src="https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-1/387179218_1372127113699239_4722949875462203661_n.jpg?stp=cp6_dst-jpg_s200x200&_nc_cat=100&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeEMHzZB9xdzLvgDtt8KlPzBCLmlQ6JZlD4IuaVDolmUPmXPvytvZsC_HWopgnDUpV7nNW21HjjJk9MvkKusJzNc&_nc_ohc=sqvr_3lGhUYQ7kNvgG-n-j3&_nc_ht=scontent.fhan2-4.fna&_nc_gid=ARUnIGg18PX29mgf98A3VQF&oh=00_AYCwyX9nr0P9zxWDWjdXEGmLtEilC7FyjCSyWJU0WU6W8w&oe=66DE4AF3"
+                        alt=""></span>
+              <span class="username"><a>Duy Khánh</a> <small></small></span>
+              <i class="bi bi-person-lines-fill decor-text" style="position: absolute; right: 20px;cursor: pointer"></i>
+            </div>
+            <div class="timeline-content">
+              <p>
+                Mình đang cần bán sản phẩm này
+              </p>
+            </div>
+
+            <div class="timeline-likes">
+              <div class="stats-right">
+                <span class="stats-text">25 Chia sẻ</span>
+                <span class="stats-text">21 Bình luận</span>
+              </div>
+              <div class="stats">
+                <span class="stats-total">4</span>
+
+                <i class="bi bi-heart-fill p-1" style="color: red"></i>
+              </div>
+            </div>
+            <div class="timeline-comment-box rounded-0">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-heart decor-text" style="color: red;cursor: pointer"></i>
+                <span class="separator">|</span>
+                <i class="bi bi-chat-dots decor-text" style="color: #5dc486;cursor: pointer"></i>
+                <span class="separator">|</span>
+                <i class="bi bi-cart-plus decor-text" style="color: #000000;cursor: pointer"></i>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="timeline-body">
+            <div class="timeline-content">
+              <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+              <div class="container scrolls" style="width: 100%;max-height: 300px; overflow-y: scroll">
+                <div class="col-md-12 bootstrap snippets">
+                  <div class="panel">
+                    <div class="panel-body">
+                      <div class="media-block">
+                        <a class="media-left" href="#"><img class="img-circle img-sm avt-small" alt="Profile Picture" src="https://bootdey.com/img/Content/avatar/avatar1.png"></a>
+                        <div class="media-body">
+                          <div class="mar-btm">
+                            <a href="#" class="nav-link">Mạnh</a>
+                            <p class="text-muted text-sm"><i class="fa fa-mobile fa-lg"></i> - 11 phút trước</p>
+                          </div>
+                          <p>Đẹp</p>
+                          <div class="pad-ver">
+                            <div class="btn-group">
+                              <i class="bi bi-heart decor-text" style="color: red;cursor: pointer"></i>
+                              <span class="separator">|</span>
+                              <i class="bi bi-chat-dots decor-text" style="color: #5dc486;cursor: pointer"></i>
+                            </div>
+                          </div>
+                          <hr>
+                          <div>
+                            <div class="media-block">
+                              <a class="media-left" href="#"><img class="img-circle img-sm avt-small" alt="Profile Picture" src="https://bootdey.com/img/Content/avatar/avatar2.png"></a>
+                              <div class="media-body">
+                                <div class="mar-btm">
+                                  <a href="#" class="nav-link">Khánh</a>
+                                  <p class="text-muted text-sm"><i class="fa fa-mobile fa-lg"></i> - 1 phút trước</p>
+                                </div>
+                                <p>ok</p>
+                                <div class="pad-ver">
+                                  <div class="btn-group">
+                                    <i class="bi bi-heart decor-text" style="color: red;cursor: pointer"></i>
+                                    <span class="separator">|</span>
+                                    <i class="bi bi-chat-dots decor-text" style="color: #5dc486;cursor: pointer"></i>
+                                  </div>
+                                </div>
+                                <hr>
+                              </div>
+                            </div>
+
+                            <div class="media-block">
+                              <a class="media-left" href="#"><img class="img-circle img-sm avt-small" alt="Profile Picture" src="https://bootdey.com/img/Content/avatar/avatar3.png">
+                              </a>
+                              <div class="media-body">
+                                <div class="mar-btm">
+                                  <a class="nav-link">Khánh</a>
+                                  <p class="text-muted text-sm"><i class="fa fa-mobile fa-lg"></i> - 1 phút trước</p>
+                                </div>
+                                <p>Điêu à?</p>
+                                <div class="pad-ver">
+                                  <div class="btn-group">
+                                    <i class="bi bi-heart decor-text" style="color: red;cursor: pointer"></i>
+                                    <span class="separator">|</span>
+                                    <i class="bi bi-chat-dots decor-text" style="color: #5dc486;cursor: pointer"></i>
+                                  </div>
+                                </div>
+                                <hr>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!--===================================================-->
+                      <!-- End Newsfeed Content -->
+
+
+                      <!-- Newsfeed Content -->
+                      <!--===================================================-->
+                      <div class="media-block pad-all">
+                        <a class="media-left" href="#"><img class="img-circle img-sm avt-small" alt="Profile Picture" src="https://bootdey.com/img/Content/avatar/avatar1.png"></a>
+                        <div class="media-body">
+                          <div class="mar-btm">
+                            <a href="#" class="nav-link">An</a>
+                            <p class="text-muted text-sm"><i class="fa fa-mobile fa-lg"></i> - 2 phút trước</p>
+                          </div>
+                          <p>Bạn còn bán cái này không</p>
+                          <img class="img-responsive thumbnail" src="https://www.bootdey.com/image/400x300" alt="Image">
+                            <div class="btn-group mt-2">
+                              <i class="bi bi-heart decor-text" style="color: red;cursor: pointer"></i>
+                              <span class="separator">|</span>
+                              <i class="bi bi-chat-dots decor-text" style="color: #5dc486;cursor: pointer"></i>
+                            </div>
+                          <hr>
+
+                          <div>
+                            <div class="media-block pad-all">
+                              <a class="media-left" href="#"><img class="img-circle img-sm avt-small" alt="Profile Picture" src="https://bootdey.com/img/Content/avatar/avatar2.png"></a>
+                              <div class="media-body">
+                                <div class="mar-btm">
+                                  <a href="#" class="nav-link">Enzo</a>
+                                  <p class="text-muted text-sm"><i class="fa fa-globe fa-lg"></i> - 1 năm trước</p>
+                                </div>
+                                <p>Được đấy chứ</p>
+                                <div>
+                                  <div class="btn-group">
+                                    <i class="bi bi-heart decor-text" style="color: red;cursor: pointer"></i>
+                                    <span class="separator">|</span>
+                                    <i class="bi bi-chat-dots decor-text" style="color: #5dc486;cursor: pointer"></i>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</div>

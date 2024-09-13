@@ -2,37 +2,29 @@ package kma.cnpm.beapp.domain.user.dto.resquest;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-
 import jakarta.validation.constraints.Size;
-import kma.cnpm.beapp.domain.common.validation.PhoneNumber;
+import kma.cnpm.beapp.domain.common.validation.EmailValidation;
 import lombok.Getter;
-
-import java.util.Date;
 
 @Getter
 public class CreateUserRequest {
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
-    private String email;
+    @NotBlank(message = "Email không được để trống")
+    @EmailValidation(message = "Email phải hợp lệ")
+    private String email;  // Email người dùng
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
-    private String password;
+    @NotBlank(message = "Mật khẩu không được để trống")
+    @Size(min = 8, message = "Mật khẩu phải chứa ít nhất 8 ký tự")
+    private String password;  // Mật khẩu
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
-    private String confirmPassword;
+    @NotBlank(message = "Mật khẩu xác nhận không được để trống")
+    @Size(min = 8, message = "Mật khẩu xác nhận phải chứa ít nhất 8 ký tự")
+    private String confirmPassword;  // Xác nhận mật khẩu
 
-    @NotBlank(message = "Full name is required")
-    @Size(min = 2, max = 50, message = "Full name must be between 2 and 50 characters")
-    private String fullName;
+    @NotBlank(message = "Tên đầy đủ không được để trống")
+    @Size(min = 2, max = 50, message = "Tên đầy đủ phải có từ 2 đến 50 ký tự")
+    private String fullName;  // Tên đầy đủ của người dùng
 
-//    @PhoneNumber(message = "Phone number must be in a valid format")
-//    private String phone;
-
-    @NotBlank(message = "captchaToken is required")
-    private String captchaToken;
-
+    @NotBlank(message = "Captcha token không được để trống")
+    private String captchaToken;  // Captcha token để xác thực
 }

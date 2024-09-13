@@ -43,8 +43,8 @@ public class AddressService {
         District district = districtRepository.findById(districtId).get();
         Province province = provinceRepository.findById(provinceId).get();
 
-        String email = authService.getAuthenticationName();
-        User user = userService.findUserByEmail(email);
+        String id = authService.getAuthenticationName();
+        User user = userService.findUserById(id);
 
 
 
@@ -58,7 +58,7 @@ public class AddressService {
         user.addAddress(address);
         addressRepository.save(address);
 
-        return UserResponse.builder().id(user.getId()).build();
+        return UserResponse.builder().userId(user.getId()).build();
 
 
     }
@@ -98,7 +98,7 @@ public class AddressService {
 
     @Transactional
     public void saveProvince(Province province) {
-        provinceRepository.save(province);
+         provinceRepository.save(province);
     }
 
     @Transactional
@@ -111,4 +111,19 @@ public class AddressService {
         wardRepository.save(ward);
     }
 
+
+    public UserResponse removeAddressFromUser(Long idAddress) {
+        String id = authService.getAuthenticationName();
+        User user = userService.findUserById(id);
+        Address address = addressRepository.findById(idAddress)
+                .orElseThrow(() -> new AppException(AppErrorCode.ADDRESS_NOT_EXISTED));
+        if (!user.getId().equals(address.getUser().getId())) {
+            throw new AppException(AppErrorCode.UNAUTHORIZED);
+        }
+
+        addressRepository.delete(address);
+        return UserResponse.builder()
+                .userId(user.getId())
+                .build();
+    }
 }
