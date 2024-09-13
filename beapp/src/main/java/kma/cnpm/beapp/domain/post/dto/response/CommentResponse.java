@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class CommentResponse {
 
+    private Long id;
     private Long userId;
     private String userName;
     private String content;

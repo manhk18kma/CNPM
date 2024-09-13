@@ -4,6 +4,7 @@ import kma.cnpm.beapp.domain.post.dto.request.CommentRequest;
 import kma.cnpm.beapp.domain.post.dto.response.CommentResponse;
 import kma.cnpm.beapp.domain.post.entity.Comment;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {

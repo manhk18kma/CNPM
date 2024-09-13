@@ -17,6 +17,7 @@ public class UploadFileRequest {
 
     private Integer productId;
 
+
     @NotNull(message = "Ảnh là bắt buộc")
     private List<MultipartFile> images;
 
