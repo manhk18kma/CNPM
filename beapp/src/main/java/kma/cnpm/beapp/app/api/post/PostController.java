@@ -93,4 +93,12 @@ public class PostController {
                 postService.getPostsByStatus(status));
     }
 
+    @GetMapping("/approve/{approve}")
+    public ResponseData<List<PostResponse>> getPostByIsApproved(@PathVariable Boolean approve) {
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "get post by approve successfully",
+                new Date(),
+                postService.getPostsByApproved(approve));
+    }
+
 }

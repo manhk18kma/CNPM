@@ -8,8 +8,9 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
     Post findByProductId(Integer productId);
-    List<Post> findByTitleContaining(String title);
+    List<Post> findByContentContaining(String title);
     List<Post> findByUserId(Long userId);
     List<Post> findByStatus(String status);
+    List<Post> findByIsApprovedOrderByUpdatedAt(Boolean isApproved);
 
 }

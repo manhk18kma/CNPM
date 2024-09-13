@@ -17,7 +17,7 @@ public class UploadFileRequest {
 
     private Integer productId;
 
-    @NotNull(message = "image is required")
+    @NotNull(message = "Ảnh không được để trống.")
     private List<MultipartFile> images;
 
     private List<MultipartFile> videos;

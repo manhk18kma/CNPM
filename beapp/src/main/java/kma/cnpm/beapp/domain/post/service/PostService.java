@@ -17,5 +17,7 @@ public interface PostService {
     List<PostResponse> getPostsByUserId(Long userId);
     List<PostResponse> getPostsByStatus(String status);
 
+    List<PostResponse> getPostsByApproved(Boolean isApproved);
+
 
 }

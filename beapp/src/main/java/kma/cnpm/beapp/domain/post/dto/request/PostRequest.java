@@ -15,13 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostRequest {
 
-    @NotBlank(message = "Title cannot be empty")
-    private String title;
+    @NotBlank(message = "Nội dung không được để trống.")
+    private String content;
 
-    @NotBlank(message = "Description cannot be empty")
-    private String description;
-
-    @NotNull(message = "Product request cannot be null")
     @JsonProperty("product")
     private ProductRequest productRequest;
 
