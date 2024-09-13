@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MediaResponse {
 
+    private Integer id;
+
     private String url;
 
     private String type; // "IMAGE" or "VIDEO"
