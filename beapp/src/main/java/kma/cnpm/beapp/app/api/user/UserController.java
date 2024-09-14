@@ -108,7 +108,7 @@ public class UserController {
     @GetMapping
     public ResponseData<UserDetailResponse> getProfileById(
             @Parameter(description = "User ID to retrieve profile details", required = true)
-            @RequestParam("userId") @NotNull Long userId) {
+            @RequestParam(value = "userId") @NotNull Long userId) {
         UserDetailResponse response = userReadService.getProfileById(userId);
         return new ResponseData<>(
                 HttpStatus.OK.value(),

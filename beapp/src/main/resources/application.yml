@@ -4,6 +4,7 @@ urlDefaultAvt : https://tse1.mm.bing.net/th?id=OIP._prlVvISXU3EfqFW3GF-RwHaHa&pi
 recaptcha:
   verify-url: https://www.google.com/recaptcha/api/siteverify
   secret-key: 6LfSCS8qAAAAANeOWUAucnmphneM9MHTMbPIrGcr
+  site-key: 6LfSCS8qAAAAAK8-G5UNElCtksrCCvAK10Vh-SWb
 
 #  client captcha key : 6LfSCS8qAAAAAK8-G5UNElCtksrCCvAK10Vh-SWb
 #jwt:
