@@ -44,7 +44,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.userDetail = {...this.userDetail, ...res1.data};
       this.saveSession();
     })
-    this.showSpinner()
+    this.showSpinner();
     setTimeout(() => {
       this.router.navigate(['infor'], {relativeTo: this.route});
       this.spinner.hide();
