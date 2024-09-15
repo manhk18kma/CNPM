@@ -34,7 +34,7 @@ public class CommentController {
     public ResponseData<String> addComment(@RequestBody @Valid CommentRequest commentRequest) {
         commentService.addComment(commentRequest);
         return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Comment added successfully",
+                "Thêm bình luận thành công",
                 LocalDateTime.now());
     }
 
@@ -42,14 +42,14 @@ public class CommentController {
     public ResponseData<String> deleteComment(@PathVariable Long id) {
         commentService.deleteComment(id);
         return new ResponseData<>(HttpStatus.OK.value(),
-                "comment deleted successfully",
+                "Xóa bình luận thành công",
                 LocalDateTime.now());
     }
 
     @GetMapping("/post/{postId}")
     public ResponseData<List<CommentResponse>> getAllCommentByPostId(@PathVariable Integer postId) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Comments get successfully",
+                "Hiển thị bình luận bằng ID thành công",
                 LocalDateTime.now(),
                 commentService.getAllCommentByPostId(postId));
     }
@@ -57,7 +57,7 @@ public class CommentController {
     @GetMapping("/user/{userId}")
     public ResponseData<List<CommentResponse>> getAllCommentByUserId(@PathVariable Long userId) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Comments get successfully",
+                "Hiển thị bình luận bằng ID người dùng thành công",
                 LocalDateTime.now(),
                 commentService.getAllCommentByUserId(userId));
     }
