@@ -41,3 +41,53 @@
   border-radius: 50%;
   margin: 0 10px;
 }
+.faded-line {
+  border: none;          /* Remove default borders */
+  border-top: 1px solid rgba(0, 0, 0, 0.3);  /* Adjust color and opacity (faded effect) */
+  margin: 20px 0;        /* Add some spacing around the line */
+  width: 100%;           /* Full width of the container */
+}
+.input-post{
+  border-radius: 0;
+  border: 0.5px solid #575757;
+  width: 50px;
+  outline: none;
+}
+.flex{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toast:hover{
+  border-radius: 0;
+}
+/* Success Toastr */
+.toast-success {
+  background-color: #28a745 !important; /* Custom green color */
+  font-family: 'Comfortaa', cursive;
+}
+
+/* Error Toastr */
+.toast-error {
+  background-color: #dc3545 !important; /* Custom red color */
+  font-family: 'Comfortaa', cursive;
+}
+
+/* Info Toastr */
+.toast-info {
+  background-color: #17a2b8 !important; /* Custom blue color */
+  font-family: 'Comfortaa', cursive;
+}
+
+/* Warning Toastr */
+.toast-warning {
+  background-color: #ffc107 !important; /* Custom yellow color */
+  font-family: 'Comfortaa', cursive;
+}
+.separator {
+  margin: 0 10px; /* Điều chỉnh khoảng cách theo nhu cầu */
+  color: #ccc; /* Màu của thanh ngăn cách */
+}
+

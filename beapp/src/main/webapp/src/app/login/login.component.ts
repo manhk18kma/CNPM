@@ -22,27 +22,34 @@ export class LoginComponent {
   }
 
   ngOnInit(): void {
+    this.user.deviceToken = '1';
   }
 
   login() {
+
     this.authService.loginUser(this.user).pipe(
       catchError(error => {
         this.showFail()
         return of({error: 'Login failed, please try again later.'});
       })
     ).subscribe(res => {
+      this.cookieService.set('accessToken', res.data.accessToken, {expires: 1, path: '/'});
+      if (res.data.accessToken != null) {
         this.showSuccess()
-        this.cookieService.set('accessToken', res.data.accessToken, {expires: 1, path: '/'});
-        this.router.navigate(["/profile"]);
-
+        this.router.navigate(["/home"]);
+      }
     });
   }
 
   showSuccess() {
-    this.toastrService.success('Đăng nhập thành công !', 'Đăng nhập');
+    this.toastrService.success('Đăng nhập thành công !','',{
+      timeOut: 1500,
+    });
   }
 
   showFail() {
-    this.toastrService.error('Đăng nhập thất bại', 'Đăng nhập');
+    this.toastrService.error('Đăng nhập thất bại','',{
+      timeOut: 1500,
+    });
   }
 }

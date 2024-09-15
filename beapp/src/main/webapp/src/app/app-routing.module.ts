@@ -24,14 +24,14 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {
-    path: 'profile',
+    path: 'profile/:id',
     component: ProfileComponent,
     children: [
-      {path: 'posts', component: PostsComponent},
       {path: 'infor', component: InforComponent},
+      {path: 'posts', component: PostsComponent},
       {path: 'photos', component: PhotosComponent},
       {path: 'activity', component: ActivityComponent},
-      {path: '', redirectTo: 'posts', pathMatch: 'full'}
+      // {path: '', redirectTo: 'infor', pathMatch: 'full'}
     ]
   },
   {path: 'signup', component: SignupComponent,},
