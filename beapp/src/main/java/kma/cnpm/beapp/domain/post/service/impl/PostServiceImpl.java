@@ -61,7 +61,7 @@ public class PostServiceImpl implements PostService {
         post.setContent(postRequest.getContent());
         if (postRequest.getProductRequest() != null) {
             productService.deleteById(post.getProductId());
-//            post.setProductId(productService.save(postRequest.getProductRequest()).getId());
+            post.setProductId(productService.save(postRequest.getProductRequest()).getId());
         }
         postRepository.save(post);
     }
@@ -82,7 +82,8 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
         PostResponse postResponse = postMapper.map(post);
-        postResponse.setProductResponse(productService.getProductById(post.getProductId()));
+        if (post.getProductId() != null)
+            postResponse.setProductResponse(productService.getProductById(post.getProductId()));
         return postResponse;
     }
 
@@ -90,7 +91,8 @@ public class PostServiceImpl implements PostService {
     public PostResponse getPostByProductId(Integer productId) {
         Post post = postRepository.findByProductId(productId);
         PostResponse postResponse = postMapper.map(post);
-        postResponse.setProductResponse(productService.getProductById(post.getProductId()));
+        if (post.getProductId() != null)
+            postResponse.setProductResponse(productService.getProductById(post.getProductId()));
         return postResponse;
     }
 
@@ -99,8 +101,12 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postRepository.findByContentContaining(content);
         return posts.stream()
                 .map(postMapper::map)
-                .peek(postResponse -> postResponse.setProductResponse(
-                        productService.getProductById(postResponse.getProductResponse().getId())))
+                .peek(postResponse -> {
+                    if (postResponse.getProductResponse().getId() != null) {
+                        postResponse.setProductResponse(
+                                productService.getProductById(postResponse.getProductResponse().getId()));
+                    }
+                })
                 .toList();
     }
 
@@ -109,8 +115,12 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postRepository.findByUserId(userId);
         return posts.stream()
                 .map(postMapper::map)
-                .peek(postResponse -> postResponse.setProductResponse(
-                        productService.getProductById(postResponse.getProductResponse().getId())))
+                .peek(postResponse -> {
+                    if (postResponse.getProductResponse().getId() != null) {
+                        postResponse.setProductResponse(
+                                productService.getProductById(postResponse.getProductResponse().getId()));
+                    }
+                })
                 .toList();
     }
 
@@ -119,8 +129,12 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postRepository.findByStatus(status);
         return posts.stream()
                 .map(postMapper::map)
-                .peek(postResponse -> postResponse.setProductResponse(
-                        productService.getProductById(postResponse.getProductResponse().getId())))
+                .peek(postResponse -> {
+                    if (postResponse.getProductResponse().getId() != null) {
+                        postResponse.setProductResponse(
+                                productService.getProductById(postResponse.getProductResponse().getId()));
+                    }
+                })
                 .toList();
     }
 
@@ -134,8 +148,12 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postRepository.findByIsApprovedOrderByUpdatedAt(isApproved);
         return posts.stream()
                 .map(postMapper::map)
-                .peek(postResponse -> postResponse.setProductResponse(
-                        productService.getProductById(postResponse.getProductResponse().getId())))
+                .peek(postResponse -> {
+                    if (postResponse.getProductResponse().getId() != null) {
+                        postResponse.setProductResponse(
+                                productService.getProductById(postResponse.getProductResponse().getId()));
+                    }
+                })
                 .toList();
     }
 
