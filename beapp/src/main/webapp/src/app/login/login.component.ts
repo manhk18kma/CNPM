@@ -22,9 +22,11 @@ export class LoginComponent {
   }
 
   ngOnInit(): void {
+    this.user.deviceToken = '1';
   }
 
   login() {
+
     this.authService.loginUser(this.user).pipe(
       catchError(error => {
         this.showFail()

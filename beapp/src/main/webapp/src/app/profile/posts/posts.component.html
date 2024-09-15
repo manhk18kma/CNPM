@@ -9,21 +9,14 @@
                       <span class="userimage"><img
                         src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
                         alt=""></span>
-              <span class="username"><a>Duy Khánh</a> <small></small></span>
+              <span class="username">{{userDetail.fullName}} <small></small></span>
               <i class="bi bi-x" (click)="openPost = false" style="position: absolute;right: 30px; font-size: 20px"></i>
             </div>
             <div>
               <div>
                       <textarea (input)="onInput($event)"
-                                placeholder="Tiêu đề"
-                                [(ngModel)]="post.title" class="auto-resize-textarea text-secondary">
-                      </textarea>
-              </div>
-              <hr class="faded-line">
-              <div>
-                      <textarea (input)="onInput($event)"
                                 placeholder="Nội dung..."
-                                [(ngModel)]="post.description" class="auto-resize-textarea text-secondary">
+                                [(ngModel)]="post.content" class="auto-resize-textarea text-secondary">
                       </textarea>
               </div>
             </div>
@@ -33,7 +26,7 @@
               <div style="position: relative">
                 <p class="decor-text" style="font-weight: bold">Thông tin sản phẩm</p>
                 <i class="bi bi-x decor-text" style="position: absolute;right: 10px; top: 0"
-                   (click)="addProduct = false"></i>
+                   (click)="cancelAddProd()"></i>
               </div>
               <hr class="faded-line">
               <div style="position: relative">
@@ -59,7 +52,7 @@
                 <div>
                   Loại sản phẩm:
                   <select class="form-control" (change)="onCategoryChange($event)">
-                    <option *ngFor="let i of categories" [value]="i.id">{{i.description}}</option>
+                    <option *ngFor="let i of categories" [value]="i.id">{{i.name}}</option>
                   </select>
                 </div>
                 <div>
@@ -81,8 +74,8 @@
               <div class="input">
                 <form>
                   <div class="input-group">
-                    <button class="btn btn-secondary f-s-12 rounded-0 w-100" type="button" [disabled]="!textContent"
-                            (click)="sendText()">Gửi
+                    <button class="btn btn-secondary f-s-12 rounded-0 w-100" type="button" [disabled]="!post.content"
+                            (click)="upPost()">Gửi
                     </button>
                   </div>
                 </form>
@@ -98,10 +91,10 @@
   <div class="tab-content p-0">
     <div class="tab-pane fade active show" id="profile-post">
       <ul class="timeline">
-        <li>
+        <li *ngFor="let post of posts">
           <div class="timeline-time">
-            <span class="date">Hôm nay</span>
-            <span class="time">04:20</span>
+            <span class="date">{{post.createdAt | date: 'dd/MM/yyyy'}}</span>
+            <span class="time"></span>
           </div>
           <div class="timeline-icon">
             <a href="javascript:;">&nbsp;</a>
@@ -111,58 +104,57 @@
                       <span class="userimage"><img
                         src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
                         alt=""></span>
-              <span class="username"><a>Duy Khánh</a> <small></small></span>
-              <span class="pull-right text-muted">18 Views</span>
+              <span class="username"><a>{{userDetail.fullName}}</a> <small></small></span>
+              <span class="pull-right text-muted">18 Lượt xem</span>
             </div>
             <div class="timeline-content">
-              <p>
-                Mình đang cần bán sản phẩm này
+              <p style="font-weight: bold">
+                {{post.content}}
               </p>
             </div>
-
+            <hr class="faded-line">
+            <div *ngIf="post.product != null" class="timeline-content" style="flex-wrap: wrap">
+              <p>
+                Tên sản phẩm: {{post.product.name}}
+              </p>
+              <p>
+                Mô tả: {{post.product.description}}
+              </p>
+              <p>
+                Số lượng: {{post.product.quantity}}
+              </p>
+              <p>
+                Loại sản phẩm: {{post.product.categoryName}}
+              </p>
+              <img src="{{post.product.medias}}"/>
+            </div>
             <div class="timeline-likes">
               <div class="stats-right">
                 <span class="stats-text">25 Chia sẻ</span>
                 <span class="stats-text">21 Bình luận</span>
               </div>
               <div class="stats">
-                                    <span class="fa-stack fa-fw stats-icon">
-                                    <i class="fa fa-circle fa-stack-2x text-danger"></i>
-                                    <i class="fa fa-heart fa-stack-1x fa-inverse t-plus-1"></i>
-                                    </span>
-                <span class="fa-stack fa-fw stats-icon">
-                                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                                    <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
-                                    </span>
-                <span class="stats-total">4.3k</span>
+                <span class="stats-total">4</span>
+                <i class="bi bi-heart-fill p-1" style="color: red"></i>
               </div>
             </div>
-            <!--                    <div class="timeline-footer">-->
-            <!--                      <a class="m-r-15"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i></a>-->
-            <!--                      <a class="m-r-15 text-inverse-lighter"><i class="fa fa-comments fa-fw fa-lg m-r-3"></i></a>-->
-            <!--                      <a class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i></a>-->
-            <!--                    </div>-->
-            <div class="timeline-comment-box">
-              <div class="user"><img src="https://bootdey.com/img/Content/avatar/avatar3.png"></div>
-              <div class="input">
-                <form action="">
-                  <div class="input-group">
-                    <input type="text" class="form-control rounded-corner" style="font-size: 12px"
-                           placeholder="Bình luận gì đó">
-                    <span class="input-group-btn p-l-10">
-                                          <button class="btn btn-secondary f-s-12 rounded-0" type="button">Gửi</button>
-                                          </span>
-                  </div>
-                </form>
+
+            <div class="timeline-comment-box rounded-0">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-heart decor-text" style="color: red;cursor: pointer"></i>
+                <span class="separator">|</span>
+                <i class="bi bi-chat-dots decor-text" style="color: #5dc486;cursor: pointer"></i>
+                <span class="separator">|</span>
+                <i class="bi bi-cart-plus decor-text" style="color: #000000;cursor: pointer"></i>
               </div>
-              <button (click)="authService.errorToLogout()">
-                Đăng xuất
-              </button>
             </div>
           </div>
         </li>
 
       </ul>
     </div>
+    <button class="btn rounded-0 btn-warning p-2" (click)="authService.errorToLogout()">
+      Đăng xuất
+    </button>
   </div>
 </div>

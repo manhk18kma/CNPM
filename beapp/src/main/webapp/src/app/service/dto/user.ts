@@ -13,5 +13,5 @@ export class User {
   addresses: any;
   // @ts-ignore
   bankResponses: Bank;
-
+  deviceToken: any;
 }

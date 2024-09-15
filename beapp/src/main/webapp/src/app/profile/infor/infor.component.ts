@@ -4,7 +4,6 @@ import {AuthService} from "../../service/auth/auth.service";
 import {UserService} from "../../service/user.service";
 import {TokenService} from "../../service/token/token.service";
 import {ActivatedRoute} from "@angular/router";
-import * as moment from 'moment';
 
 @Component({
   selector: 'app-infor',

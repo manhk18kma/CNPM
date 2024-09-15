@@ -33,8 +33,8 @@ export class UserService {
   getPrivateProfile(): Observable<any> {
     return this.http.get(`${this.baseURL}/private-info`);
   }
-  getPublicProfile(id: number){
-    const params = new HttpParams().set('id', id.toString());
+  getPublicProfile(userId: number){
+    const params = new HttpParams().set('userId', userId.toString());
     return this.http.get(`${this.baseURL}`,{params});
   }
 }
