@@ -32,7 +32,7 @@ public class ProductController {
     @PostMapping
     public ResponseData<ProductResponse> createProduct(@RequestBody @Valid ProductRequest productRequest) {
         return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Product created successfully",
+                "Sản phẩm đã được tạo thành công",
                 new Date(),
                 productService.save(productRequest));
     }
@@ -41,7 +41,7 @@ public class ProductController {
     public ResponseData<ProductResponse> updateProduct(@PathVariable Integer id,
                                                        @RequestBody @Valid ProductRequest productRequest) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Product created successfully",
+                "Sản phẩm đã được chỉnh sửa thành công",
                 new Date(),
                 productService.update(id, productRequest));
     }
@@ -49,7 +49,7 @@ public class ProductController {
     @PatchMapping
     public ResponseData<ProductResponse> uploadMediaProduct(@ModelAttribute @Valid UploadFileRequest uploadFileRequest) {
         return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Product uploaded successfully",
+                "Sản phẩm đã cập nhật phương tiện thành công!",
                 new Date(),
                 productService.uploadFile(uploadFileRequest));
     }
@@ -58,14 +58,14 @@ public class ProductController {
     public ResponseData<String> deleteProduct(@PathVariable Integer id) {
         productService.deleteById(id);
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Product created successfully",
+                "Sản phẩm đã được xóa thành công",
                 new Date());
     }
 
     @GetMapping("/name/{name}")
     public ResponseData<List<ProductResponse>> getProductsByName(@PathVariable String name) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Get products by name successfully",
+                "Sản phẩm hiển thị theo tên thành công",
                 new Date(),
                 productService.getProductsByName(name));
     }
@@ -73,7 +73,7 @@ public class ProductController {
     @GetMapping("/seller/{sellerId}")
     public ResponseData<List<ProductResponse>> getProductsBySellerId(@PathVariable Long sellerId) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Get products by seller successfully",
+                "Sản phẩm hiển thị theo người bán thành công",
                 new Date(),
                 productService.getProductsBySellerId(sellerId));
     }
@@ -81,7 +81,7 @@ public class ProductController {
     @GetMapping("/category/{categoryId}")
     public ResponseData<List<ProductResponse>> getProductsByCategory(@PathVariable Integer categoryId) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Get products by category successfully",
+                "Sản phẩm hiển thị theo thể loại thành công",
                 new Date(),
                 productService.getProductsByCategory(categoryId));
     }
