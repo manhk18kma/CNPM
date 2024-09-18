@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -32,8 +33,8 @@ public class PostController {
     public ResponseData<String> createPost(@RequestBody @Valid PostRequest postRequest) {
         postService.createPost(postRequest);
         return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Post created successfully",
-                new Date());
+                "Tạo bài đăng thành công",
+                LocalDateTime.now());
     }
 
     @PutMapping("/{id}")
@@ -41,56 +42,64 @@ public class PostController {
                                            @RequestBody @Valid PostRequest postRequest) {
         postService.updatePost(id, postRequest);
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Post updated successfully",
-                new Date());
+                "Chỉnh sửa bài đăng thành công",
+                LocalDateTime.now());
     }
 
     @DeleteMapping("/{id}")
     public ResponseData<String> deletePost(@PathVariable Integer id) {
         postService.deletePost(id);
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Post deleted successfully",
-                new Date());
+                "Xóa bài đăng thành công",
+                LocalDateTime.now());
     }
 
     @GetMapping("/{id}")
     public ResponseData<PostResponse> getPostsById(@PathVariable Integer id) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Get posts by id successfully",
-                new Date(),
+                "Hiển thị bài đăng bằng ID thành công",
+                LocalDateTime.now(),
                 postService.getPostById(id));
     }
 
     @GetMapping("/product/{productId}")
     public ResponseData<PostResponse> getPostsByProductId(@PathVariable Integer productId) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Get posts by id successfully",
-                new Date(),
+                "Hiển thị bài đăng bằng ID sản phẩm thành công",
+                LocalDateTime.now(),
                 postService.getPostByProductId(productId));
     }
 
     @GetMapping("/search/{title}")
     public ResponseData<List<PostResponse>> findPostsByTitle(@PathVariable String title) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Find posts by title successfully",
-                new Date(),
+                "Tìm kiếm bài đăng bằng nội dung thành công",
+                LocalDateTime.now(),
                 postService.findPostByTitle(title));
     }
 
     @GetMapping("/user/{userId}")
     public ResponseData<List<PostResponse>> getPostByUserId(@PathVariable Long userId) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "get post by user ID successfully",
-                new Date(),
+                "Hiển thị bài đăng bằng ID người dùng thành công",
+                LocalDateTime.now(),
                 postService.getPostsByUserId(userId));
     }
 
     @GetMapping("/status/{status}")
     public ResponseData<List<PostResponse>> getPostByStatus(@PathVariable String status) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "get post by status successfully",
-                new Date(),
+                "Hiển thị bài đăng bằng trạng thái thành công",
+                LocalDateTime.now(),
                 postService.getPostsByStatus(status));
+    }
+
+    @GetMapping("/approve/{approve}")
+    public ResponseData<List<PostResponse>> getPostByIsApproved(@PathVariable Boolean approve) {
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Hiển thị bài đăng bằng trạng thái duyệt thành công",
+                LocalDateTime.now(),
+                postService.getPostsByApproved(approve));
     }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -33,31 +34,31 @@ public class CommentController {
     public ResponseData<String> addComment(@RequestBody @Valid CommentRequest commentRequest) {
         commentService.addComment(commentRequest);
         return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Comment added successfully",
-                new Date());
+                "Thêm bình luận thành công",
+                LocalDateTime.now());
     }
 
     @DeleteMapping("/{id}")
     public ResponseData<String> deleteComment(@PathVariable Long id) {
         commentService.deleteComment(id);
         return new ResponseData<>(HttpStatus.OK.value(),
-                "comment deleted successfully",
-                new Date());
+                "Xóa bình luận thành công",
+                LocalDateTime.now());
     }
 
     @GetMapping("/post/{postId}")
     public ResponseData<List<CommentResponse>> getAllCommentByPostId(@PathVariable Integer postId) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Comments get successfully",
-                new Date(),
+                "Hiển thị bình luận bằng ID thành công",
+                LocalDateTime.now(),
                 commentService.getAllCommentByPostId(postId));
     }
 
     @GetMapping("/user/{userId}")
     public ResponseData<List<CommentResponse>> getAllCommentByUserId(@PathVariable Long userId) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Comments get successfully",
-                new Date(),
+                "Hiển thị bình luận bằng ID người dùng thành công",
+                LocalDateTime.now(),
                 commentService.getAllCommentByUserId(userId));
     }
 

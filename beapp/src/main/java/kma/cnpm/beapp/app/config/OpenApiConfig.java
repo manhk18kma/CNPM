@@ -50,6 +50,7 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .group("api-service-identity")
                 .packagesToScan(
+                        "kma.cnpm.beapp.app.api.payment",
                         "kma.cnpm.beapp.app.api.user",
                         "kma.cnpm.beapp.app.api.product",
                         "kma.cnpm.beapp.app.api.post")

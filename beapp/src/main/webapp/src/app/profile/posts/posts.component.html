@@ -1,0 +1,160 @@
+<div class="profile-content decor-text-1">
+  <div class="tab-content p-0">
+    <div class="tab-pane fade active show" id="profile-post1">
+      <i *ngIf="!openPost" (click)="openPost = true" class="bi bi-upload" title="Đăng bài"></i>
+      <ul class="timeline1">
+        <li>
+          <div class="timeline-body" *ngIf="openPost">
+            <div class="timeline-header">
+                      <span class="userimage"><img
+                        src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
+                        alt=""></span>
+              <span class="username">{{userDetail.fullName}} <small></small></span>
+              <i class="bi bi-x" (click)="openPost = false" style="position: absolute;right: 30px; font-size: 20px"></i>
+            </div>
+            <div>
+              <div>
+                      <textarea (input)="onInput($event)"
+                                placeholder="Nội dung..."
+                                [(ngModel)]="post.content" class="auto-resize-textarea text-secondary">
+                      </textarea>
+              </div>
+            </div>
+            <hr class="faded-line">
+            <i class="bi bi-plus" *ngIf="!addProduct" (click)="addProd()">Thêm sản phẩm</i>
+            <div *ngIf="addProduct">
+              <div style="position: relative">
+                <p class="decor-text" style="font-weight: bold">Thông tin sản phẩm</p>
+                <i class="bi bi-x decor-text" style="position: absolute;right: 10px; top: 0"
+                   (click)="cancelAddProd()"></i>
+              </div>
+              <hr class="faded-line">
+              <div style="position: relative">
+                      <textarea (input)="onInput($event)"
+                                placeholder="Nhập tên sản phẩm"
+                                [(ngModel)]="product.name" class="auto-resize-textarea text-secondary">
+                      </textarea>
+
+              </div>
+              <hr class="faded-line">
+              <div>
+                      <textarea (input)="onInput($event)"
+                                placeholder="Nhập mô tả sản phẩm..."
+                                [(ngModel)]="product.description" class="auto-resize-textarea text-secondary">
+                      </textarea>
+              </div>
+              <hr class="faded-line">
+              <div class="flex">
+                <div>
+                  Số lượng:
+                  <input class="input-post" type="number" name="quantity" [(ngModel)]="product.quantity">
+                </div>
+                <div>
+                  Loại sản phẩm:
+                  <select class="form-control" (change)="onCategoryChange($event)">
+                    <option *ngFor="let i of categories" [value]="i.id">{{i.name}}</option>
+                  </select>
+                </div>
+                <div>
+                  Giá/sản phẩm:
+                  <input class="input-post" type="number" name="price" [(ngModel)]="product.price">
+                </div>
+              </div>
+              <hr class="faded-line">
+
+              <input type="file" id="file1" hidden="" (change)="onFileSelected($event)" multiple>
+              <label for="file1"><i class="bi bi-image-fill"></i></label>
+              <div class="image-grid">
+                <div class="image-item" *ngFor="let image of images">
+                  <img [src]="image.url" alt="User uploaded image">
+                </div>
+              </div>
+            </div>
+            <div class="timeline-comment-box">
+              <div class="input">
+                <form>
+                  <div class="input-group">
+                    <button class="btn btn-secondary f-s-12 rounded-0 w-100" type="button" [disabled]="!post.content"
+                            (click)="upPost()">Gửi
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="profile-content decor-text-1">
+  <div class="tab-content p-0">
+    <div class="tab-pane fade active show" id="profile-post">
+      <ul class="timeline">
+        <li *ngFor="let post of posts">
+          <div class="timeline-time">
+            <span class="date">{{post.createdAt | date: 'dd/MM/yyyy'}}</span>
+            <span class="time"></span>
+          </div>
+          <div class="timeline-icon">
+            <a href="javascript:;">&nbsp;</a>
+          </div>
+          <div class="timeline-body">
+            <div class="timeline-header">
+                      <span class="userimage"><img
+                        src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
+                        alt=""></span>
+              <span class="username"><a>{{userDetail.fullName}}</a> <small></small></span>
+              <span class="pull-right text-muted">18 Lượt xem</span>
+            </div>
+            <div class="timeline-content">
+              <p style="font-weight: bold">
+                {{post.content}}
+              </p>
+            </div>
+            <hr class="faded-line">
+            <div *ngIf="post.product != null" class="timeline-content" style="flex-wrap: wrap">
+              <p>
+                Tên sản phẩm: {{post.product.name}}
+              </p>
+              <p>
+                Mô tả: {{post.product.description}}
+              </p>
+              <p>
+                Số lượng: {{post.product.quantity}}
+              </p>
+              <p>
+                Loại sản phẩm: {{post.product.categoryName}}
+              </p>
+              <img src="{{post.product.medias}}"/>
+            </div>
+            <div class="timeline-likes">
+              <div class="stats-right">
+                <span class="stats-text">25 Chia sẻ</span>
+                <span class="stats-text">21 Bình luận</span>
+              </div>
+              <div class="stats">
+                <span class="stats-total">4</span>
+                <i class="bi bi-heart-fill p-1" style="color: red"></i>
+              </div>
+            </div>
+
+            <div class="timeline-comment-box rounded-0">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-heart decor-text" style="color: red;cursor: pointer"></i>
+                <span class="separator">|</span>
+                <i class="bi bi-chat-dots decor-text" style="color: #5dc486;cursor: pointer"></i>
+                <span class="separator">|</span>
+                <i class="bi bi-cart-plus decor-text" style="color: #000000;cursor: pointer"></i>
+              </div>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+    <button class="btn rounded-0 btn-warning p-2" (click)="authService.errorToLogout()">
+      Đăng xuất
+    </button>
+  </div>
+</div>

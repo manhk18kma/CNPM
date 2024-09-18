@@ -52,7 +52,7 @@ public class NotificationService {
         }
     }
 
-
+    @Async
     public void sendResetPasswordEmail(String to, String subject, String resetLink) {
         try {
             // Tạo một đối tượng MimeMessage

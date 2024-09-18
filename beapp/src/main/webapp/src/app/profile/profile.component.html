@@ -1,0 +1,60 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div id="content" class="content content-full-width">
+        <!-- begin profile -->
+        <div class="profile">
+          <div class="profile-header">
+            <div class="profile-header-cover"></div>
+            <div class="profile-header-content d-flex align-content-center align-items-center">
+              <div class="profile-header-img">
+                <img
+                  src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
+                  alt="">
+              </div>
+
+              <div class="profile-header-info decor-text-1 m-lg-4" style="margin-left: 20px">
+                <h4 class="m-t-0 m-b-1">{{userDetail?.fullName}}</h4>
+                <p class=" text-secondary">Người dùng</p>
+                <i class="bi bi-gear text-blue" style="font-size: 20px"></i>
+
+              </div>
+              <div class="profile-cover__info decor-text-0">
+                <ul class="nav">
+                  <li><strong>{{userDetail?.totalPosts}}</strong>Tổng bài viết</li>
+                  <li><strong>{{userDetail?.totalSoldProducts}}</strong>Tổng sản phẩm đã bán</li>
+                  <li><strong>{{userDetail?.totalFollowers}}</strong>Người theo dõi</li>
+                  <li><strong>{{userDetail?.totalFollowers}}</strong>Đang theo dõi</li>
+                </ul>
+              </div>
+            </div>
+            <ul class="profile-header-tab nav nav-tabs mt-2 decor-text" style="cursor: pointer">
+              <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+              <li class="nav-item">
+                <a routerLink="infor" routerLinkActive="active" class="nav-link_">
+                  Thông tin cá nhân
+                </a></li>
+              <li class="nav-item">
+                <a routerLink="posts" routerLinkActive="active" class="nav-link_">
+                  Bài đăng
+                </a>
+              </li>
+              <li class="nav-item">
+                <a routerLink="photos" routerLinkActive="active" class="nav-link_">
+                  Hình Ảnh/Video
+                </a></li>
+              <li class="nav-item">
+                <a routerLink="activity" routerLinkActive="active" class="nav-link_">
+                  Hoạt động
+                </a></li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

@@ -1,7 +1,10 @@
-urlClient: http://localhost:4200
+urlClient: http://localhost:4000
+urlServer: http://localhost:8080
+urlDefaultAvt : https://tse1.mm.bing.net/th?id=OIP._prlVvISXU3EfqFW3GF-RwHaHa&pid=Api&P=0&h=220
 recaptcha:
   verify-url: https://www.google.com/recaptcha/api/siteverify
   secret-key: 6LfSCS8qAAAAANeOWUAucnmphneM9MHTMbPIrGcr
+  site-key: 6LfSCS8qAAAAAK8-G5UNElCtksrCCvAK10Vh-SWb
 
 #  client captcha key : 6LfSCS8qAAAAAK8-G5UNElCtksrCCvAK10Vh-SWb
 #jwt:
@@ -36,3 +39,22 @@ jwt:
   # Active user token
   active-user-duration: 400000
   activeKey: a3f21633fa82c60e2c70821c8dc38d568e9a2dc898a0721e72da5c1320ab7f72fba7188876920a5cbc60a960482acabe1760bb1bcfa541728ce265806ffe0f39
+
+
+payment:
+  vnpay:
+    #    tmn-code: SRIE0UKK
+    #    secret-key: YSUHAOQNTRVAVYYWKOCMBXJAEFLQQXSA
+    secret-key: YSUHAOQNTRVAVYYWKOCMBXJAEFLQQXSA
+    tmn-code: SRIE0UKK
+
+    init-payment-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+#    return-url: https://dev.roninhub.com/order/%s/status
+    return-url: http://localhost:3000/transactions/%s/info
+    timeout: 15 # in minutes
+
+
+paypal:
+  client-id: AQRh76tofCg634fmMdi8OPYaoi071Ztc5AF0vhm_veIlBWvimaln1OhaHEy-Iotjbgqjt729429nZAmw
+  client-secret: EIAt-1JCfWCGIpMZru1BkZCWOLpukjQkI375pNnpjZv1qYap2bMLSUMpq2eDSaM4UXh6OR_9mqiIZgkO
+  mode: sandbox # Use #sandbox' for testing and 'live' for Production

@@ -18,6 +18,7 @@ public @interface EnumValue {
     String name();
     Class<? extends Enum<?>> enumClass();
     String message() default "{name} must be one of {acceptedValues}";
+
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

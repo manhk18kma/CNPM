@@ -1,0 +1,63 @@
+<nav class="navbar" [class.transparent]="isTransparent">
+  <div *ngIf="!clickSearch" class="container d-flex justify-content-between align-items-center" >
+    <a class="nav-link" style="padding: 0;margin:0;" routerLink="home" routerLinkActive="active">
+
+      <img width="60px"  src="https://github.com/NgDuyKhanhs/image/blob/main/Remove-bg.ai_1726026879198.png?raw=true"/>
+    </a>
+
+    <ul class="navbar-nav d-flex justify-content-center">
+      <li class="nav-item decor-text">
+        <a class="nav-link" routerLink="home" routerLinkActive="active">Trang chủ</a>
+      </li>
+      <li class="nav-item d-flex align-items-center">
+        <a class="nav-link" routerLink="post" routerLinkActive="active">Bài đăng</a>
+<!--        <i class="bi bi-caret-down-fill"></i>-->
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="home" routerLinkActive="active">Hỗ trợ</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="order" routerLinkActive="active">Đơn hàng</a>
+      </li>
+    </ul>
+
+    <ul class="navbar-nav d-flex flex-row justify-content-end align-items-center">
+      <li class="nav-item">
+        <i class="bi bi-bell decor-text" style="cursor: pointer;margin-right: 10px"></i>
+      </li>
+      <li class="nav-item decor-text" *ngIf="userService.authenticated()">
+        <a class="nav-link" routerLink="message" routerLinkActive="active">
+          <i class="bi bi-chat-text" style="cursor: pointer;font-size: 20px;margin-right: 5px"></i>
+        </a>
+      <li class="nav-item">
+        <i (click)="openInputSearch()" class="bi bi-search decor-text" style="cursor: pointer;margin-right: 5px"></i>
+      </li>
+      <li *ngIf="!userService.authenticated()" class="nav-item">
+        <a class="nav-link" routerLink="login" routerLinkActive="active">Đăng nhập</a>
+      </li>
+      <li class="nav-item decor-text" *ngIf="userService.authenticated()">
+        <a class="nav-link" (click)="navigateProfile()">
+          <i class="bi bi-person" style="font-size: 20px;"></i>
+        </a>
+      </li>
+      <li class="nav-item decor-text" *ngIf="userService.authenticated()">
+        <a class="nav-link" routerLink="cart" routerLinkActive="active">
+          <i class="bi bi-minecart-loaded"  style="font-size: 15px;"></i>
+        </a>
+
+      </li>
+    </ul>
+  </div>
+
+</nav>
+<nav *ngIf="clickSearch" class="navbar1">
+  <ng-container >
+    <form (ngSubmit)="sendResultSearch(this.key)">
+      <input [(ngModel)]="this.key"  placeholder="Bạn muốn tìm gì?" type="text" name="key" class="input" style="width: 75%; height: 100%">
+      <button  type="submit" style="border: none; background: transparent"><i class="bi bi-search mx-3 mt-1"></i></button>
+      <i (click)="closeInputSearch()" class="bi bi-x-lg position-absolute" style="right: 10%"></i>
+    </form>
+  </ng-container>
+</nav>
+
+<router-outlet></router-outlet>

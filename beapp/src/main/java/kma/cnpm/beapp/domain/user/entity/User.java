@@ -55,9 +55,44 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "url_avt")
     private String avt;
 
+    @Column(name = "salt")
+    private String salt;
+
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Follow> following = new HashSet<>(); // Những người mà mình đang theo dõi
+
+    @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Follow> followers = new HashSet<>(); // Những người theo dõi mình
+
+    // Danh sách người dùng đã vào xem trang của user này
+    @OneToMany(mappedBy = "viewed", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserView> viewers;
+
+    // Danh sách user mà người này đã vào xem
+    @OneToMany(mappedBy = "viewer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserView> viewedUsers;
+
     public void addAddress(Address address) {
         addresses.add(address);
         address.setUser(this);
     }
+
+    public void addFollowing(Follow follow) {
+        if (following == null) {
+            following = new HashSet<>();
+        }
+        following.add(follow);
+        follow.setFollower(this);
+    }
+
+    public void addFollowers(Follow follow) {
+        if (followers == null) {
+            followers = new HashSet<>();
+        }
+        followers.add(follow);
+        follow.setFollowed(this);
+    }
+
 
 }
