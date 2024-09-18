@@ -17,7 +17,7 @@ export class PostService {
               private toast: ToastrService) {
   }
 
-  post(post: any) {
+  post(post: any):Observable<any> {
     return this.http.post(`${this.baseURL}`,post);
   }
   getPostsByUserID(userId: any): Observable<any> {

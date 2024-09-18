@@ -1,16 +1,14 @@
 <div class="profile-content decor-text-1">
   <div class="tab-content p-0">
     <div class="tab-pane fade active show" id="profile-post1">
-      <i *ngIf="!openPost" (click)="openPost = true" class="bi bi-upload" title="Đăng bài"></i>
-      <ul class="timeline1">
+        <div *ngIf="!openPost" (click)="openPost = true" class="container cube decor-text-1">
+          <span class="side top">Bạn đang cần đăng bài?</span>
+        </div>
+      <ul class="timeline1" *ngIf="openPost">
         <li>
-          <div class="timeline-body" *ngIf="openPost">
+          <div class="timeline-body" >
             <div class="timeline-header">
-                      <span class="userimage"><img
-                        src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
-                        alt=""></span>
-              <span class="username">{{userDetail.fullName}} <small></small></span>
-              <i class="bi bi-x" (click)="openPost = false" style="position: absolute;right: 30px; font-size: 20px"></i>
+              <i class="bi bi-x" (click)="openPost = false" style="position: absolute;right: 30px;top: 0; font-size: 20px"></i>
             </div>
             <div>
               <div>
@@ -62,11 +60,11 @@
               </div>
               <hr class="faded-line">
 
-              <input type="file" id="file1" hidden="" (change)="onFileSelected($event)" multiple>
+              <input type="file" id="file1" hidden="" (change)="onFilesSelected($event)" multiple>
               <label for="file1"><i class="bi bi-image-fill"></i></label>
               <div class="image-grid">
-                <div class="image-item" *ngFor="let image of images">
-                  <img [src]="image.url" alt="User uploaded image">
+                <div class="image-item" *ngFor="let image of imagePreviewUrls">
+                  <img [src]="image" alt="User uploaded image">
                 </div>
               </div>
             </div>
@@ -92,28 +90,25 @@
     <div class="tab-pane fade active show" id="profile-post">
       <ul class="timeline">
         <li *ngFor="let post of posts">
-          <div class="timeline-time">
-            <span class="date">{{post.createdAt | date: 'dd/MM/yyyy'}}</span>
-            <span class="time"></span>
-          </div>
-          <div class="timeline-icon">
-            <a href="javascript:;">&nbsp;</a>
-          </div>
+
           <div class="timeline-body">
             <div class="timeline-header">
                       <span class="userimage"><img
                         src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
                         alt=""></span>
               <span class="username"><a>{{userDetail.fullName}}</a> <small></small></span>
-              <span class="pull-right text-muted">18 Lượt xem</span>
+              <div class="pull-right text-muted">
+                    <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
+                    <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
+              </div>
             </div>
             <div class="timeline-content">
               <p style="font-weight: bold">
                 {{post.content}}
               </p>
             </div>
-            <hr class="faded-line">
-            <div *ngIf="post.product != null" class="timeline-content" style="flex-wrap: wrap">
+            <hr *ngIf="post.product.id != null" class="faded-line">
+            <div *ngIf="post.product.id != null" class="timeline-content" style="flex-wrap: wrap">
               <p>
                 Tên sản phẩm: {{post.product.name}}
               </p>
@@ -126,7 +121,11 @@
               <p>
                 Loại sản phẩm: {{post.product.categoryName}}
               </p>
-              <img src="{{post.product.medias}}"/>
+              <div class="image-grid">
+                <div class="image-item" *ngFor="let media of post.product.medias">
+                  <img [src]="media.url" alt="User uploaded image">
+                </div>
+              </div>
             </div>
             <div class="timeline-likes">
               <div class="stats-right">
@@ -153,8 +152,5 @@
 
       </ul>
     </div>
-    <button class="btn rounded-0 btn-warning p-2" (click)="authService.errorToLogout()">
-      Đăng xuất
-    </button>
   </div>
 </div>

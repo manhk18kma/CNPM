@@ -24,6 +24,7 @@ export class AuthService {
   errorToLogout() {
     this.cookieService.delete('accessToken');
     this.router.navigate(['/login'])
+    sessionStorage.removeItem('userProfile');
   }
   logOut(user: User) {
     return this.http.post<User>(`${this.baseURL}/logout`, user);

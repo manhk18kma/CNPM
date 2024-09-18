@@ -51,7 +51,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       // this.toast.success("Hiển thị thành công",'',{
       //   timeOut: 1500,
       // })
-    }, 500)
+    }, 1000)
   }
 
 

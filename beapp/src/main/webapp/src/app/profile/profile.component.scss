@@ -17,14 +17,14 @@ body{
 
 .profile-header .profile-header-content {
   color: #fff;
-  padding-top: 100px
+  padding-top: 100px;
+  padding-bottom: 20px;
 }
 
 .profile-header-img {
   float: left;
   width: 150px;
   height: 150px;
-
 }
 
 .profile-header-img img {
@@ -800,4 +800,74 @@ button:disabled {
     border-top: 1px solid #eee;
     border-left-width: 0;
   }
+}
+.profile-fix {
+  position: fixed; /* Cha được cố định */
+  width: 100%; /* Chiều rộng phủ đầy */
+  height: 100px; /* Đặt chiều cao cho cha */
+  z-index: 10; /* Z-index của cha */
+}
+/* From Uiverse.io by vinodjangid07 */
+.Btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: .3s;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background-color: rgb(119, 119, 119);
+}
+
+/* plus sign */
+.sign {
+  width: 100%;
+  transition-duration: .3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sign svg {
+  width: 12px;
+}
+
+.sign svg path {
+  fill: white;
+}
+/* text */
+.text {
+  width: 0%;
+  opacity: 0;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  transition-duration: .3s;
+  text-align: center;
+}
+/* hover effect on button width */
+.Btn:hover {
+  width: 100px;
+  border-radius: 0px;
+  transition-duration: .3s;
+}
+
+.Btn:hover .sign {
+  display: none;
+}
+/* hover effect button's text */
+.Btn:hover .text {
+  opacity: 1;
+  width: 100%;
+  transition-duration: .3s;
+  text-align: center;
+}
+/* button click effect*/
+.Btn:active {
+  transform: translate(2px ,2px);
 }
