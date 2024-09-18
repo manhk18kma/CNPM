@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../service/auth/auth.service";
 import {CategoryService} from "../../category.service";
 import {PostService} from "../../post.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {ToastrService} from "ngx-toastr";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-posts',
@@ -13,99 +14,122 @@ import {ToastrService} from "ngx-toastr";
 })
 export class PostsComponent implements OnInit {
   openPost: boolean = false;
-  images: { url: string }[] = [];
+  imageFiles: File[] = [];
+  images: Awaited<string>[] = [];
   post: any = {};
   addProduct: boolean = false;
   product: any = {};
   categories: any;
   posts: any;
   userDetail: any;
+  id: any;
+  imagePreviewUrls: any = [];
   constructor(public authService: AuthService,
               private categoryService: CategoryService,
               private postService: PostService,
               private route: ActivatedRoute,
               private spinner: NgxSpinnerService,
-              private toast : ToastrService) {
+              private toast: ToastrService,
+              private router: Router,
+              private sanitizer: DomSanitizer
+              ) {
   }
 
   ngOnInit(): void {
     this.post.product = null;
-      let id = this.route.parent?.snapshot.paramMap.get('id');
-      // @ts-ignore
+    this.id = this.route.parent?.snapshot.paramMap.get('id');
+    // @ts-ignore
     this.userDetail = JSON.parse(sessionStorage.getItem('userProfile'));
-      this.getPostsByUserID(id)
+    this.getPostsByUserID(this.id)
   }
-  addProd(){
+
+  addProd() {
     this.categories = {};
     this.addProduct = true;
-    this.categoryService.getAllCategories().subscribe(res =>{
+    this.categoryService.getAllCategories().subscribe(res => {
       this.categories = res.data;
       this.product.categoryId = this.categories[0].id;
     })
 
   }
-  cancelAddProd(){
+
+  cancelAddProd() {
     this.addProduct = false;
     this.categories = null;
   }
+
   onInput(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
   }
 
-  onFileSelected(event: any) {
-    const files = event.target.files;
-    this.images = [];  // Khởi tạo mảng images để lưu các ảnh mới
+  // Method to handle image selection
+  onFilesSelected(event: any): void {
+    const files: File[] = event.target.files;
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+    if (files.length > 0) {
+      this.images = []; // Clear previous file selection
+      // this.imagePreviewUrls = []; // Clear previous previews
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        this.imageFiles.push(file); // Add to the array of selected files
+
+        // Generate a URL to display the image preview
+        const objectURL = URL.createObjectURL(file);
+        this.imagePreviewUrls.push(this.sanitizer.bypassSecurityTrustUrl(objectURL) as string);
+      }
+    }
+  }
+
+  private convertToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
-
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        // Chuyển đổi kết quả thành base64 và lưu vào mảng images
-        const base64String = (e.target as FileReader).result as string;
-        this.images.push({ url: base64String });
+      reader.onload = () => {
+        resolve(reader.result as string); // Resolve with the Base64 string
       };
-      // Đọc tệp tin dưới dạng URL base64
-      reader.readAsDataURL(file);
-    }
-    this.images.forEach(item =>{
-      this.product.imageBase64.push(item.url)
-    })
+      reader.onerror = reject; // Handle any error
+      reader.readAsDataURL(file); // Convert file to Base64
+    });
   }
 
-  dataURLtoBlob(dataurl: string) {
-    // @ts-ignore
-    const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], {type: mime});
-  }
+
   onCategoryChange(event: any) {
     this.product.categoryId = event.target.value;
   }
-  upPost(){
+
+  upPost() {
     if (this.addProduct == true) {
+      if (this.imageFiles.length > 0) {
+        this.product.imageBase64 = [];
+        this.images = [];
+        const promises = this.imageFiles.map(file => this.convertToBase64(file));
+        Promise.all(promises).then((base64Array) => {
+          this.images = base64Array;
+          this.product.imageBase64 = this.images;
+        });
+      }
       this.post.product = this.product;
     }
-      this.spinner.show();
-      setTimeout(()=>{
-        this.postService.post(this.post).subscribe(res =>{
-          this.toast.success("Đăng bài thành công")
-        },error => {
-          this.toast.error(error.message);
-        })
+    this.spinner.show();
+    setTimeout(() => {
+      this.postService.post(this.post).subscribe(res => {
+        this.toast.success(res.message, '', {timeOut: 1000})
         this.spinner.hide()
-      },2000)
+      }, error => {
+        this.toast.error(error.message);
+        this.spinner.hide()
+      })
+      this.router.navigate(['/']).then(() => {
+        this.router.navigate([`/profile/${this.id}/posts`])
+      })
+    }, 1000)
 
   }
-  getPostsByUserID(id: any){
-    this.postService.getPostsByUserID(parseInt(id)).subscribe(res =>{
+
+  getPostsByUserID(id: any) {
+    this.postService.getPostsByUserID(parseInt(id)).subscribe(res => {
       this.posts = res.data
     })
   }
