@@ -29,6 +29,7 @@ public class MediaServiceImpl implements MediaService {
     public void deleteMedia(Integer id) {
         Media media = mediaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(""));
+        mediaRepository.deleteById(id);
         if (media.getType().equals("IMAGE"))
             imageService.deleteImage(media.getUrl());
         if (media.getType().equals("VIDEO"))
