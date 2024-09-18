@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
                         .build());
             }
         }
-        if (productRequest.getImageBase64() != null) {
+        if (productRequest.getVideoBase64() != null) {
             for (String videoBase64 : productRequest.getVideoBase64()) {
                 String videoUrl = imageService.getUrlVideo(videoBase64);
                 mediaList.add(Media.builder()

@@ -23,7 +23,7 @@ public class Product extends AbstractEntity<Integer> {
     private Integer quantity;
     private Long sellerId;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Media> medias;
 
     @ManyToOne(cascade = CascadeType.MERGE)
