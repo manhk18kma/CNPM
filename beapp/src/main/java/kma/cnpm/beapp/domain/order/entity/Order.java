@@ -1,31 +1,28 @@
 package kma.cnpm.beapp.domain.order.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "orders")
-public class Order {
+public class Order extends AbstractEntity<Long> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private OrderStatus status;
 
-    private String status;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
     private Long buyerId;
     private BigDecimal totalAmount;
-    private Long paymentId;
     private Integer shippingAddressId;
     private Long shipperId;
-    private LocalDateTime orderedDate;
-    private LocalDateTime endDate;
 
 }
