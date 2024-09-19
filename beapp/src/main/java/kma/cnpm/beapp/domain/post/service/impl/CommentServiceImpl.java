@@ -83,4 +83,12 @@ public class CommentServiceImpl implements CommentService {
                 ))
                 .toList();
     }
+
+    @Override
+    public Integer countComments(Integer postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
+        return commentRepository.countByPost(post);
+    }
+
 }

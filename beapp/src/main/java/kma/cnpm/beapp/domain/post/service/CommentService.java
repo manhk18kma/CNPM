@@ -12,5 +12,6 @@ public interface CommentService {
 
     List<CommentResponse> getAllCommentByPostId(Integer postId);
     List<CommentResponse> getAllCommentByUserId(Long userId);
+    Integer countComments(Integer postId);
 
 }
