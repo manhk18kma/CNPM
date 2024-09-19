@@ -1,21 +1,21 @@
 package kma.cnpm.beapp.domain.order.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
-public class OrderItem {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private Integer productId;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "order_items")
+public class OrderItem extends AbstractEntity<Long> {
 
     private Integer quantity;
+
+    private Integer productId;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "order_id")
