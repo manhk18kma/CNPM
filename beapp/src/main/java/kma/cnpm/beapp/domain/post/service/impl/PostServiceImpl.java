@@ -7,6 +7,8 @@ import kma.cnpm.beapp.domain.post.dto.response.PostResponse;
 import kma.cnpm.beapp.domain.post.entity.Post;
 import kma.cnpm.beapp.domain.post.mapper.PostMapper;
 import kma.cnpm.beapp.domain.post.repository.PostRepository;
+import kma.cnpm.beapp.domain.post.service.CommentService;
+import kma.cnpm.beapp.domain.post.service.LikeService;
 import kma.cnpm.beapp.domain.post.service.PostService;
 import kma.cnpm.beapp.domain.product.service.ProductService;
 import kma.cnpm.beapp.domain.user.entity.User;
@@ -32,6 +34,8 @@ public class PostServiceImpl implements PostService {
 
     PostRepository postRepository;
     PostMapper postMapper;
+    CommentService commentService;
+    LikeService likeService;
     ProductService productService;
     AuthService authService;
     UserService userService;
@@ -82,6 +86,8 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
         PostResponse postResponse = postMapper.map(post);
+        postResponse.setCommentTotal(commentService.countComments(post.getId()));
+        postResponse.setLikeTotal(likeService.countLikes(post.getId()));
         if (post.getProductId() != null)
             postResponse.setProductResponse(productService.getProductById(post.getProductId()));
         return postResponse;
@@ -91,6 +97,8 @@ public class PostServiceImpl implements PostService {
     public PostResponse getPostByProductId(Integer productId) {
         Post post = postRepository.findByProductId(productId);
         PostResponse postResponse = postMapper.map(post);
+        postResponse.setCommentTotal(commentService.countComments(post.getId()));
+        postResponse.setLikeTotal(likeService.countLikes(post.getId()));
         if (post.getProductId() != null)
             postResponse.setProductResponse(productService.getProductById(post.getProductId()));
         return postResponse;
@@ -102,6 +110,8 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
+                    postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
                         postResponse.setProductResponse(
                                 productService.getProductById(postResponse.getProductResponse().getId()));
@@ -116,6 +126,8 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
+                    postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
                         postResponse.setProductResponse(
                                 productService.getProductById(postResponse.getProductResponse().getId()));
@@ -130,6 +142,8 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
+                    postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
                         postResponse.setProductResponse(
                                 productService.getProductById(postResponse.getProductResponse().getId()));
@@ -149,6 +163,8 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
+                    postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
                         postResponse.setProductResponse(
                                 productService.getProductById(postResponse.getProductResponse().getId()));

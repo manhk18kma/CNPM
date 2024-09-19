@@ -62,4 +62,12 @@ public class CommentController {
                 commentService.getAllCommentByUserId(userId));
     }
 
+    @GetMapping("/count/{postId}")
+    public ResponseData<Integer> countComments(@PathVariable Integer postId) {
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Hiển thị tổng số lượng bình luận bài đăng thành công",
+                LocalDateTime.now(),
+                commentService.countComments(postId));
+    }
+
 }
