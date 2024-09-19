@@ -21,7 +21,10 @@ export class InforComponent implements OnInit {
 
   ngOnInit(): void {
     // let id = this.route.parent?.snapshot.paramMap.get('id')!;
+    let gender = ''
     // @ts-ignore
     this.userDetail = JSON.parse(sessionStorage.getItem('userProfile'));
+    this.userDetail.gender = this.userService.getGender(this.userDetail.gender,gender);
+
   }
 }
