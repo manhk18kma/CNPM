@@ -1,11 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../service/auth/auth.service";
-import {CategoryService} from "../../category.service";
-import {PostService} from "../../post.service";
+import {CategoryService} from "../../service/category.service";
+import {PostService} from "../../service/post.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {ToastrService} from "ngx-toastr";
 import {DomSanitizer} from "@angular/platform-browser";
+import {CommentsService} from "../../service/comments.service";
+import {catchError, of, tap} from "rxjs";
 
 @Component({
   selector: 'app-posts',
@@ -24,6 +26,9 @@ export class PostsComponent implements OnInit {
   userDetail: any;
   id: any;
   imagePreviewUrls: any = [];
+  selectedPost: any = null;
+  newComment: any = {}
+  comments : any;
   constructor(public authService: AuthService,
               private categoryService: CategoryService,
               private postService: PostService,
@@ -31,7 +36,8 @@ export class PostsComponent implements OnInit {
               private spinner: NgxSpinnerService,
               private toast: ToastrService,
               private router: Router,
-              private sanitizer: DomSanitizer
+              private sanitizer: DomSanitizer,
+              private cmtService: CommentsService
               ) {
   }
 
@@ -42,7 +48,56 @@ export class PostsComponent implements OnInit {
     this.userDetail = JSON.parse(sessionStorage.getItem('userProfile'));
     this.getPostsByUserID(this.id)
   }
+  openCommentModal(post: any) {
+    this.newComment.content = ''
+    this.selectedPost = post;
+    this.getCommentsByPost(post.id);
+  }
+  get lockScroll() {
+    return {
+      'overflow-y': this.selectedPost ? 'hidden' : 'auto',
+      'position': this.selectedPost ? 'fixed' : 'relative',
+      'width': '100%'
+    };
+  }
+  getCommentsByPost(id: any){
+    this.cmtService.getCommentsByPostID(id).pipe(
+      tap(res => {
+        this.comments = res.data;
+      }),
+      catchError(error => {
+        this.toast.error(error.message);
+        return of([]);
+      })
+    ).subscribe();
+  }
+  addComment(post: any) {
+    if (this.newComment.content.trim() == '') {
+      this.selectedPost = null
+      this.toast.warning('Chưa nhập nội dung bình luận')
+    } else {
+      this.newComment.postId = post.id;
+      this.spinner.show()
+      setTimeout(()=>{
+        this.cmtService.sendComment(this.newComment).pipe(
+          tap(res => {
+            this.spinner.hide()
+            this.selectedPost = null
+            this.toast.success(res.message);
+          }),
+          catchError(error => {
+            this.toast.error(error.message);
+            return of(null);
+          })
+        ).subscribe();
+      },1000)
+    }
 
+
+  }
+  closeModal() {
+    this.selectedPost = null;
+  }
   addProd() {
     this.categories = {};
     this.addProduct = true;
@@ -133,4 +188,6 @@ export class PostsComponent implements OnInit {
       this.posts = res.data
     })
   }
+
+
 }

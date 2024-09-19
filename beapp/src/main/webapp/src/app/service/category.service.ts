@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {CookieService} from "ngx-cookie-service";
-import {TokenService} from "./service/token/token.service";
+import {TokenService} from "./token/token.service";
 import {ToastrService} from "ngx-toastr";
 import {Observable} from "rxjs";
-import {User} from "./service/dto/user";
+import {User} from "./dto/user";
 
 @Injectable({
   providedIn: 'root'

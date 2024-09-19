@@ -803,3 +803,38 @@ button:disabled {
   margin: 0 auto;
   cursor: pointer;
 }
+/* Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Màu đen với độ trong suốt 50% */
+  z-index: 1000; /* Đảm bảo overlay nằm trên mọi thứ */
+}
+
+.modal-fix {
+  background-color: #fff;
+  z-index: 1001; /* Đảm bảo modal nằm trên overlay */
+  max-height: 600px;
+  overflow: scroll;
+}
+body{margin-top:20px;}
+
+.comment-wrapper .panel-body {
+  max-height:650px;
+  overflow:auto;
+}
+
+.comment-wrapper .media-list .media img {
+  width: 30px;
+  height: 30px;
+  border:2px solid #e5e7e8;
+}
+
+.comment-wrapper .media-list .media {
+  border-bottom:1px dashed #efefef;
+  margin-bottom:25px;
+}
+

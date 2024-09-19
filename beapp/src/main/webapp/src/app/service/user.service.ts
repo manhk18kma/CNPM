@@ -37,4 +37,15 @@ export class UserService {
     const params = new HttpParams().set('userId', userId.toString());
     return this.http.get(`${this.baseURL}`,{params});
   }
+
+  getGender(gender: any, data: any) {
+    if (gender === 'FEMALE') {
+      data = 'Nữ'
+    } else if (gender === 'MALE') {
+      data = 'Nam'
+    } else {
+      data = 'Khác'
+    }
+    return data;
+  }
 }

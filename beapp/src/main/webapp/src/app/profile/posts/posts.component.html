@@ -1,156 +1,245 @@
-<div class="profile-content decor-text-1">
-  <div class="tab-content p-0">
-    <div class="tab-pane fade active show" id="profile-post1">
+
+  <div *ngIf="selectedPost" class="modal-overlay" (click)="closeModal()"></div>
+  <div class="profile-content decor-text-1">
+    <div class="tab-content p-0">
+      <div class="tab-pane fade active show" id="profile-post1">
         <div *ngIf="!openPost" (click)="openPost = true" class="container cube decor-text-1">
           <span class="side top">Bạn đang cần đăng bài?</span>
         </div>
-      <ul class="timeline1" *ngIf="openPost">
-        <li>
-          <div class="timeline-body" >
-            <div class="timeline-header">
-              <i class="bi bi-x" (click)="openPost = false" style="position: absolute;right: 30px;top: 0; font-size: 20px"></i>
-            </div>
-            <div>
+        <ul class="timeline1" *ngIf="openPost">
+          <li>
+            <div class="timeline-body" >
+              <div class="timeline-header">
+                <i class="bi bi-x" (click)="openPost = false" style="position: absolute;right: 30px;top: 0; font-size: 20px"></i>
+              </div>
               <div>
+                <div>
                       <textarea (input)="onInput($event)"
                                 placeholder="Nội dung..."
                                 [(ngModel)]="post.content" class="auto-resize-textarea text-secondary">
                       </textarea>
-              </div>
-            </div>
-            <hr class="faded-line">
-            <i class="bi bi-plus" *ngIf="!addProduct" (click)="addProd()">Thêm sản phẩm</i>
-            <div *ngIf="addProduct">
-              <div style="position: relative">
-                <p class="decor-text" style="font-weight: bold">Thông tin sản phẩm</p>
-                <i class="bi bi-x decor-text" style="position: absolute;right: 10px; top: 0"
-                   (click)="cancelAddProd()"></i>
+                </div>
               </div>
               <hr class="faded-line">
-              <div style="position: relative">
+              <i class="bi bi-plus" *ngIf="!addProduct" (click)="addProd()">Thêm sản phẩm</i>
+              <div *ngIf="addProduct">
+                <div style="position: relative">
+                  <p class="decor-text" style="font-weight: bold">Thông tin sản phẩm</p>
+                  <i class="bi bi-x decor-text" style="position: absolute;right: 10px; top: 0"
+                     (click)="cancelAddProd()"></i>
+                </div>
+                <hr class="faded-line">
+                <div style="position: relative">
                       <textarea (input)="onInput($event)"
                                 placeholder="Nhập tên sản phẩm"
                                 [(ngModel)]="product.name" class="auto-resize-textarea text-secondary">
                       </textarea>
 
-              </div>
-              <hr class="faded-line">
-              <div>
+                </div>
+                <hr class="faded-line">
+                <div>
                       <textarea (input)="onInput($event)"
                                 placeholder="Nhập mô tả sản phẩm..."
                                 [(ngModel)]="product.description" class="auto-resize-textarea text-secondary">
                       </textarea>
-              </div>
-              <hr class="faded-line">
-              <div class="flex">
-                <div>
-                  Số lượng:
-                  <input class="input-post" type="number" name="quantity" [(ngModel)]="product.quantity">
                 </div>
-                <div>
-                  Loại sản phẩm:
-                  <select class="form-control" (change)="onCategoryChange($event)">
-                    <option *ngFor="let i of categories" [value]="i.id">{{i.name}}</option>
-                  </select>
-                </div>
-                <div>
-                  Giá/sản phẩm:
-                  <input class="input-post" type="number" name="price" [(ngModel)]="product.price">
-                </div>
-              </div>
-              <hr class="faded-line">
-
-              <input type="file" id="file1" hidden="" (change)="onFilesSelected($event)" multiple>
-              <label for="file1"><i class="bi bi-image-fill"></i></label>
-              <div class="image-grid">
-                <div class="image-item" *ngFor="let image of imagePreviewUrls">
-                  <img [src]="image" alt="User uploaded image">
-                </div>
-              </div>
-            </div>
-            <div class="timeline-comment-box">
-              <div class="input">
-                <form>
-                  <div class="input-group">
-                    <button class="btn btn-secondary f-s-12 rounded-0 w-100" type="button" [disabled]="!post.content"
-                            (click)="upPost()">Gửi
-                    </button>
+                <hr class="faded-line">
+                <div class="flex">
+                  <div>
+                    Số lượng:
+                    <input class="input-post" type="number" name="quantity" [(ngModel)]="product.quantity">
                   </div>
-                </form>
+                  <div>
+                    Loại sản phẩm:
+                    <select class="form-control" (change)="onCategoryChange($event)">
+                      <option *ngFor="let i of categories" [value]="i.id">{{i.name}}</option>
+                    </select>
+                  </div>
+                  <div>
+                    Giá/sản phẩm:
+                    <input class="input-post" type="number" name="price" [(ngModel)]="product.price">
+                  </div>
+                </div>
+                <hr class="faded-line">
+
+                <input type="file" id="file1" hidden="" (change)="onFilesSelected($event)" multiple>
+                <label for="file1"><i class="bi bi-image-fill"></i></label>
+                <div class="image-grid">
+                  <div class="image-item" *ngFor="let image of imagePreviewUrls">
+                    <img [src]="image" alt="User uploaded image">
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-comment-box">
+                <div class="input">
+                  <form>
+                    <div class="input-group">
+                      <button class="btn btn-secondary f-s-12 rounded-0 w-100" type="button" [disabled]="!post.content"
+                              (click)="upPost()">Gửi
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
-<div class="profile-content decor-text-1">
-  <div class="tab-content p-0">
-    <div class="tab-pane fade active show" id="profile-post">
-      <ul class="timeline">
-        <li *ngFor="let post of posts">
-
-          <div class="timeline-body">
-            <div class="timeline-header">
+  <div class="profile-content decor-text-1">
+    <div class="tab-content p-0">
+      <div class="tab-pane fade active show" id="profile-post">
+        <ul class="timeline">
+          <li *ngFor="let post of posts">
+            <div *ngIf="selectedPost != post" class="timeline-body">
+              <div class="timeline-header">
                       <span class="userimage"><img
                         src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
                         alt=""></span>
-              <span class="username"><a>{{userDetail.fullName}}</a> <small></small></span>
-              <div class="pull-right text-muted">
-                    <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
-                    <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
+                <span class="username"><a>{{userDetail.fullName}}</a> <small></small></span>
+                <div class="pull-right text-muted">
+                  <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
+                  <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
+                </div>
               </div>
-            </div>
-            <div class="timeline-content">
-              <p style="font-weight: bold">
-                {{post.content}}
-              </p>
-            </div>
-            <hr *ngIf="post.product.id != null" class="faded-line">
-            <div *ngIf="post.product.id != null" class="timeline-content" style="flex-wrap: wrap">
-              <p>
-                Tên sản phẩm: {{post.product.name}}
-              </p>
-              <p>
-                Mô tả: {{post.product.description}}
-              </p>
-              <p>
-                Số lượng: {{post.product.quantity}}
-              </p>
-              <p>
-                Loại sản phẩm: {{post.product.categoryName}}
-              </p>
-              <div class="image-grid">
-                <div class="image-item" *ngFor="let media of post.product.medias">
-                  <img [src]="media.url" alt="User uploaded image">
+              <div class="timeline-content">
+                <p style="font-weight: bold">
+                  {{post.content}}
+                </p>
+              </div>
+              <hr *ngIf="post.product.id != null" class="faded-line">
+              <div *ngIf="post.product.id != null" class="timeline-content" style="flex-wrap: wrap">
+                <p>
+                  Tên sản phẩm: {{post.product.name}}
+                </p>
+                <p>
+                  Mô tả: {{post.product.description}}
+                </p>
+                <p>
+                  Số lượng: {{post.product.quantity}}
+                </p>
+                <p>
+                  Loại sản phẩm: {{post.product.categoryName}}
+                </p>
+                <div class="image-grid">
+                  <div class="image-item" *ngFor="let media of post.product.medias">
+                    <img [src]="media.url" alt="User uploaded image">
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-likes">
+<!--                <div class="stats-right">-->
+<!--                  <span class="stats-text">21 Bình luận</span>-->
+<!--                </div>-->
+                <div class="stats">
+                  <span class="stats-total">4</span>
+                  <i class="bi bi-heart-fill p-1" style="color: red"></i>
+                </div>
+              </div>
+
+              <div class="timeline-comment-box rounded-0">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-heart decor-text" style="color: red;cursor: pointer"></i>
+                  <span class="separator">|</span>
+                  <i (click)="openCommentModal(post)" class="bi bi-chat-dots decor-text" style="color: #5dc486;cursor: pointer"></i>
+                  <span class="separator">|</span>
+                  <i class="bi bi-cart-plus decor-text" style="color: #000000;cursor: pointer"></i>
                 </div>
               </div>
             </div>
-            <div class="timeline-likes">
-              <div class="stats-right">
-                <span class="stats-text">25 Chia sẻ</span>
-                <span class="stats-text">21 Bình luận</span>
-              </div>
-              <div class="stats">
-                <span class="stats-total">4</span>
-                <i class="bi bi-heart-fill p-1" style="color: red"></i>
+            <div *ngIf="selectedPost == post">
+              <div class="timeline-body modal-fix">
+                <div class="timeline-header">
+                      <span class="userimage"><img
+                        src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
+                        alt=""></span>
+                  <span class="username"><a>{{userDetail.fullName}}</a> <small></small></span>
+                  <div class="pull-right text-muted">
+                    <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
+                    <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
+                  </div>
+                </div>
+                <div class="timeline-content">
+                  <p style="font-weight: bold">
+                    {{post.content}}
+                  </p>
+                </div>
+                <hr *ngIf="post.product.id != null" class="faded-line">
+                <div *ngIf="post.product.id != null" class="timeline-content" style="flex-wrap: wrap">
+                  <p>
+                    Tên sản phẩm: {{post.product.name}}
+                  </p>
+                  <p>
+                    Mô tả: {{post.product.description}}
+                  </p>
+                  <p>
+                    Số lượng: {{post.product.quantity}}
+                  </p>
+                  <p>
+                    Loại sản phẩm: {{post.product.categoryName}}
+                  </p>
+                  <div class="image-grid">
+                    <div class="image-item" *ngFor="let media of post.product.medias">
+                      <img [src]="media.url" alt="User uploaded image">
+                    </div>
+                  </div>
+                </div>
+                <div class="timeline-likes">
+                  <div class="stats-right">
+                    <span class="stats-text">21 Bình luận</span>
+                  </div>
+                  <div class="stats">
+                    <span class="stats-total">4</span>
+                    <i class="bi bi-heart-fill p-1" style="color: red"></i>
+                  </div>
+                </div>
+                <hr *ngIf="post.product.id != null" class="faded-line">
+<!--                comment-->
+                <div class="container decor-text-1">
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                      <div class="comment-wrapper">
+                        <div class="panel panel-info">
+                          <div class="panel-heading">
+                            Nhận xét
+                          </div>
+                          <div class="panel-body" >
+                            <textarea [(ngModel)]="newComment.content" class="form-control rounded-0"  placeholder="Cảm nghĩ của bạn" rows="3"></textarea>
+                            <br>
+                            <button type="button" (click)="addComment(post)" class="btn btn-secondary pull-right rounded-0">Bình luận</button>
+                            <div class="clearfix"></div>
+                            <hr>
+                            <ul class="media-list">
+                              <li style="list-style: none" class="media" *ngFor="let comment of comments">
+                                <a class="pull-left">
+                                  <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" alt="">
+                                </a>
+                                <div class="media-body">
+                                  <strong class="text-success">{{comment.userName}}</strong>
+                                  <span class=" pull-right">
+                                  <small class="text-muted p-2">{{ comment.createdAt | date: ' HH:mm:ss '}}</small>
+                                    <small class="text-muted">{{ comment.createdAt | date: 'dd/MM/yyyy'}}</small>
+                                </span>
+                                  <p>
+                                    {{comment.content}}
+                                  </p>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+          </li>
 
-            <div class="timeline-comment-box rounded-0">
-              <div class="d-flex align-items-center">
-                <i class="bi bi-heart decor-text" style="color: red;cursor: pointer"></i>
-                <span class="separator">|</span>
-                <i class="bi bi-chat-dots decor-text" style="color: #5dc486;cursor: pointer"></i>
-                <span class="separator">|</span>
-                <i class="bi bi-cart-plus decor-text" style="color: #000000;cursor: pointer"></i>
-              </div>
-            </div>
-          </div>
-        </li>
-
-      </ul>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
+
