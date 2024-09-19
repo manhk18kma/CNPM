@@ -57,6 +57,10 @@ public class OrderServiceImpl implements OrderService {
 //        // logic trừ tiền
 //        // nếu số tiền trong tài khoản bé hơn totalAmount => fail
 //
+//        // tạo yêu cầu giao hàng
+//        // tạo thông báo cho cả seller và buyer
+//
+//
 //        orderRepository.save(order);
 //        return order.getId().toString();
         return null;
