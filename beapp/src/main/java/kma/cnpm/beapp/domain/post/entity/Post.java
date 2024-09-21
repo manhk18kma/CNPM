@@ -15,13 +15,17 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "posts")
 public class Post extends AbstractEntity<Integer> {
-    private String title;
-    private String description;
+
+    private String content;
     private String status;
+    private Boolean isApproved;
     private Long userId;
     private Integer productId;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes;
 
 }

@@ -15,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -33,7 +32,7 @@ public class PostController {
     public ResponseData<String> createPost(@RequestBody @Valid PostRequest postRequest) {
         postService.createPost(postRequest);
         return new ResponseData<>(HttpStatus.CREATED.value(),
-                "Post created successfully",
+                "Tạo bài đăng thành công",
                 LocalDateTime.now());
     }
 
@@ -42,7 +41,7 @@ public class PostController {
                                            @RequestBody @Valid PostRequest postRequest) {
         postService.updatePost(id, postRequest);
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Post updated successfully",
+                "Chỉnh sửa bài đăng thành công",
                 LocalDateTime.now());
     }
 
@@ -50,14 +49,14 @@ public class PostController {
     public ResponseData<String> deletePost(@PathVariable Integer id) {
         postService.deletePost(id);
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Post deleted successfully",
+                "Xóa bài đăng thành công",
                 LocalDateTime.now());
     }
 
     @GetMapping("/{id}")
     public ResponseData<PostResponse> getPostsById(@PathVariable Integer id) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Get posts by id successfully",
+                "Hiển thị bài đăng bằng ID thành công",
                 LocalDateTime.now(),
                 postService.getPostById(id));
     }
@@ -65,7 +64,7 @@ public class PostController {
     @GetMapping("/product/{productId}")
     public ResponseData<PostResponse> getPostsByProductId(@PathVariable Integer productId) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Get posts by id successfully",
+                "Hiển thị bài đăng bằng ID sản phẩm thành công",
                 LocalDateTime.now(),
                 postService.getPostByProductId(productId));
     }
@@ -73,7 +72,7 @@ public class PostController {
     @GetMapping("/search/{title}")
     public ResponseData<List<PostResponse>> findPostsByTitle(@PathVariable String title) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "Find posts by title successfully",
+                "Tìm kiếm bài đăng bằng nội dung thành công",
                 LocalDateTime.now(),
                 postService.findPostByTitle(title));
     }
@@ -81,7 +80,7 @@ public class PostController {
     @GetMapping("/user/{userId}")
     public ResponseData<List<PostResponse>> getPostByUserId(@PathVariable Long userId) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "get post by user ID successfully",
+                "Hiển thị bài đăng bằng ID người dùng thành công",
                 LocalDateTime.now(),
                 postService.getPostsByUserId(userId));
     }
@@ -89,9 +88,17 @@ public class PostController {
     @GetMapping("/status/{status}")
     public ResponseData<List<PostResponse>> getPostByStatus(@PathVariable String status) {
         return new ResponseData<>(HttpStatus.OK.value(),
-                "get post by status successfully",
+                "Hiển thị bài đăng bằng trạng thái thành công",
                 LocalDateTime.now(),
                 postService.getPostsByStatus(status));
+    }
+
+    @GetMapping("/approve/{approve}")
+    public ResponseData<List<PostResponse>> getPostByIsApproved(@PathVariable Boolean approve) {
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Hiển thị bài đăng bằng trạng thái duyệt thành công",
+                LocalDateTime.now(),
+                postService.getPostsByApproved(approve));
     }
 
 }

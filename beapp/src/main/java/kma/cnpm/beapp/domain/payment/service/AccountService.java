@@ -2,10 +2,12 @@ package kma.cnpm.beapp.domain.payment.service;
 
 import kma.cnpm.beapp.domain.common.dto.BalanceDTO;
 import kma.cnpm.beapp.domain.common.dto.BankDTO;
+import kma.cnpm.beapp.domain.common.dto.PageResponse;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.payment.dto.request.AddBankRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.AccountResponse;
+import kma.cnpm.beapp.domain.payment.dto.response.BankResponse;
 import kma.cnpm.beapp.domain.payment.entity.Account;
 import kma.cnpm.beapp.domain.payment.entity.AccountHasBank;
 import kma.cnpm.beapp.domain.payment.entity.Bank;
@@ -125,6 +127,27 @@ public class AccountService {
         return BalanceDTO.builder()
                 .balance( accountRepository.getBalance(userId))
                 .accountId(account.getId())
+                .build();
+    }
+
+    public PageResponse<List<BankResponse>> getBanks() {
+        List<Bank> banks = bankRepository.findAll();
+        List<BankResponse> responses = banks.stream()
+                .map(bank -> {
+                    return BankResponse.builder()
+                            .bankId(bank.getId())
+                            .bankName(bank.getBankName())
+                            .bankAvt(bank.getBankAvt())
+                            .bankCode(bank.getBankCode())
+                            .build();
+                }).collect(Collectors.toList());
+
+        return PageResponse.<List<BankResponse>>builder()
+                .pageSize(banks.size())
+                .totalElements(banks.size())
+                .totalPages(1)
+                .pageNo(0)
+                .items(responses)
                 .build();
     }
 }

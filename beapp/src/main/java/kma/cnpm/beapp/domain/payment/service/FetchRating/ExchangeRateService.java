@@ -57,89 +57,37 @@ public class ExchangeRateService implements CommandLineRunner {
 
 
         // Kiểm tra số lượng ngân hàng hiện có trong cơ sở dữ liệu
-        if (bankRepository.count() != 2) {
-            // Xóa tất cả ngân hàng nếu số lượng không bằng 12
+        if (bankRepository.count() != 4) {
             bankRepository.deleteAll();
-
-            // Tạo các đối tượng Bank
             Bank ncb = Bank.builder()
                     .bankCode("NCB")
                     .bankName("Ngân hàng Quốc Dân")
-//                    .bankAvt()
+                    .bankAvt("https://tse1.mm.bing.net/th?id=OIP.VGBudb8POsvkBFID6vX6swHaCl&pid=Api&P=0&h=220")
                     .build();
 
             Bank mb = Bank.builder()
                     .bankCode("MB")
                     .bankName("Ngân hàng Quân Đội")
-//                    .bankAvt()
+                    .bankAvt("https://tse1.mm.bing.net/th?id=OIP.3MJ8rPFa2oVl383lKz7mSgHaEO&pid=Api&P=0&h=220")
                     .build();
 
-//            Bank vcb = Bank.builder()
-//                    .bankCode("VCB")
-//                    .bankName("Ngân hàng Ngoại Thương Việt Nam")
-//                    .build();
-//
-//            Bank bidv = Bank.builder()
-//                    .bankCode("BIDV")
-//                    .bankName("Ngân hàng Đầu Tư và Phát Triển Việt Nam")
-//                    .build();
-//
-//            Bank tech = Bank.builder()
-//                    .bankCode("Techcombank")
-//                    .bankName("Ngân hàng Kỹ Thương Việt Nam")
-//                    .build();
-//
-//            Bank acb = Bank.builder()
-//                    .bankCode("ACB")
-//                    .bankName("Ngân hàng Á Châu")
-//                    .build();
-//
-//            Bank agribank = Bank.builder()
-//                    .bankCode("Agribank")
-//                    .bankName("Ngân hàng Nông Nghiệp và Phát Triển Nông Thôn Việt Nam")
-//                    .build();
-//
-//            Bank sacombank = Bank.builder()
-//                    .bankCode("Sacombank")
-//                    .bankName("Ngân hàng Sài Gòn Thương Tín")
-//                    .build();
-//
-//            Bank vpbank = Bank.builder()
-//                    .bankCode("VPBank")
-//                    .bankName("Ngân hàng Việt Nam Thịnh Vượng")
-//                    .build();
-//
-//            Bank vietinbank = Bank.builder()
-//                    .bankCode("Vietinbank")
-//                    .bankName("Ngân hàng Công Thương Việt Nam")
-//                    .build();
-//
-//            Bank eximbank = Bank.builder()
-//                    .bankCode("Eximbank")
-//                    .bankName("Ngân hàng Xuất Nhập Khẩu Việt Nam")
-//                    .build();
-//
-//            Bank hdbank = Bank.builder()
-//                    .bankCode("HDBank")
-//                    .bankName("Ngân hàng Phát Triển TP. Hồ Chí Minh")
-//                    .build();
+            Bank vcb = Bank.builder()
+                    .bankCode("VCB")
+                    .bankName("Ngân hàng Ngoại Thương Việt Nam")
+                    .bankAvt("https://tse2.mm.bing.net/th?id=OIP.g6sI-yqchxDoF83iGVcr0QAAAA&pid=Api&P=0&h=220")
+                    .build();
 
-            // Tạo danh sách và thêm các đối tượng Bank vào danh sách
+            Bank bidv = Bank.builder()
+                    .bankCode("BIDV")
+                    .bankName("Ngân hàng Đầu Tư và Phát Triển Việt Nam")
+                    .bankAvt("https://tse1.mm.bing.net/th?id=OIP.PtWsivDxUrqOwB3TbLak9wHaD3&pid=Api&P=0&h=220")
+                    .build();
+
             List<Bank> banks = new ArrayList<>();
             banks.add(ncb);
             banks.add(mb);
-//            banks.add(vcb);
-//            banks.add(bidv);
-//            banks.add(tech);
-//            banks.add(acb);
-//            banks.add(agribank);
-//            banks.add(sacombank);
-//            banks.add(vpbank);
-//            banks.add(vietinbank);
-//            banks.add(eximbank);
-//            banks.add(hdbank);
-
-            // Lưu danh sách Bank vào cơ sở dữ liệu
+            banks.add(vcb);
+            banks.add(bidv);
             bankRepository.saveAll(banks);
         }
     }

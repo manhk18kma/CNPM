@@ -11,11 +11,11 @@ export class TokenService {
   ) {
   }
 
-  getRolesFormToken() {
+  getIDUserFromToken() {
     const accessToken = this.cookieService.get('accessToken')
     if (accessToken) {
       const tokenData = JSON.parse(atob(accessToken.split('.')[1]));
-      return tokenData.roles
+      return tokenData.userId;
     } else {
       return [""]
     }

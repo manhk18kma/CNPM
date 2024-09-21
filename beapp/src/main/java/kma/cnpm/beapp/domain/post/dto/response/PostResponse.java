@@ -15,10 +15,13 @@ import java.util.Date;
 @AllArgsConstructor
 public class PostResponse {
 
-    private String title;
-    private String description;
+    private Integer id;
+    private String content;
     private String status;
+    private Boolean isApproved;
     private Long userId;
+    private Integer commentTotal;
+    private Integer likeTotal;
     private Date createdAt;
     private Date updatedAt;
 

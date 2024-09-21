@@ -1,7 +1,7 @@
 import {Component, HostListener} from '@angular/core';
 import {UserService} from "./service/user.service";
 import {Router} from "@angular/router";
-
+import {TokenService} from "./service/token/token.service";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,7 +12,11 @@ export class AppComponent {
   isTransparent = false;
   clickSearch = false;
   key: any;
-  constructor(public userService: UserService, private router: Router) {
+
+  constructor(public userService: UserService,
+              private router: Router,
+              private tokenService: TokenService,
+              ) {
   }
 
   @HostListener('window:scroll', [])
@@ -20,11 +24,18 @@ export class AppComponent {
     const scrollOffset = window.pageYOffset;
     this.isTransparent = scrollOffset > 50;
   }
+
   openInputSearch() {
     this.clickSearch = true;
   }
-  closeInputSearch(){
+
+  closeInputSearch() {
     this.clickSearch = false;
+  }
+  navigateProfile(){
+    const id = this.tokenService.getIDUserFromToken();
+    this.router.navigate(['/profile', id]);
+
   }
   sendResultSearch(key: any) {
     this.clickSearch = false;

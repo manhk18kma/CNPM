@@ -9,27 +9,27 @@
             <tbody>
             <tr>
               <th class="decor-text"><strong><i class="bi bi-envelope"></i></strong></th>
-              <td>fskhanh01@gmail.com</td>
+              <td>{{userDetail?.email}}</td>
             </tr>
             <tr>
               <th class="decor-text"><strong><i class="bi bi-telephone"></i></strong></th>
-              <td>0971011823</td>
+              <td>{{userDetail?.phone}}</td>
             </tr>
             <tr>
               <th class="decor-text"><strong><i class="bi bi-gender-ambiguous"></i></strong></th>
-              <td>Nam</td>
+              <td>{{userDetail?.gender}}</td>
             </tr>
             <tr>
               <th class="decor-text"><strong><i class="bi bi-geo"></i></strong></th>
-              <td>Nam Định</td>
+              <td></td>
             </tr>
             <tr>
               <th class="decor-text"><strong><i class="bi bi-balloon-heart"></i></strong></th>
-              <td>29/04/2003</td>
+              <td>{{userDetail?.dateOfBirth | date: 'dd/MM/yyyy'}}</td>
             </tr>
             <tr>
               <th class="decor-text"><strong><i class="bi bi-piggy-bank"></i></strong></th>
-              <td>MB Bank - 3029042003</td>
+<!--              <td>MB Bank - 3029042003</td>-->
             </tr>
             </tbody>
           </table>

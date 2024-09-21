@@ -183,10 +183,12 @@ private boolean isExpireTime(LocalDateTime createdAt) {
                 .orElseThrow(() -> new AppException(AppErrorCode.UNAUTHENTICATED));
 
         User user = findUserByEmail(email);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        String salt = user.getSalt();
+
+        String encodedPassword = encodePassword(request.getPassword(), salt);
+        user.setPassword(encodedPassword);
         user.setTokenDevice(request.getTokenDevice());
         User savedUser = userRepository.save(user);
-
 //        Remove after used
         activeResetTokenRepository.deleteTokenBySub(email, TokenType.RESET_TOKEN);
 

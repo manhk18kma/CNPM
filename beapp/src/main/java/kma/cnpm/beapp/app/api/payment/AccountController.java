@@ -5,10 +5,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import kma.cnpm.beapp.domain.common.dto.BankDTO;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
 import kma.cnpm.beapp.domain.payment.dto.request.AddBankRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.AccountResponse;
 import kma.cnpm.beapp.domain.payment.service.AccountService;
+import kma.cnpm.beapp.domain.user.service.AuthService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/accounts")
@@ -28,6 +31,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AccountController {
     AccountService accountService;
+    AuthService authService;
 
     @Operation(
             summary = "Add Bank to Account",
@@ -58,6 +62,22 @@ public class AccountController {
         return new ResponseData<>(
                 HttpStatus.NO_CONTENT.value(),
                 "Ngân hàng đã được xóa thành công",
+                LocalDateTime.now(),
+                response
+        );
+    }
+
+    @GetMapping("/banks")
+    @Operation(
+            summary = "Retrieve the list of banks associated with the user",
+            description = "This API retrieves a list of banks linked to the authenticated user. Call with BEARER TOKEN"
+    )
+    public ResponseData<List<BankDTO>> getBanksOfUser() {
+        Long userID = Long.valueOf(authService.getAuthenticationName());
+        List<BankDTO> response = accountService.getBanksOfUser(userID);
+        return new ResponseData<>(
+                HttpStatus.OK.value(),
+                "Lấy danh sách ngân hàng thành công",
                 LocalDateTime.now(),
                 response
         );

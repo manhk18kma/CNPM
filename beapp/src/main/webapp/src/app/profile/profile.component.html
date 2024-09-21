@@ -1,43 +1,49 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-<div class="container">
+<div class="container" style="background: white">
   <div class="row">
     <div class="col-md-12">
-      <div id="content" class="content content-full-width">
+      <div >
         <!-- begin profile -->
         <div class="profile">
           <div class="profile-header">
-            <div class="profile-header-cover"></div>
-            <div class="profile-header-content d-flex align-content-center align-items-center">
+
+            <div class="profile-header-content d-flex align-content-center align-items-center" style="background: white">
               <div class="profile-header-img">
                 <img
-                  src="https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-1/387179218_1372127113699239_4722949875462203661_n.jpg?stp=cp6_dst-jpg_s200x200&_nc_cat=100&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeEMHzZB9xdzLvgDtt8KlPzBCLmlQ6JZlD4IuaVDolmUPmXPvytvZsC_HWopgnDUpV7nNW21HjjJk9MvkKusJzNc&_nc_ohc=sqvr_3lGhUYQ7kNvgG-n-j3&_nc_ht=scontent.fhan2-4.fna&_nc_gid=ARUnIGg18PX29mgf98A3VQF&oh=00_AYCwyX9nr0P9zxWDWjdXEGmLtEilC7FyjCSyWJU0WU6W8w&oe=66DE4AF3"
+                  src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
                   alt="">
               </div>
 
               <div class="profile-header-info decor-text-1 m-lg-4" style="margin-left: 20px">
-                <h4 class="m-t-0 m-b-1">Duy Khanh</h4>
-                <p class=" text-secondary">Người mua</p>
-                <i class="bi bi-gear text-blue" style="font-size: 20px"></i>
+                <h4 class="m-t-0 m-b-1">{{userDetail?.fullName}}</h4>
+                <p class=" text-secondary">Người dùng</p>
+                <button class="Btn decor-text-1" (click)="authService.errorToLogout()">
 
+                  <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
+
+                  <div class="text">Đăng xuất</div>
+                </button>
               </div>
               <div class="profile-cover__info decor-text-0">
                 <ul class="nav">
-                  <li><strong>26</strong>Tổng bài viết</li>
-                  <li><strong>33</strong>Tổng sản phẩm đã bán</li>
-                  <li><strong>136</strong>Người theo dõi</li>
+                  <li><strong>{{userDetail?.totalPosts}}</strong>Tổng bài viết</li>
+                  <li><strong>{{userDetail?.totalSoldProducts}}</strong>Tổng sản phẩm đã bán</li>
+                  <li><strong>{{userDetail?.totalFollowers}}</strong>Người theo dõi</li>
+                  <li><strong>{{userDetail?.totalFollowers}}</strong>Đang theo dõi</li>
                 </ul>
               </div>
             </div>
-            <ul class="profile-header-tab nav nav-tabs mt-2 decor-text" style="cursor: pointer">
+            <ul class="profile-header-tab nav nav-tabs  decor-text" style="cursor: pointer">
+              <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+              <li class="nav-item">
+                <a routerLink="infor" routerLinkActive="active" class="nav-link_">
+                  Thông tin cá nhân
+                </a></li>
               <li class="nav-item">
                 <a routerLink="posts" routerLinkActive="active" class="nav-link_">
                   Bài đăng
                 </a>
               </li>
-              <li class="nav-item">
-                <a routerLink="infor" routerLinkActive="active" class="nav-link_">
-                  Thông tin cá nhân
-                </a></li>
               <li class="nav-item">
                 <a routerLink="photos" routerLinkActive="active" class="nav-link_">
                   Hình Ảnh/Video
@@ -53,6 +59,7 @@
 
       </div>
     </div>
+
   </div>
 </div>
 <router-outlet></router-outlet>

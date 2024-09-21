@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CommentRequest {
 
-    @NotNull(message = "Post ID cannot be null.")
+    @NotNull(message = "ID bài viết không được để trống.")
     private Integer postId;
 
-    @NotEmpty(message = "Content cannot be empty.")
-    @Size(max = 500, message = "Content cannot exceed 500 characters.")
+    @NotEmpty(message = "Nội dung không được để trống.")
+    @Size(max = 500, message = "Nội dung không được vượt quá 500 ký tự.")
     private String content;
 
 }

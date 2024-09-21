@@ -2,7 +2,7 @@
   <div *ngIf="!clickSearch" class="container d-flex justify-content-between align-items-center" >
     <a class="nav-link" style="padding: 0;margin:0;" routerLink="home" routerLinkActive="active">
 
-      <img width="60px"  src="https://scontent.xx.fbcdn.net/v/t1.15752-9/455858774_8087875641304761_1118486404120788017_n.png?stp=dst-png_p206x206&_nc_cat=102&ccb=1-7&_nc_sid=0024fc&_nc_eui2=AeFfJ9bi7uDt9XAU5YZkmwJwoV-PeT61FwWhX495PrUXBeETawCgn77WqAxk-GbTBMy7XgbE_Cf5gE7hUz73dmtU&_nc_ohc=2hVdKsGoRMYQ7kNvgF-PLyx&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_Q7cD1QGWuNTiNIxLLrRtqakAzEXBPEDBEs8ig_kCs2voPdLhSA&oe=66F103A0"/>
+      <img width="60px"  src="https://github.com/NgDuyKhanhs/image/blob/main/Remove-bg.ai_1726026879198.png?raw=true"/>
     </a>
 
     <ul class="navbar-nav d-flex justify-content-center">
@@ -36,7 +36,7 @@
         <a class="nav-link" routerLink="login" routerLinkActive="active">Đăng nhập</a>
       </li>
       <li class="nav-item decor-text" *ngIf="userService.authenticated()">
-        <a class="nav-link" routerLink="profile" routerLinkActive="active">
+        <a class="nav-link" (click)="navigateProfile()">
           <i class="bi bi-person" style="font-size: 20px;"></i>
         </a>
       </li>
