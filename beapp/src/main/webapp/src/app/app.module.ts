@@ -31,6 +31,11 @@ import { DeliveryComponent } from './order/delivery/delivery.component';
 import { CompleteComponent } from './order/complete/complete.component';
 import { CancelComponent } from './order/cancel/cancel.component';
 import {NgxSpinnerModule} from "ngx-spinner";
+import { BankComponent } from './bank/bank.component';
+import { AddressComponent } from './address/address.component';
+import { RechargeComponent } from './bank/recharge/recharge.component';
+import { WithdrawComponent } from './bank/withdraw/withdraw.component';
+import { AddComponent } from './bank/add/add.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +56,12 @@ import {NgxSpinnerModule} from "ngx-spinner";
     DetailmessageComponent,
     DeliveryComponent,
     CompleteComponent,
-    CancelComponent
+    CancelComponent,
+    BankComponent,
+    AddressComponent,
+    RechargeComponent,
+    WithdrawComponent,
+    AddComponent
   ],
   imports: [
     BrowserModule,

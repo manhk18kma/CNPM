@@ -20,7 +20,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   constructor(public authService: AuthService,
               private userService: UserService,
               private tokenService: TokenService,
-              private route: ActivatedRoute, private router: Router,
+              private route: ActivatedRoute,
+              private router: Router,
               private spinner: NgxSpinnerService,
               private toast: ToastrService) {
   }

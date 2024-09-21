@@ -5,7 +5,7 @@
       <img width="60px"  src="https://github.com/NgDuyKhanhs/image/blob/main/Remove-bg.ai_1726026879198.png?raw=true"/>
     </a>
 
-    <ul class="navbar-nav d-flex justify-content-center">
+    <ul class="navbar-nav d-flex justify-content-center" *ngIf="!isMobile">
       <li class="nav-item decor-text">
         <a class="nav-link" routerLink="home" routerLinkActive="active">Trang chủ</a>
       </li>
@@ -21,7 +21,7 @@
       </li>
     </ul>
 
-    <ul class="navbar-nav d-flex flex-row justify-content-end align-items-center">
+    <ul class="navbar-nav d-flex flex-row justify-content-end align-items-center" *ngIf="!isMobile">
       <li class="nav-item">
         <i class="bi bi-bell decor-text" style="cursor: pointer;margin-right: 10px"></i>
       </li>
@@ -29,6 +29,7 @@
         <a class="nav-link" routerLink="message" routerLinkActive="active">
           <i class="bi bi-chat-text" style="cursor: pointer;font-size: 20px;margin-right: 5px"></i>
         </a>
+      </li>
       <li class="nav-item">
         <i (click)="openInputSearch()" class="bi bi-search decor-text" style="cursor: pointer;margin-right: 5px"></i>
       </li>
@@ -47,6 +48,60 @@
 
       </li>
     </ul>
+    <!-- Mobile view -->
+    <ul class="navbar-nav" *ngIf="isMobile">
+      <li class="nav-item">
+        <i (click)="openInputSearch()" class="bi bi-search decor-text" style="cursor: pointer;margin-right: 5px"></i>
+      </li>
+      <li class="nav-item">
+        <button (click)="openMobileMenu()" class="btn">
+          <i class="bi bi-list"></i>
+        </button>
+      </li>
+    </ul>
+
+    <!-- Example mobile menu content -->
+    <div *ngIf="isMobile && showMobileMenu" class="mobile-menu">
+      <ul>
+        <li class="nav-item decor-text" *ngIf="userService.authenticated()">
+          <a class="nav-link" (click)="navigateProfile()">
+            Trang cá nhân
+          </a>
+        </li>
+        <hr class="faded-line">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="post" routerLinkActive="active">Bài đăng</a>
+          <!--        <i class="bi bi-caret-down-fill"></i>-->
+        </li>
+        <hr class="faded-line">
+        <li class="nav-item decor-text" *ngIf="userService.authenticated()">
+          <a class="nav-link" routerLink="message" routerLinkActive="active">
+            Tin nhắn
+          </a>
+        </li>
+<!--        <li class="nav-item">-->
+<!--          <a class="nav-link" routerLink="home" routerLinkActive="active">Hỗ trợ</a>-->
+<!--        </li>-->
+        <hr class="faded-line">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="order" routerLinkActive="active">Đơn hàng</a>
+        </li>
+        <hr class="faded-line">
+        <li class="nav-item">
+          <a class="nav-link" >Thông báo</a>
+        </li>
+        <li *ngIf="!userService.authenticated()" class="nav-item">
+          <hr class="faded-line">
+          <a class="nav-link" routerLink="login" routerLinkActive="active">Đăng nhập</a>
+        </li>
+        <hr class="faded-line">
+        <li class="nav-item decor-text" *ngIf="userService.authenticated()">
+          <a class="nav-link" routerLink="cart" routerLinkActive="active">
+            Giỏ hàng
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 
 </nav>
