@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.LIKE_EXISTED;
 import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.UNAUTHORIZED;
 
 @Service
@@ -36,6 +37,8 @@ public class LikeServiceImpl implements LikeService {
         User user = userService.findUserById(authService.getAuthenticationName());
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
+        if (likeRepository.existsByPostAndUserId(post, user.getId()))
+            throw new AppException(LIKE_EXISTED);
         Like like = new Like();
         like.setPost(post);
         like.setUserId(user.getId());
@@ -50,8 +53,17 @@ public class LikeServiceImpl implements LikeService {
         User user = userService.findUserById(authService.getAuthenticationName());
         if (!user.getId().equals(post.getUserId()))
             throw new AppException(UNAUTHORIZED);
+        likeRepository.existsByPostAndUserId(post, user.getId());
         Like like = likeRepository.findByPostAndUserId(post, user.getId());
         likeRepository.delete(like);
+    }
+
+    @Override
+    public Boolean liked(Integer postId) {
+        User user = userService.findUserById(authService.getAuthenticationName());
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
+        return likeRepository.existsByPostAndUserId(post, user.getId());
     }
 
     @Override
