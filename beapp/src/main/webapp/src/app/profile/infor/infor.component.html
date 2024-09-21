@@ -19,17 +19,27 @@
               <th class="decor-text"><strong><i class="bi bi-gender-ambiguous"></i></strong></th>
               <td>{{userDetail?.gender}}</td>
             </tr>
-            <tr>
+            <tr style="cursor: pointer">
               <th class="decor-text"><strong><i class="bi bi-geo"></i></strong></th>
-              <td></td>
+              <td *ngIf="userDetail.addresses.length != 0">{{userDetail?.addresses}}</td>
+              <td *ngIf="userDetail.addresses.length == 0">
+                <i class="bi bi-plus-circle text-info decor-text-1">Thêm địa chỉ</i>
+              </td>
             </tr>
             <tr>
               <th class="decor-text"><strong><i class="bi bi-balloon-heart"></i></strong></th>
               <td>{{userDetail?.dateOfBirth | date: 'dd/MM/yyyy'}}</td>
             </tr>
-            <tr>
+            <tr style="cursor: pointer">
               <th class="decor-text"><strong><i class="bi bi-piggy-bank"></i></strong></th>
-<!--              <td>MB Bank - 3029042003</td>-->
+              <td *ngIf="userDetail.bankResponses.length != 0">{{userDetail?.bankResponses}}</td>
+              <td *ngIf="userDetail.bankResponses.length == 0">
+                <a class="nav-link"  (click)="navigateBank(userDetail.userId)">
+                  <i class="bi bi-plus-circle text-info decor-text-1" > Liên kết ngay</i>
+                </a>
+
+              </td>
+
             </tr>
             </tbody>
           </table>

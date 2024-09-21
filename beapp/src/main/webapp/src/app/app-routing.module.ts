@@ -18,6 +18,10 @@ import {DetailmessageComponent} from "./message/detailmessage/detailmessage.comp
 import {DeliveryComponent} from "./order/delivery/delivery.component";
 import {CompleteComponent} from "./order/complete/complete.component";
 import {CancelComponent} from "./order/cancel/cancel.component";
+import {BankComponent} from "./bank/bank.component";
+import {AddComponent} from "./bank/add/add.component";
+import {RechargeComponent} from "./bank/recharge/recharge.component";
+import {WithdrawComponent} from "./bank/withdraw/withdraw.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -52,6 +56,16 @@ const routes: Routes = [
       {path: 'delivery', component: DeliveryComponent},
       {path: 'complete', component: CompleteComponent},
       {path: 'cancel', component: CancelComponent},
+      {path: '', redirectTo: 'delivery', pathMatch: 'full'}
+    ]
+  },
+  {
+    path: 'bank/:id',
+    component: BankComponent,
+    children: [
+      {path: 'add', component: AddComponent},
+      {path: 'recharge', component: RechargeComponent},
+      {path: 'withdraw', component: WithdrawComponent},
       {path: '', redirectTo: 'delivery', pathMatch: 'full'}
     ]
   },

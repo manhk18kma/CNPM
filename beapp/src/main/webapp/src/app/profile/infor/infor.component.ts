@@ -3,7 +3,7 @@ import {User} from "../../service/dto/user";
 import {AuthService} from "../../service/auth/auth.service";
 import {UserService} from "../../service/user.service";
 import {TokenService} from "../../service/token/token.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-infor',
@@ -14,7 +14,8 @@ export class InforComponent implements OnInit {
   constructor(public authService: AuthService,
               private userService: UserService,
               private tokenService: TokenService,
-              private route: ActivatedRoute,) {
+              private route: ActivatedRoute,
+              private router: Router) {
   }
 
   userDetail: any;
@@ -25,6 +26,9 @@ export class InforComponent implements OnInit {
     // @ts-ignore
     this.userDetail = JSON.parse(sessionStorage.getItem('userProfile'));
     this.userDetail.gender = this.userService.getGender(this.userDetail.gender,gender);
-
+    console.log(this.userDetail)
+  }
+  navigateBank(id: any){
+    this.router.navigate([`bank/${id}`],id)
   }
 }
