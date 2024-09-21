@@ -44,6 +44,7 @@ public enum AppErrorCode {
 
     PRODUCT_NOT_EXISTED(3001, "Sản phẩm không tồn tại", HttpStatus.BAD_REQUEST),
     POST_NOT_EXISTED(4001, "Bài viết không tồn tại", HttpStatus.BAD_REQUEST),
+    LIKE_EXISTED(4003, "Bài viết đã được thích", HttpStatus.BAD_REQUEST),
     COMMENT_NOT_EXISTED(4002, "Bình luận không tồn tại", HttpStatus.BAD_REQUEST),
 
     ORDER_NOT_EXISTED(5001, "Đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),

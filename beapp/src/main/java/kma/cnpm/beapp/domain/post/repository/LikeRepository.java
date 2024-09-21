@@ -5,6 +5,7 @@ import kma.cnpm.beapp.domain.post.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
+    Boolean existsByPostAndUserId(Post post, Long userId);
     Like findByPostAndUserId(Post post, Long userId);
     Integer countByPost(Post post);
 }

@@ -86,6 +86,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
         PostResponse postResponse = postMapper.map(post);
+        postResponse.setLiked(likeService.liked(post.getId()));
         postResponse.setCommentTotal(commentService.countComments(post.getId()));
         postResponse.setLikeTotal(likeService.countLikes(post.getId()));
         if (post.getProductId() != null)
@@ -97,6 +98,7 @@ public class PostServiceImpl implements PostService {
     public PostResponse getPostByProductId(Integer productId) {
         Post post = postRepository.findByProductId(productId);
         PostResponse postResponse = postMapper.map(post);
+        postResponse.setLiked(likeService.liked(post.getId()));
         postResponse.setCommentTotal(commentService.countComments(post.getId()));
         postResponse.setLikeTotal(likeService.countLikes(post.getId()));
         if (post.getProductId() != null)
@@ -110,6 +112,7 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
@@ -126,6 +129,7 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
@@ -142,6 +146,7 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
@@ -163,6 +168,7 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
