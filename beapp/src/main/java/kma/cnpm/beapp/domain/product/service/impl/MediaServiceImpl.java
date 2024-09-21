@@ -59,4 +59,12 @@ public class MediaServiceImpl implements MediaService {
                 .toList();
     }
 
+    @Override
+    public List<MediaResponse> getAllMediaBySellerId(Long sellerId) {
+        List<Media> medias = mediaRepository.findAllBySellerId(sellerId);
+        return medias.stream()
+                .map(mediaMapper::map)
+                .toList();
+    }
+
 }

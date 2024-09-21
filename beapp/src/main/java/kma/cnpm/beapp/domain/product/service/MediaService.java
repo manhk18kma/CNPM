@@ -11,5 +11,6 @@ public interface MediaService {
     MediaResponse getMediaById(Integer id);
     List<MediaResponse> getAllMedia();
     List<MediaResponse> getMediaByType(String type);
+    List<MediaResponse> getAllMediaBySellerId(Long sellerId);
 
 }

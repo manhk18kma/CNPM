@@ -58,4 +58,13 @@ public class MediaController {
                 mediaService.getMediaByType(type));
     }
 
+    @GetMapping("/seller/{sellerId}")
+    public ResponseData<List<MediaResponse>> getMediasBySeller(@PathVariable Long sellerId) {
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Tất cả phương tiện đã được hiển thị theo người bán thành công",
+                LocalDateTime.now(),
+                mediaService.getAllMediaBySellerId(sellerId));
+    }
+
+
 }
