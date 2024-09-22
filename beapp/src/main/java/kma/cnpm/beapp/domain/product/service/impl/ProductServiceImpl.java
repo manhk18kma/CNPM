@@ -133,6 +133,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductResponse reduceProductQuantity(Integer id, Integer quantity) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new AppException(PRODUCT_NOT_EXISTED));
+        if (product.getQuantity() < quantity) {
+            throw new AppException(PRODUCT_NOT_IN_STOCK);
+        }
+        product.setQuantity(product.getQuantity() - quantity);
+        productRepository.save(product);
+        return productMapper.map(product, null);
+    }
+
+    @Override
     public void deleteById(Integer id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_EXISTED));

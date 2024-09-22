@@ -9,7 +9,6 @@ import kma.cnpm.beapp.domain.order.mapper.OrderMapper;
 import kma.cnpm.beapp.domain.order.repository.OrderItemRepository;
 import kma.cnpm.beapp.domain.order.repository.OrderRepository;
 import kma.cnpm.beapp.domain.order.service.OrderService;
-import kma.cnpm.beapp.domain.payment.entity.Account;
 import kma.cnpm.beapp.domain.product.service.ProductService;
 import kma.cnpm.beapp.domain.user.entity.User;
 import kma.cnpm.beapp.domain.user.service.AuthService;
@@ -41,29 +40,28 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String createOrder(OrderRequest orderRequest) {
-//        Order order = orderMapper.map(orderRequest);
-//        User user = userService.findUserById(authService.getAuthenticationName());
-//        BigDecimal totalAmount = new BigDecimal(BigInteger.ZERO);
-//        for (OrderItem orderItem : order.getOrderItems()) {
-//        // logic trừ số lượng product
-//            orderItemRepository.save(orderItem);
-//            totalAmount = totalAmount.add(productService.getProductById(orderItem.getProductId()).getPrice()
-//                    .multiply(new BigDecimal(orderItem.getQuantity())));
-//        }
-//        order.setBuyerId(user.getId());
-//        order.setTotalAmount(totalAmount);
-//        order.setStatus(OrderStatus.READY_FOR_DELIVERY);
-//
-//        // logic trừ tiền
-//        // nếu số tiền trong tài khoản bé hơn totalAmount => fail
-//
-//        // tạo yêu cầu giao hàng
-//        // tạo thông báo cho cả seller và buyer
-//
-//
-//        orderRepository.save(order);
-//        return order.getId().toString();
-        return null;
+        Order order = orderMapper.map(orderRequest);
+        User user = userService.findUserById(authService.getAuthenticationName());
+        BigDecimal totalAmount = new BigDecimal(BigInteger.ZERO);
+        for (OrderItem orderItem : order.getOrderItems()) {
+            // logic trừ số lượng product
+            BigDecimal price = productService.reduceProductQuantity(orderItem.getProductId(), orderItem.getQuantity()).getPrice();
+            totalAmount = totalAmount.add(price.multiply(new BigDecimal(orderItem.getQuantity())));
+            orderItemRepository.save(orderItem);
+        }
+        order.setBuyerId(user.getId());
+        order.setTotalAmount(totalAmount);
+        order.setStatus(OrderStatus.READY_FOR_DELIVERY);
+
+        // logic trừ tiền
+        // nếu số tiền trong tài khoản bé hơn totalAmount => fail
+
+        // tạo yêu cầu giao hàng
+        // tạo thông báo cho cả seller và buyer
+
+
+        orderRepository.save(order);
+        return order.getId().toString();
     }
 
     @Override
