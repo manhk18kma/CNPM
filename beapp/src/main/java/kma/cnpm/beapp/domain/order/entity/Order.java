@@ -25,7 +25,6 @@ public class Order extends AbstractEntity<Long> {
     private List<OrderItem> orderItems;
     private Long buyerId;
     private BigDecimal totalAmount;
-    private Integer shippingAddressId;
-    private Long shipperId;
+    private Long shipmentId;
 
 }

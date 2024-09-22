@@ -52,8 +52,9 @@ public enum AppErrorCode {
     ORDER_NOT_EXISTED(5001, "Đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),
     ORDER_ITEM_NOT_EXISTED(5002, "Vật phẩm của đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),
     CART_ITEM_NOT_EXISTED(5003, "Vật phẩm của giỏ hàng không tồn tại", HttpStatus.BAD_REQUEST),
+    ORDER_CANNOT_BE_CANCELLED(5004, "Đơn hàng không thể bị hủy", HttpStatus.BAD_REQUEST),
 
-
+    SHIPMENT_NOT_EXISTED(5005, "Đơn giao hàng không tồn tại", HttpStatus.BAD_REQUEST),
 
     FAILD_UPLOAD_CLOUD(13, "Lỗi khi tải lên đám mây", HttpStatus.BAD_REQUEST),
     INVALID_PARAM(27, "Tham số không hợp lệ", HttpStatus.BAD_REQUEST);
