@@ -133,13 +133,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse reduceProductQuantity(Integer id, Integer quantity) {
+    public ProductResponse reduceProductQuantity(Integer id, Integer quantity, Boolean rollback) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(PRODUCT_NOT_EXISTED));
-        if (product.getQuantity() < quantity) {
-            throw new AppException(PRODUCT_NOT_IN_STOCK);
+        if (!rollback) {
+            if (product.getQuantity() < quantity) {
+                throw new AppException(PRODUCT_NOT_IN_STOCK);
+            }
+            product.setQuantity(product.getQuantity() - quantity);
+        } else {
+            product.setQuantity(product.getQuantity() + quantity);
         }
-        product.setQuantity(product.getQuantity() - quantity);
         productRepository.save(product);
         return productMapper.map(product, null);
     }

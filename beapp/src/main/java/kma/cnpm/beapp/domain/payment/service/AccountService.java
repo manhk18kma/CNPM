@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -150,5 +151,21 @@ public class AccountService {
                 .items(responses)
                 .build();
     }
+
+    public void payOrder(Long id, BigDecimal amount, Boolean rollback) {
+        Account account = getAccount();
+        BigDecimal newBalance = new BigDecimal(BigInteger.ZERO);
+        if (!rollback) {
+            newBalance = account.getBalance().subtract(amount);
+            if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+                throw new AppException(AppErrorCode.BALANCE_NOT_ENOUGH);
+            }
+        } else {
+            newBalance = account.getBalance().add(amount);
+        }
+        account.setBalance(newBalance);
+        accountRepository.save(account);
+    }
+
 }
 
