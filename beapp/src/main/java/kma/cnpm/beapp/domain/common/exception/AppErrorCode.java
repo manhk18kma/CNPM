@@ -43,6 +43,8 @@ public enum AppErrorCode {
     WITHDRAWAL_CANCELLED_ERROR(26, "Yêu cầu rút tiền đã bị HỦY", HttpStatus.BAD_REQUEST),
 
     PRODUCT_NOT_EXISTED(3001, "Sản phẩm không tồn tại", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_IN_STOCK(3002, "Not enough products in stock", HttpStatus.BAD_REQUEST),
+
     POST_NOT_EXISTED(4001, "Bài viết không tồn tại", HttpStatus.BAD_REQUEST),
     LIKE_EXISTED(4003, "Bài viết đã được thích", HttpStatus.BAD_REQUEST),
     COMMENT_NOT_EXISTED(4002, "Bình luận không tồn tại", HttpStatus.BAD_REQUEST),
@@ -50,6 +52,7 @@ public enum AppErrorCode {
     ORDER_NOT_EXISTED(5001, "Đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),
     ORDER_ITEM_NOT_EXISTED(5002, "Vật phẩm của đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),
     CART_ITEM_NOT_EXISTED(5003, "Vật phẩm của giỏ hàng không tồn tại", HttpStatus.BAD_REQUEST),
+
 
 
     FAILD_UPLOAD_CLOUD(13, "Lỗi khi tải lên đám mây", HttpStatus.BAD_REQUEST),

@@ -2,10 +2,12 @@ package kma.cnpm.beapp.domain.order.entity;
 
 import jakarta.persistence.*;
 import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -16,6 +18,7 @@ import java.util.List;
 @Table(name = "orders")
 public class Order extends AbstractEntity<Long> {
 
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
