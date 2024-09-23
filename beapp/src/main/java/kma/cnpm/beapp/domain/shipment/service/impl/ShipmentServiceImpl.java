@@ -39,6 +39,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     public Long createShipment(ShipmentRequest shipmentRequest) {
         Shipment shipment = shipmentMapper.map(shipmentRequest);
         String address = addressService.getAddressById(shipmentRequest.getAddressId());
+        shipment.setShipperId(null);
         shipment.setAddress(address);
         shipment.setEstimatedDeliveryDate(shipment.getCreatedAt().plusDays(5));
         shipmentRepository.save(shipment);
