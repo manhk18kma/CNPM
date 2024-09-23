@@ -10,7 +10,6 @@ public interface ShipmentService {
 
     Long createShipment(ShipmentRequest shipmentRequest);
     void updateShipperId(Long id);
-
     ShipmentResponse getShipmentById(Long id);
     List<ShipmentResponse> getShipmentByOrderStatus(OrderStatus orderStatus);
 
