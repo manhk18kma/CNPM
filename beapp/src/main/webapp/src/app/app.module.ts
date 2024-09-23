@@ -33,9 +33,9 @@ import { CancelComponent } from './order/cancel/cancel.component';
 import {NgxSpinnerModule} from "ngx-spinner";
 import { BankComponent } from './bank/bank.component';
 import { AddressComponent } from './address/address.component';
-import { RechargeComponent } from './bank/recharge/recharge.component';
-import { WithdrawComponent } from './bank/withdraw/withdraw.component';
-import { AddComponent } from './bank/add/add.component';
+import { RechargeComponent } from './recharge/recharge.component';
+import { WithdrawComponent } from './withdraw/withdraw.component';
+import { AddComponent } from './add/add.component';
 
 @NgModule({
   declarations: [

@@ -28,4 +28,7 @@ export class BankComponent implements OnInit{
       console.log(this.user)
     })
   }
+  navigateAddBank(){
+    this.router.navigate([`add-bank/${this.user.userId}`],this.user.idUser)
+  }
 }

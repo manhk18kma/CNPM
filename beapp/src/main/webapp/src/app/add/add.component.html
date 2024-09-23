@@ -1,0 +1,37 @@
+<div class="container pas">
+  <div class="container">
+
+    <div class="row decor-text-1">
+
+      <hr class="faded-line">
+      <div class="input-container">
+        <input placeholder="Số tài khoản" class="input-field" type="text">
+        <label for="input-field" class="input-label">Số tài khoản</label>
+        <span class="input-highlight"></span>
+      </div>
+
+
+      <p class="decor-text" style="font-size: 20px; font-weight: bold;margin-left: 5px">Danh sách ngân hàng</p>
+      <hr class="faded-line">
+      <div class="col-xl-12" *ngFor="let bank of banks?.items"
+           [class.row-selected]="this.selectedRows?.indexOf(bank) !== -1"
+           (click)="selectRow(bank, $event)">
+        <div class="card mb-3 card-body">
+          <div class="row align-items-center">
+            <div class="col-auto">
+                <img src="{{bank.bankAvt}}" class="width-90 rounded-3" alt="">
+            </div>
+            <div class="col">
+              <div class="overflow-hidden flex-nowrap">
+                <h6 class="mb-1">
+                  <p class="text-reset">{{bank.bankCode}} - {{bank.bankName}}</p>
+                </h6>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
