@@ -1,7 +1,6 @@
 package kma.cnpm.beapp.domain.order.service.impl;
 
 import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
-import kma.cnpm.beapp.domain.common.enumType.ShipmentStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.order.dto.request.OrderRequest;
@@ -29,8 +28,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
-import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.ORDER_CANNOT_BE_CANCELLED;
-import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.UNAUTHORIZED;
+import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -76,17 +74,40 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String updateOrderStatus(Long id, OrderStatus orderStatus) {
-
-        return null;
+    public String acceptShipment(Long id) {
+        // role shipper
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new AppException(AppErrorCode.ORDER_NOT_EXISTED));
+        if (!order.getStatus().equals(OrderStatus.READY_FOR_DELIVERY))
+            throw new AppException(ORDER_CANNOT_BE_ACCEPT);
+        User user = userService.findUserById(authService.getAuthenticationName());
+        shipmentService.updateShipperId(user.getId());
+        order.setStatus(OrderStatus.IN_TRANSIT);
+        orderRepository.save(order);
+        return order.getId().toString();
     }
 
     @Override
-    public void deleteOrder(Long id) {
+    public String completeOrder(Long id) {
+        // role shipper
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new AppException(ORDER_NOT_EXISTED));
+        User user = userService.findUserById(authService.getAuthenticationName());
+        if (!user.getId().equals(shipmentService.getShipmentById(order.getShipmentId()).getShipperId()))
+            throw new AppException(UNAUTHORIZED);
+        if (!order.getStatus().equals(OrderStatus.IN_TRANSIT))
+            throw new AppException(ORDER_CANNOT_BE_COMPLETE);
+        order.setStatus(OrderStatus.DELIVERED);
+        orderRepository.save(order);
+        return order.getId().toString();
+    }
+
+    @Override
+    public String deleteOrder(Long id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.ORDER_NOT_EXISTED));
         User user = userService.findUserById(authService.getAuthenticationName());
-        if (!user.getId().equals(order.getBuyerId()))
+        if (!user.getId().equals(shipmentService.getShipmentById(order.getShipmentId()).getShipperId()))
             throw new AppException(UNAUTHORIZED);
         if (!order.getStatus().equals(OrderStatus.READY_FOR_DELIVERY))
             throw new AppException(ORDER_CANNOT_BE_CANCELLED);
@@ -96,8 +117,8 @@ public class OrderServiceImpl implements OrderService {
         }
         accountService.payOrder(order.getId(), order.getTotalAmount(), true);
         // chinh sua status shipment
-        shipmentService.updateShipmentStatus(order.getShipmentId(), ShipmentStatus.CANCELLED);
         order.setStatus(OrderStatus.CANCELED);
+        return order.getId().toString();
     }
 
     @Override
