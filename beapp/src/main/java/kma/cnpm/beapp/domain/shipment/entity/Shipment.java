@@ -2,7 +2,6 @@ package kma.cnpm.beapp.domain.shipment.entity;
 
 
 import jakarta.persistence.*;
-import kma.cnpm.beapp.domain.common.enumType.ShipmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,9 +32,5 @@ public class Shipment extends AbstractEntity<Long> {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "shipment")
     private Set<ShipmentHistory> shipmentHistories;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false , name = "status")
-    private ShipmentStatus status;
 
 }

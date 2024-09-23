@@ -9,8 +9,9 @@ import java.util.List;
 public interface OrderService {
 
     String createOrder(OrderRequest orderRequest);
-    String updateOrderStatus(Long id, OrderStatus orderStatus);
-    void deleteOrder(Long id);
+    String acceptShipment(Long id);
+    String completeOrder(Long id);
+    String deleteOrder(Long id);
 
     OrderResponse getOrderById(Long id);
     List<OrderResponse> getAllOrders();

@@ -1,7 +1,6 @@
 package kma.cnpm.beapp.domain.shipment.entity;
 
 import jakarta.persistence.*;
-import kma.cnpm.beapp.domain.common.enumType.ShipmentStatus;
 import lombok.*;
 
 @Setter
@@ -18,7 +17,4 @@ public class ShipmentHistory extends AbstractEntity<Long> {
     @JoinColumn(name = "shipment_id")
     private Shipment shipment;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false , name = "status")
-    private ShipmentStatus status;
 }

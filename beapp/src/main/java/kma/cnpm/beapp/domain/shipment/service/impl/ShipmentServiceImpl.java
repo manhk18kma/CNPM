@@ -1,20 +1,26 @@
 package kma.cnpm.beapp.domain.shipment.service.impl;
 
 import kma.cnpm.beapp.domain.common.dto.ShipmentRequest;
-import kma.cnpm.beapp.domain.common.enumType.ShipmentStatus;
+import kma.cnpm.beapp.domain.common.dto.ShipmentResponse;
+import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.shipment.entity.Shipment;
 import kma.cnpm.beapp.domain.shipment.mapper.ShipmentMapper;
 import kma.cnpm.beapp.domain.shipment.repository.ShipmentRepository;
 import kma.cnpm.beapp.domain.shipment.service.ShipmentService;
+import kma.cnpm.beapp.domain.user.entity.User;
 import kma.cnpm.beapp.domain.user.service.AddressService;
+import kma.cnpm.beapp.domain.user.service.AuthService;
+import kma.cnpm.beapp.domain.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +32,14 @@ public class ShipmentServiceImpl implements ShipmentService {
     ShipmentRepository shipmentRepository;
     ShipmentMapper shipmentMapper;
     AddressService addressService;
+    UserService userService;
+    AuthService authService;
 
     @Override
     public Long createShipment(ShipmentRequest shipmentRequest) {
         Shipment shipment = shipmentMapper.map(shipmentRequest);
         String address = addressService.getAddressById(shipmentRequest.getAddressId());
         shipment.setAddress(address);
-        shipment.setStatus(ShipmentStatus.AWAITING_PICKUP);
         shipment.setEstimatedDeliveryDate(shipment.getCreatedAt().plusDays(5));
         shipmentRepository.save(shipment);
         // gửi thông báo cho shipper
@@ -40,11 +47,26 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
-    public Long updateShipmentStatus(Long id, ShipmentStatus shipmentStatus) {
+    public void updateShipperId(Long id) {
         Shipment shipment = shipmentRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.SHIPMENT_NOT_EXISTED));
-        shipment.setStatus(shipmentStatus);
+        User user = userService.findUserById(authService.getAuthenticationName());
+        shipment.setShipperId(user.getId());
         shipmentRepository.save(shipment);
-        return shipment.getId();
+    }
+
+    @Override
+    public ShipmentResponse getShipmentById(Long id) {
+        Shipment shipment = shipmentRepository.findById(id)
+                .orElseThrow(() -> new AppException(AppErrorCode.SHIPMENT_NOT_EXISTED));
+        return shipmentMapper.map(shipment);
+    }
+
+    @Override
+    public List<ShipmentResponse> getShipmentByOrderStatus(OrderStatus orderStatus) {
+        List<Shipment> shipments = shipmentRepository.getAllShipmentByOrderStatus(orderStatus);
+        return shipments.stream()
+                .map(shipmentMapper::map)
+                .toList();
     }
 }

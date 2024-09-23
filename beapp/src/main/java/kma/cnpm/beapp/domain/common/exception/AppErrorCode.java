@@ -53,6 +53,9 @@ public enum AppErrorCode {
     ORDER_ITEM_NOT_EXISTED(5002, "Vật phẩm của đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),
     CART_ITEM_NOT_EXISTED(5003, "Vật phẩm của giỏ hàng không tồn tại", HttpStatus.BAD_REQUEST),
     ORDER_CANNOT_BE_CANCELLED(5004, "Đơn hàng không thể bị hủy", HttpStatus.BAD_REQUEST),
+    ORDER_CANNOT_BE_ACCEPT(5005, "Đơn hàng không thể được nhận giao", HttpStatus.BAD_REQUEST),
+    ORDER_CANNOT_BE_COMPLETE(5006, "Đơn hàng không thể hoàn thành", HttpStatus.BAD_REQUEST),
+
 
     SHIPMENT_NOT_EXISTED(5005, "Đơn giao hàng không tồn tại", HttpStatus.BAD_REQUEST),
 
