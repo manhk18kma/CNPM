@@ -1,6 +1,6 @@
 package kma.cnpm.beapp.domain.order.dto.request;
 
-import kma.cnpm.beapp.domain.common.dto.ShipmentRequest;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderRequest {
 
+    @JsonProperty("orderItem")
     private List<OrderItemRequest> orderItemRequests;
-    private ShipmentRequest shipmentRequest;
+
+    private Long addressId;
 
 }

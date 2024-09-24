@@ -1,5 +1,6 @@
 package kma.cnpm.beapp.domain.order.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import kma.cnpm.beapp.domain.common.dto.ProductResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ public class CartItemResponse {
 
     private Integer quantity;
 
+    @JsonProperty("product")
     private ProductResponse productResponse;
 
 }
