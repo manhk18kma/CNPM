@@ -1,9 +1,9 @@
 package kma.cnpm.beapp.domain.product.service.impl;
 
 import kma.cnpm.beapp.domain.common.upload.ImageService;
+import kma.cnpm.beapp.domain.post.service.PostService;
 import kma.cnpm.beapp.domain.product.dto.response.MediaResponse;
 import kma.cnpm.beapp.domain.product.entity.Media;
-import kma.cnpm.beapp.domain.product.entity.Product;
 import kma.cnpm.beapp.domain.product.mapper.MediaMapper;
 import kma.cnpm.beapp.domain.product.repository.MediaRepository;
 import kma.cnpm.beapp.domain.product.service.MediaService;
@@ -64,6 +64,7 @@ public class MediaServiceImpl implements MediaService {
         List<Media> medias = mediaRepository.findAllBySellerId(sellerId);
         return medias.stream()
                 .map(mediaMapper::map)
+                .peek(mediaResponse -> mediaResponse.setPostId(mediaRepository.findPostIdByMediaId(mediaResponse.getId())))
                 .toList();
     }
 
