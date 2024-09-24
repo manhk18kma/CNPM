@@ -1,6 +1,8 @@
 package kma.cnpm.beapp.domain.post.service;
 
-import kma.cnpm.beapp.domain.post.entity.Post;
+import kma.cnpm.beapp.domain.post.dto.response.PostResponse;
+
+import java.util.List;
 
 public interface LikeService {
 
@@ -9,5 +11,6 @@ public interface LikeService {
 
     Boolean liked(Integer postId);
     Integer countLikes(Integer postId);
+    List<PostResponse> getAllLikedPostsByUserId();
 
 }

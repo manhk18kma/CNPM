@@ -2,6 +2,7 @@ package kma.cnpm.beapp.app.api.post;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
+import kma.cnpm.beapp.domain.post.dto.response.PostResponse;
 import kma.cnpm.beapp.domain.post.service.LikeService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/likes")
@@ -46,6 +48,14 @@ public class LikeController {
                 "Hiển thị tổng số lượng thích bài đăng thành công",
                 LocalDateTime.now(),
                 likeService.countLikes(postId));
+    }
+
+    @GetMapping("/post")
+    public ResponseData<List<PostResponse>> getAllLikedPosts() {
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Hiển thị tất cả bài đăng đã thích thành công",
+                LocalDateTime.now(),
+                likeService.getAllLikedPostsByUserId());
     }
 
 }
