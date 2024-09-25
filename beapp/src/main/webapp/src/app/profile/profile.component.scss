@@ -742,30 +742,14 @@ button:disabled {
   background-color: #cccccc; /* Màu nút khi bị vô hiệu hóa */
   cursor: no-drop; /* Đổi con trỏ khi hover vào nút bị vô hiệu hóa */
 }
-.profile-cover__info .nav {
-  margin-right: 28px;
-  padding: 15px 0 10px 170px;
-  color: #999;
-  font-size: 12px;
-  line-height: 26px;
-  font-weight: 300;
-  text-align: center;
-  text-transform: uppercase;
-  -ms-flex-pack: end;
-  -webkit-box-pack: end;
-  justify-content: flex-end;
-}
+
 
 .profile-cover__info .nav li {
   margin-top: 13px;
   margin-bottom: 13px;
 }
 
-.profile-cover__info .nav li:not(:first-child) {
-  margin-left: 30px;
-  padding-left: 30px;
-  border-left: 1px solid #eee;
-}
+
 
 .profile-cover__info .nav strong {
   display: block;
@@ -792,14 +776,6 @@ button:disabled {
     padding-right: 30px;
   }
 
-  .profile-cover__info .nav li:not(:first-child) {
-    margin-top: 8px;
-    margin-left: 0;
-    padding-top: 18px;
-    padding-left: 0;
-    border-top: 1px solid #eee;
-    border-left-width: 0;
-  }
 }
 .profile-fix {
   position: fixed; /* Cha được cố định */

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component } from '@angular/core';
 import {AuthService} from "../../service/auth/auth.service";
 import {CategoryService} from "../../service/category.service";
 import {PostService} from "../../service/post.service";
@@ -6,16 +6,16 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {DomSanitizer} from "@angular/platform-browser";
 import {CommentsService} from "../../service/comments.service";
-import {catchError, of, tap} from "rxjs";
 import {LikeService} from "../../service/like.service";
 import {MessageService} from "primeng/api";
+import {catchError, of, tap} from "rxjs";
 
 @Component({
-  selector: 'app-posts',
-  templateUrl: './posts.component.html',
-  styleUrls: ['./posts.component.scss']
+  selector: 'app-liked',
+  templateUrl: './liked.component.html',
+  styleUrls: ['./liked.component.scss']
 })
-export class PostsComponent implements OnInit {
+export class LikedComponent {
   openPost: boolean = false;
   imageFiles: File[] = [];
   images: Awaited<string>[] = [];

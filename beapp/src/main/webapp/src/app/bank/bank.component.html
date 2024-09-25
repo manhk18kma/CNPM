@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <section class="section about-section gray-bg" style="height: 100vh" id="about">
   <div class="container d-flex justify-content-between ">
     <div class="row align-items-center" style="width: 100%">
@@ -11,7 +12,7 @@
           <h3 class="dark-color decor-text">Thông tin ngân hàng</h3>
           <div class="row about-list">
             <div class="col-md-12 decor-text-1">
-              <div (click)="navigateAddBank()" class="media text-warning" style="font-size: 20px;cursor: pointer">
+              <div *ngIf="user.bankResponses.length == 0" (click)="navigateAddBank()" class="media text-warning" style="font-size: 20px;cursor: pointer">
                 <i class="bi bi-link-45deg"></i>
                 Bạn chưa liên kết ngân hàng
               </div>
@@ -27,18 +28,18 @@
                           <table class="table user-list">
                             <thead>
                             <tr>
-                              <th><span>Tên ngân hàng</span></th>
-                              <th><span>Ngày liên kết</span></th>
+                              <th><span>Mã</span></th>
+                              <th><span>Tên</span></th>
                               <th class="text-center"><span>Trạng thái</span></th>
                               <th>&nbsp;</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
+                            <tr *ngFor="let bank of user.bankResponses" (contextmenu)="onRightClick($event, bank)">
                               <td>
-                                <span class="user-subhead">MB Bank</span>
+                                <span class="user-subhead">{{bank.bankCode}}</span>
                               </td>
-                              <td>21/09/2024</td>
+                              <td>{{bank.bankName}}</td>
                               <td class="text-center">
                                 <span class="label label-default text-success">Đã liên kết</span>
                               </td>
@@ -63,7 +64,14 @@
                                             </span>
                                 </a>
                               </td>
+                              <!-- Custom Context Menu -->
+                              <div *ngIf="showContextMenu" [style.top.px]="contextMenuPosition.y" [style.left.px]="contextMenuPosition.x" class="custom-context-menu">
+                                <ul>
+                                  <li (click)="deleteBank(bank.accountHasBankId)">Gỡ liên kết</li>
+                                </ul>
+                              </div>
                             </tr>
+
                             </tbody>
                           </table>
                         </div>
@@ -81,19 +89,19 @@
     </div>
     <div class="counter decor-text-1">
       <div class="row">
-        <div class="col-6 col-lg-4">
-          <div class="count-data text-center">
+        <div class="col-6 col-lg-4 col-md-4">
+          <div class="count-data text-center" style="cursor:pointer" (click)="navigateRerchage()">
             <i class="bi bi-arrow-up"></i>
             <p class="m-0px font-w-600">Nạp tiền</p>
           </div>
         </div>
-        <div class="col-6 col-lg-4">
-          <div class="count-data text-center">
+        <div class="col-6 col-lg-4 col-md-4">
+          <div class="count-data text-center" style="cursor:pointer" (click)="navigateWithraw()">
             <i class="bi bi-arrow-down"></i>
             <p class="m-0px font-w-600">Rút tiền</p>
           </div>
         </div>
-        <div class="col-6 col-lg-4">
+        <div class="col-6 col-lg-4 col-md-4">
           <div class="count-data text-center">
             <i class="bi bi-arrow-down-up"></i>
             <p class="m-0px font-w-600">Chuyển tiền</p>

@@ -32,7 +32,7 @@
             </tr>
             <tr style="cursor: pointer">
               <th class="decor-text"><strong><i class="bi bi-piggy-bank"></i></strong></th>
-              <td *ngIf="userDetail.bankResponses.length != 0">{{userDetail?.bankResponses}}</td>
+              <td (click)="navigateBank(userDetail.userId)" *ngIf="userDetail.bankResponses.length != 0">{{userDetail?.bankResponses[0].bankCode}} - {{userDetail?.bankResponses[0].bankName}}</td>
               <td *ngIf="userDetail.bankResponses.length == 0">
                 <a class="nav-link"  (click)="navigateBank(userDetail.userId)">
                   <i class="bi bi-plus-circle text-info decor-text-1" > Liên kết ngay</i>
