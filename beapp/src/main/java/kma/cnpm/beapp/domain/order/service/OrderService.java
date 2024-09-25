@@ -17,7 +17,6 @@ public interface OrderService {
     List<OrderResponse> getAllOrders();
     List<OrderResponse> getOrderByBuyerId();
     List<OrderResponse> getOrderByStatus(OrderStatus orderStatus);
-
-
+    List<OrderResponse> getOrderByBuyerIdAndStatus(OrderStatus orderStatus);
 
 }
