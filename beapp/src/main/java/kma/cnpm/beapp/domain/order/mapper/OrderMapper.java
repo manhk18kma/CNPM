@@ -12,8 +12,6 @@ public interface OrderMapper {
 
     @Mapping(target = "orderItemResponses", source = "orderItems")
     @Mapping(target = "shipmentResponse.id", source = "shipmentId")
-    @Mapping(target = "orderedDate", source = "createdAt")
-    @Mapping(target = "endDate", source = "updatedAt")
     OrderResponse map(Order order);
 
     @Mapping(target = "orderItems", source = "orderItemRequests")

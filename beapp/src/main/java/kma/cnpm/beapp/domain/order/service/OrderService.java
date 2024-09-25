@@ -9,11 +9,11 @@ import java.util.List;
 public interface OrderService {
 
     String createOrder(OrderRequest orderRequest);
-    String acceptShipment(Long id);
-    String completeOrder(Long id);
-    String deleteOrder(Long id);
+    String acceptShipment(String id);
+    String completeOrder(String id);
+    String deleteOrder(String id);
 
-    OrderResponse getOrderById(Long id);
+    OrderResponse getOrderById(String id);
     List<OrderResponse> getAllOrders();
     List<OrderResponse> getOrderByBuyerId();
     List<OrderResponse> getOrderByStatus(OrderStatus orderStatus);

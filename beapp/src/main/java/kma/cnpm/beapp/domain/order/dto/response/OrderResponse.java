@@ -1,6 +1,8 @@
 package kma.cnpm.beapp.domain.order.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import kma.cnpm.beapp.domain.common.dto.ShipmentResponse;
 import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
 import kma.cnpm.beapp.domain.order.entity.OrderItem;
@@ -19,7 +21,9 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderResponse {
 
-    private Long id;
+    private String id;
+
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @JsonProperty("orderItem")

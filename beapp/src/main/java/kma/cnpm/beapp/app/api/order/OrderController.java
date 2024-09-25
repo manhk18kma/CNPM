@@ -37,24 +37,24 @@ public class OrderController {
                 orderService.createOrder(orderRequest));
     }
 
-    @PutMapping("/accept/{id}")
-    public ResponseData<String> acceptShipment(@PathVariable Long id) {
+    @PatchMapping("/accept/{id}")
+    public ResponseData<String> acceptShipment(@PathVariable String id) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Đơn hàng đã được nhận vận chuyển thành công",
                 LocalDateTime.now(),
                 orderService.acceptShipment(id));
     }
 
-    @PutMapping("/complete/{id}")
-    public ResponseData<String> completeOrder(@PathVariable Long id) {
+    @PatchMapping("/complete/{id}")
+    public ResponseData<String> completeOrder(@PathVariable String id) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Đơn hàng đã được giao thành công",
                 LocalDateTime.now(),
                 orderService.completeOrder(id));
     }
 
-    @PutMapping("/delete/{id}")
-    public ResponseData<String> deleteOrder(@PathVariable Long id) {
+    @PatchMapping("/delete/{id}")
+    public ResponseData<String> deleteOrder(@PathVariable String id) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Đơn hàng đã được hủy thành công",
                 LocalDateTime.now(),
@@ -62,7 +62,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseData<OrderResponse> getOrderById(@PathVariable Long id) {
+    public ResponseData<OrderResponse> getOrderById(@PathVariable String id) {
         return new ResponseData<>(HttpStatus.OK.value(),
                 "Đơn hàng đã được hiển thị thành công",
                 LocalDateTime.now(),

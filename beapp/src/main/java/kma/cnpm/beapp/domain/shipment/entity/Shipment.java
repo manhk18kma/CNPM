@@ -22,7 +22,7 @@ public class Shipment extends AbstractEntity<Long> {
     private Long shipperId;
 
     @Column(name = "order_id")
-    private Long orderId;
+    private String orderId;
 
     @Column(name = "address")
     private String address;

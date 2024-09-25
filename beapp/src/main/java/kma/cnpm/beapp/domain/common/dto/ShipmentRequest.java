@@ -13,7 +13,7 @@ public class ShipmentRequest {
 
     private Long shipperId;
 
-    private Long orderId;
+    private String orderId;
 
     private Long addressId;
 
