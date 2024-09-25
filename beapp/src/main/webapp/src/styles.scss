@@ -1,5 +1,6 @@
 @import 'ngx-toastr/toastr';
-
+@import "primeng/resources/themes/vela-green/theme.css";
+@import "primeng/resources/primeng.css";
 .decor-text {
   font-family: 'Comfortaa', cursive;
   font-weight: lighter;
@@ -81,40 +82,33 @@
   justify-content: space-between;
   align-items: center;
 }
-.toast{
-  position: fixed;
-}
-.toast:hover {
-  border-radius: 0;
-}
-
-/* Success Toastr */
-.toast-success {
-  background-color: #28a745 !important; /* Custom green color */
-  font-family: 'Comfortaa', cursive;
-}
-
-/* Error Toastr */
-.toast-error {
-  background-color: #dc3545 !important; /* Custom red color */
-  font-family: 'Comfortaa', cursive;
-}
-
-/* Info Toastr */
-.toast-info {
-  background-color: #17a2b8 !important; /* Custom blue color */
-  font-family: 'Comfortaa', cursive;
-}
-
-/* Warning Toastr */
-.toast-warning {
-  background-color: #ffc107 !important; /* Custom yellow color */
-  font-family: 'Comfortaa', cursive;
-}
-
 .separator {
   margin: 0 10px; /* Điều chỉnh khoảng cách theo nhu cầu */
   color: #ccc; /* Màu của thanh ngăn cách */
 }
-
-
+.auto-resize-textarea {
+  width: 100%;
+  min-height: 50px;
+  resize: none;
+  padding: 0px !important;
+  margin: 0px !important;
+  text-align: left;
+  font-size: 13px; /* Kích thước chữ */
+  border: none;
+  outline: none;
+}
+.auto-resize-textarea::placeholder {
+  font-size: 13px;
+  color: #5e5e5e;
+}
+.profile-cover__info .nav {
+  color: #999;
+  font-size: 12px;
+  line-height: 26px;
+  font-weight: 300;
+  text-align: center;
+  text-transform: uppercase;
+  -ms-flex-pack: end;
+  -webkit-box-pack: end;
+  justify-content: flex-end;
+}
