@@ -6,9 +6,11 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import kma.cnpm.beapp.domain.common.dto.UserDTO;
 import kma.cnpm.beapp.domain.common.enumType.TokenType;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.ShipperDTO;
 import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.LoginRequest;
@@ -331,5 +333,6 @@ public class AuthService {
         String userId = jwtClaimsSet.getStringClaim("userId");
         return userId;
     }
+
 
 }

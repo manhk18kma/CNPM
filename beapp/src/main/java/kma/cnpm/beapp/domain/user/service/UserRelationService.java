@@ -1,8 +1,10 @@
 package kma.cnpm.beapp.domain.user.service;
 
+import kma.cnpm.beapp.domain.common.dto.UserDTO;
 import kma.cnpm.beapp.domain.common.enumType.FollowType;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.ShipperDTO;
 import kma.cnpm.beapp.domain.user.dto.response.FollowResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.CreateFollowRequest;
@@ -147,6 +149,37 @@ public class UserRelationService {
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
     }
 
+    public String getTokenDeviceByUserId(Long userId){
+        return userRepository.getTokenDeviceByUserId(userId);
+    }
+
+    public List<ShipperDTO> getTokenDeviceShipper() {
+        return userRepository.getTokenDeviceShipper().stream()
+                .map(user -> {
+                    return ShipperDTO.builder()
+                            .tokenDevice(user.getTokenDevice())
+                            .id(user.getId())
+                            .build();
+                }).collect(Collectors.toList());
+    }
+    public UserDTO getUserInfo(Long id){
+        User user = userRepository.findUserById((id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+        return UserDTO.builder()
+                .userId(user.getId())
+                .fullName(user.getFullName())
+                .build();
+    }
 
 
+    public List<UserDTO> getFollowersOfUser(Long userId) {
+        List<User> followers = followRepository.getUserFollowersOfUser(userId);
+        return followers.stream()
+                .map(user->{
+                    return UserDTO.builder()
+                            .userId(user.getId())
+                            .tokenDevice(user.getTokenDevice())
+                            .build();
+                }).collect(Collectors.toList());
+    }
 }

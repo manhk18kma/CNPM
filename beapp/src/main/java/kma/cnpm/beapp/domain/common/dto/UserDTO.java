@@ -9,4 +9,8 @@ import lombok.Setter;
 @Setter
 public class UserDTO {
     private Long userId;
+    private String fullName;
+    private String tokenDevice;
+
+
 }

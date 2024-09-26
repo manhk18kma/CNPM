@@ -1,13 +1,38 @@
 package kma.cnpm.beapp.domain.notification.service;
+import jakarta.persistence.PostRemove;
+import kma.cnpm.beapp.domain.common.notificationDto.*;
 
-import kma.cnpm.beapp.domain.common.enumType.NotificationType;
-
-import java.math.BigDecimal;
 
 public interface NotificationService {
-    void createNotificationFollow(String followerFullName, Long followerId, Long followedId , String tokenDevice);
+    //USER DOMAIN
+    void createNotificationFollow(CreateFollow createFollow);
 
-    void createNotificationUserView(String userViewFullName, Long userViewId, Long userViewedId , String tokenDevice);
+    void createNotificationUserView(UserView userView);
 
-    void balanceChange(Long userId, BigDecimal amount , BigDecimal balance, Long transactionId, NotificationType notificationType, boolean plusOrMinus ,String tokenDevice);
+    //PAYMENT DOMAIN
+
+    void balanceChange(BalanceChange balanceChange);
+
+    //ORDER DOMAIN
+    void orderCreated(OrderCreated oderCreated);
+
+    void shipmentCreated(ShipmentCreated shipmentCreated);
+
+    void orderAcceptShip(OrderAcceptedShip orderAcceptedShip);
+
+    void orderComplete(OrderCompleted orderCompleted);
+
+    void orderCancelled(OrderCancelled orderCancelled);
+
+    void orderConfirm(OrderConfirm orderConfirm);
+
+    //POST DOMAIN
+    void postCreated(PostCreated postCreated);
+    void likeCreated(LikeCreated likeCreated);
+    void commentCreated(CommentCreated commentCreated);
+
+    //post like comment removed => remove notification
+    void postRemoved(PostRemoved postRemoved);
+    void unLiked(UnLiked unLiked);
+    void commentRemoved(CommentRemoved commentRemoved);
 }

@@ -20,7 +20,6 @@ public class Order extends AbstractEntity<Long> {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
     private Long buyerId;

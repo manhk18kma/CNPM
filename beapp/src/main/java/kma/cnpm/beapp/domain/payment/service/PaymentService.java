@@ -4,10 +4,7 @@ import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import kma.cnpm.beapp.domain.common.dto.PageResponse;
-import kma.cnpm.beapp.domain.common.enumType.Currency;
-import kma.cnpm.beapp.domain.common.enumType.TransactionStatus;
-import kma.cnpm.beapp.domain.common.enumType.TransactionType;
-import kma.cnpm.beapp.domain.common.enumType.WithdrawalSort;
+import kma.cnpm.beapp.domain.common.enumType.*;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.common.validation.EnumValue;
@@ -120,11 +117,9 @@ public class PaymentService {
         // Cập nhật số dư tài khoản
         BigDecimal amount = new BigDecimal(vnpayResponse.getVnpAmount()).divide(BigDecimal.valueOf(100));
         Account account = transaction.getAccount();
-        accountService.updateBalance(amount , account , true);
+        accountService.updateBalance(amount , account , true,transaction.getId() , NotificationType.BALANCE_CHANGE);
 
     }
-
-
     public DepositResponsePaypal depositPaypal(DepositPaypalRequest request, String ipAddress) throws PayPalRESTException {
         Account account = accountService.getAccount();
         PaymentGateway paymentGateway = getPaymentGateway(request.getPaymentGatewayId());
@@ -199,8 +194,8 @@ public class PaymentService {
             transaction.addStatus(transactionHistory);
             transaction.setStatus(TransactionStatus.PROCESSED);
 
-        transactionRepository.save(transaction);
-        paypalService.executePayment(paypalResponse.getPaymentId(),paypalResponse.getPayerId());
+            transactionRepository.save(transaction);
+            paypalService.executePayment(paypalResponse.getPaymentId(),paypalResponse.getPayerId());
 
         } else if (paypalResponse.getEventType().equals("PAYMENT.SALE.COMPLETED")) {  // Xử lý event "PAYMENT.SALE.COMPLETED"
             TransactionHistory transactionHistory = initTransactionHistory(TransactionStatus.COMPLETED);
@@ -209,10 +204,9 @@ public class PaymentService {
 
             // Cập nhật số dư tài khoản
             Account account = transaction.getAccount();
-            accountService.updateBalance(transaction.getAmount() ,account , true );
+            accountService.updateBalance(transaction.getAmount() ,account , true , transaction.getId() , NotificationType.BALANCE_CHANGE);
         }
     }
-
 //    public PageResponse<List<TransactionResponse>> getVnpayTransactionInfoOfUser(String status, String sortBy, int pageNo, int pageSize) {
 //        Long userId = Long.valueOf(authService.getAuthenticationName());
 //
