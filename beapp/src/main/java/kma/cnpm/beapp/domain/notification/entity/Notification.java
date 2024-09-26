@@ -1,14 +1,9 @@
 package kma.cnpm.beapp.domain.notification.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import kma.cnpm.beapp.domain.common.enumType.NotificationType;
+import kma.cnpm.beapp.domain.common.enumType.NotificationTypeRedirect;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -27,6 +22,10 @@ public class Notification extends AbstractEntity<Long> {
     @Column(name = "notification_type" , length = 20)
     private NotificationType type;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "notification_type_redirect" , length = 20)
+    private NotificationTypeRedirect typeRedirect;
+
     @Column(name = "reference_id")
     private Long referenceId;
 
@@ -38,5 +37,8 @@ public class Notification extends AbstractEntity<Long> {
 
     @Column(name = "is_removed")
     private boolean isRemoved;
+
+    @Column(name = "image_description")
+    private String imageUrl;
 
 }

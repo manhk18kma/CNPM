@@ -275,6 +275,7 @@ private boolean isExpireTime(LocalDateTime createdAt) {
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
         return UserDTO.builder()
                 .userId(user.getId())
+                .fullName(user.getFullName())
                 .build();
     }
 

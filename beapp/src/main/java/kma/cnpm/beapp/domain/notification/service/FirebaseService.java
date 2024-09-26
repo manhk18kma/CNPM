@@ -28,7 +28,7 @@ public class FirebaseService {
 
         // Xây dựng FCM message với payload dạng JSON
         Message message = Message.builder()
-                .setToken("cmGoQE0kKHZqUiL1gjBcSU:APA91bH3-9F8ilF7Pcq_C-LhfroS8rIBm5cEZCOm4LzxbLJv6Zmsuh_-RvU3oeUFpW8EgFB1zOCkhXjs5S8lYEEuPPJMeBuq29xg3t1ZxHQaTLP6OhIWZvTf6izLz_jLwj02GIbLmISm")
+                .setToken("cmGoQE0kKHZqUiL1gjBcSU:APA91bEVfcMvuyn8m2fE5Ek0U0AWyCTa7tv4CTFy_Rnd_6PoEbpH4tpIyQjF-N0vAItttQAZMSydNM4vaVA1k3dfrzxCQfF9YjS1HAWR88N1lJilNb9n7W3rWuzFYymVJfHIeyHq8wDz")
                 .putData("response", payloadJson)
                 .build();
         try {

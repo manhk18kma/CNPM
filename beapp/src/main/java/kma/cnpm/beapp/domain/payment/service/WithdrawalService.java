@@ -1,6 +1,7 @@
 package kma.cnpm.beapp.domain.payment.service;
 
 import kma.cnpm.beapp.domain.common.dto.PageResponse;
+import kma.cnpm.beapp.domain.common.enumType.NotificationType;
 import kma.cnpm.beapp.domain.common.enumType.WithdrawalSort;
 import kma.cnpm.beapp.domain.common.enumType.WithdrawalStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
@@ -110,7 +111,7 @@ public class WithdrawalService {
         Account account = accountService.getAccount();
         Withdrawal withdrawal = getPendingWithdrawal(id);
         withdrawal.setStatus(WithdrawalStatus.APPROVED);
-        accountService.updateBalance(withdrawal.getAmount() , account , false);
+        accountService.updateBalance(withdrawal.getAmount() , account , false , id , NotificationType.WITHDRAWAL_ACCEPTED);
         return AccountResponse.builder()
                 .accountId(account.getId())
                 .userId(account.getUserId())
