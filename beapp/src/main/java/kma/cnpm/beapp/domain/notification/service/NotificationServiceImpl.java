@@ -328,27 +328,32 @@ public class NotificationServiceImpl implements NotificationService {
     //Post domain
     @Override
     public void postCreated(PostCreated postCreated) {
+
+
+    }
+
+    @Override
+    public void postApproved(PostApproved postApproved) {
         String template = templateService.getTemplate(NotificationType.POST_CREATED);
         Map<String, String> placeholders = new HashMap<>();
 
-        UserDTO userCreatedPost = userRelationService.getUserInfo(postCreated.getPosterId());
+        UserDTO userCreatedPost = userRelationService.getUserInfo(postApproved.getPosterId());
         placeholders.put("followedUserFullName",userCreatedPost.getFullName() );
-        placeholders.put("contentSnippet", postCreated.getContentSnippet());
+        placeholders.put("contentSnippet", postApproved.getContentSnippet());
 
-        List<UserDTO> followersDTO = userRelationService.getFollowersOfUser(postCreated.getPosterId());
+        List<UserDTO> followersDTO = userRelationService.getFollowersOfUser(postApproved.getPosterId());
         followersDTO.forEach(followerDTO -> {
             SaveAndSendNotificationRequest request= SaveAndSendNotificationRequest.builder()
                     .template(template)
                     .placeholders(placeholders)
                     .type(NotificationType.POST_CREATED)
                     .recipientId(followerDTO.getUserId())
-                    .referenceId(postCreated.getPostId())
-                    .imgUrl(postCreated.getPostUrlImg())
+                    .referenceId(postApproved.getPostId())
+                    .imgUrl(postApproved.getPostUrlImg())
                     .typeRedirect(NotificationTypeRedirect.POST)
                     .build();
             saveAndSendNotification(request);
         });
-
     }
 
     @SneakyThrows

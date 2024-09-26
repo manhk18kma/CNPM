@@ -24,15 +24,16 @@ public interface NotificationService {
 
     void orderCancelled(OrderCancelled orderCancelled);
 
-    void orderConfirm(OrderConfirm orderConfirm);
+    void orderConfirm(OrderConfirm orderConfirm); //confirm after order is shipped/completed
 
     //POST DOMAIN
-    void postCreated(PostCreated postCreated);
-    void likeCreated(LikeCreated likeCreated);
-    void commentCreated(CommentCreated commentCreated);
+    void postCreated(PostCreated postCreated); //notification for admins approve post
+    void postApproved(PostApproved postApproved); // post is approved by admin -> notification for followers
+    void likeCreated(LikeCreated likeCreated); // like
+    void commentCreated(CommentCreated commentCreated); //comment
 
     //post like comment removed => remove notification
-    void postRemoved(PostRemoved postRemoved);
-    void unLiked(UnLiked unLiked);
-    void commentRemoved(CommentRemoved commentRemoved);
+    void postRemoved(PostRemoved postRemoved); //call this method after remove post
+    void unLiked(UnLiked unLiked);//call this method after unlike post
+    void commentRemoved(CommentRemoved commentRemoved); //call this method after remove comment
 }
