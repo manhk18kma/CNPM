@@ -1,5 +1,6 @@
 package kma.cnpm.beapp.domain.order.service.impl;
 
+import kma.cnpm.beapp.domain.common.dto.ShipmentRequest;
 import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.UUID;
 
 import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.*;
 
@@ -49,32 +51,38 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String createOrder(OrderRequest orderRequest) {
         Order order = orderMapper.map(orderRequest);
+        order.setId(UUID.randomUUID().toString());
         User user = userService.findUserById(authService.getAuthenticationName());
         BigDecimal totalAmount = new BigDecimal(BigInteger.ZERO);
         for (OrderItem orderItem : order.getOrderItems()) {
             // logic trừ số lượng product
             BigDecimal price = productService.reduceProductQuantity(orderItem.getProductId(), orderItem.getQuantity(), false).getPrice();
             totalAmount = totalAmount.add(price.multiply(new BigDecimal(orderItem.getQuantity())));
-            orderItemRepository.save(orderItem);
         }
         order.setBuyerId(user.getId());
         order.setTotalAmount(totalAmount);
         order.setStatus(OrderStatus.READY_FOR_DELIVERY);
-
-        // logic trừ tiền
-        accountService.payOrder(order.getId(), order.getTotalAmount(), false);
-
         // tạo yêu cầu giao hàng
-        order.setShipmentId(shipmentService.createShipment(orderRequest.getShipmentRequest()));
+        order.setShipmentId(shipmentService.createShipment(
+                ShipmentRequest.builder()
+                        .orderId(order.getId())
+                        .shipperId(null)
+                        .addressId(orderRequest.getAddressId())
+                        .build()));
+
+        // thanh toán
+        accountService.payOrder(order.getTotalAmount(), false);
+        orderItemRepository.saveAll(order.getOrderItems().stream()
+                .peek(orderItem -> orderItem.setOrder(order))
+                .toList());
 
         // tạo thông báo cho cả seller và buyer
-
         orderRepository.save(order);
-        return order.getId().toString();
+        return order.getId();
     }
 
     @Override
-    public String acceptShipment(Long id) {
+    public String acceptShipment(String id) {
         // role shipper
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.ORDER_NOT_EXISTED));
@@ -84,11 +92,11 @@ public class OrderServiceImpl implements OrderService {
         shipmentService.updateShipperId(user.getId());
         order.setStatus(OrderStatus.IN_TRANSIT);
         orderRepository.save(order);
-        return order.getId().toString();
+        return order.getId();
     }
 
     @Override
-    public String completeOrder(Long id) {
+    public String completeOrder(String id) {
         // role shipper
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(ORDER_NOT_EXISTED));
@@ -99,11 +107,11 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException(ORDER_CANNOT_BE_COMPLETE);
         order.setStatus(OrderStatus.DELIVERED);
         orderRepository.save(order);
-        return order.getId().toString();
+        return order.getId();
     }
 
     @Override
-    public String deleteOrder(Long id) {
+    public String deleteOrder(String id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.ORDER_NOT_EXISTED));
         User user = userService.findUserById(authService.getAuthenticationName());
@@ -115,29 +123,66 @@ public class OrderServiceImpl implements OrderService {
             // logic trừ số lượng product
             productService.reduceProductQuantity(orderItem.getProductId(), orderItem.getQuantity(), true);
         }
-        accountService.payOrder(order.getId(), order.getTotalAmount(), true);
+        accountService.payOrder(order.getTotalAmount(), true);
         // chinh sua status shipment
         order.setStatus(OrderStatus.CANCELED);
-        return order.getId().toString();
+        return order.getId();
     }
 
     @Override
-    public OrderResponse getOrderById(Long id) {
-        return null;
+    public OrderResponse getOrderById(String id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new AppException(ORDER_NOT_EXISTED));
+        OrderResponse orderResponse = orderMapper.map(order);
+        orderResponse.setShipmentResponse(shipmentService.getShipmentById(order.getShipmentId()));
+        return orderResponse;
     }
 
     @Override
     public List<OrderResponse> getAllOrders() {
-        return null;
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream()
+                .map(orderMapper::map)
+                .peek(orderResponse -> orderResponse
+                        .setShipmentResponse(shipmentService.getShipmentById(
+                                orderResponse.getShipmentResponse().getId())))
+                .toList();
     }
 
     @Override
     public List<OrderResponse> getOrderByBuyerId() {
-        return null;
+        User user = userService.findUserById(authService.getAuthenticationName());
+        List<Order> orders = orderRepository.findAllByBuyerId(user.getId());
+        return orders.stream()
+                .map(orderMapper::map)
+                .peek(orderResponse -> orderResponse
+                        .setShipmentResponse(shipmentService.getShipmentById(
+                                orderResponse.getShipmentResponse().getId())))
+                .toList();
     }
 
     @Override
     public List<OrderResponse> getOrderByStatus(OrderStatus orderStatus) {
-        return null;
+        List<Order> orders = orderRepository.findAllByStatus(orderStatus);
+        return orders.stream()
+                .map(orderMapper::map)
+                .peek(orderResponse -> orderResponse
+                        .setShipmentResponse(shipmentService.getShipmentById(
+                                orderResponse.getShipmentResponse().getId())))
+                .toList();
     }
+
+    @Override
+    public List<OrderResponse> getOrderByBuyerIdAndStatus(OrderStatus orderStatus) {
+        User user = userService.findUserById(authService.getAuthenticationName());
+        List<Order> orders = orderRepository.findAllByBuyerIdAndStatus(user.getId(), orderStatus);
+        return orders.stream()
+                .map(orderMapper::map)
+                .peek(orderResponse -> orderResponse
+                        .setShipmentResponse(shipmentService.getShipmentById(
+                                orderResponse.getShipmentResponse().getId())))
+                .toList();
+    }
+
+
 }

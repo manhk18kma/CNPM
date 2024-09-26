@@ -17,7 +17,7 @@ public class ShipmentResponse {
 
     private Long shipperId;
 
-    private Long orderId;
+    private String orderId;
 
     private String fullName;
 

@@ -19,9 +19,11 @@ import {DeliveryComponent} from "./order/delivery/delivery.component";
 import {CompleteComponent} from "./order/complete/complete.component";
 import {CancelComponent} from "./order/cancel/cancel.component";
 import {BankComponent} from "./bank/bank.component";
-import {AddComponent} from "./bank/add/add.component";
-import {RechargeComponent} from "./bank/recharge/recharge.component";
-import {WithdrawComponent} from "./bank/withdraw/withdraw.component";
+import {AddComponent} from "./add/add.component";
+import {RechargeComponent} from "./recharge/recharge.component";
+import {WithdrawComponent} from "./withdraw/withdraw.component";
+import {ResponseTransactionComponent} from "./response-transaction/response-transaction.component";
+import {LikedComponent} from "./profile/liked/liked.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -35,19 +37,20 @@ const routes: Routes = [
       {path: 'posts', component: PostsComponent},
       {path: 'photos', component: PhotosComponent},
       {path: 'activity', component: ActivityComponent},
+      {path: 'liked', component: LikedComponent},
       // {path: '', redirectTo: 'infor', pathMatch: 'full'}
-    ]
+    ],canActivate: [AuthGuard]
   },
   {path: 'signup', component: SignupComponent,},
   {path: 'active/:token', component: ActiveComponent},
-  {path: 'cart', component: CartComponent},
+  {path: 'cart', component: CartComponent,canActivate: [AuthGuard]},
   {path: 'post', component: PostComponent},
   {
     path: 'message',
     component: MessageComponent,
     children: [
       {path: ':id', component: DetailmessageComponent},
-    ]
+    ],canActivate: [AuthGuard]
   },
   {
     path: 'order',
@@ -57,18 +60,14 @@ const routes: Routes = [
       {path: 'complete', component: CompleteComponent},
       {path: 'cancel', component: CancelComponent},
       {path: '', redirectTo: 'delivery', pathMatch: 'full'}
-    ]
+    ],canActivate: [AuthGuard]
   },
-  {
-    path: 'bank/:id',
-    component: BankComponent,
-    children: [
-      {path: 'add', component: AddComponent},
-      {path: 'recharge', component: RechargeComponent},
-      {path: 'withdraw', component: WithdrawComponent},
-      {path: '', redirectTo: 'delivery', pathMatch: 'full'}
-    ]
-  },
+  {path: 'bank/:id', component: BankComponent,canActivate: [AuthGuard]},
+  {path: 'add-bank/:id', component: AddComponent,canActivate: [AuthGuard]},
+  {path: 'recharge/:id', component: RechargeComponent,canActivate: [AuthGuard]},
+  {path: 'withdraw/:id', component: WithdrawComponent,canActivate: [AuthGuard]},
+  {path: 'response-transaction', component: ResponseTransactionComponent,canActivate: [AuthGuard]},
+
 ];
 
 @NgModule({

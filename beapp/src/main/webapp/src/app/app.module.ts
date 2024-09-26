@@ -33,9 +33,15 @@ import { CancelComponent } from './order/cancel/cancel.component';
 import {NgxSpinnerModule} from "ngx-spinner";
 import { BankComponent } from './bank/bank.component';
 import { AddressComponent } from './address/address.component';
-import { RechargeComponent } from './bank/recharge/recharge.component';
-import { WithdrawComponent } from './bank/withdraw/withdraw.component';
-import { AddComponent } from './bank/add/add.component';
+import { RechargeComponent } from './recharge/recharge.component';
+import { WithdrawComponent } from './withdraw/withdraw.component';
+import { AddComponent } from './add/add.component';
+import {MessageService} from "primeng/api";
+import {ToastModule} from "primeng/toast";
+import {MessageModule} from "primeng/message";
+import {MessagesModule} from "primeng/messages";
+import { LikedComponent } from './profile/liked/liked.component';
+import { ResponseTransactionComponent } from './response-transaction/response-transaction.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +67,9 @@ import { AddComponent } from './bank/add/add.component';
     AddressComponent,
     RechargeComponent,
     WithdrawComponent,
-    AddComponent
+    AddComponent,
+    LikedComponent,
+    ResponseTransactionComponent
   ],
   imports: [
     BrowserModule,
@@ -74,9 +82,12 @@ import { AddComponent } from './bank/add/add.component';
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     NgbModule,
-    NgxSpinnerModule.forRoot({ type: 'ball-clip-rotate' })
+    NgxSpinnerModule.forRoot({type: 'ball-clip-rotate'}),
+    ToastModule,
+    MessageModule,
+    MessagesModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard, provideAnimations(), // required animations providers
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard, provideAnimations(),MessageService, // required animations providers
     provideToastr(),
   ],
   bootstrap: [AppComponent]

@@ -43,7 +43,7 @@ public enum AppErrorCode {
     WITHDRAWAL_CANCELLED_ERROR(26, "Yêu cầu rút tiền đã bị HỦY", HttpStatus.BAD_REQUEST),
 
     PRODUCT_NOT_EXISTED(3001, "Sản phẩm không tồn tại", HttpStatus.BAD_REQUEST),
-    PRODUCT_NOT_IN_STOCK(3002, "Not enough products in stock", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_IN_STOCK(3002, "Sản phẩm đã hết", HttpStatus.BAD_REQUEST),
 
     POST_NOT_EXISTED(4001, "Bài viết không tồn tại", HttpStatus.BAD_REQUEST),
     LIKE_EXISTED(4003, "Bài viết đã được thích", HttpStatus.BAD_REQUEST),

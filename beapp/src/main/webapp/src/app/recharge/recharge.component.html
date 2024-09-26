@@ -1,0 +1,97 @@
+<p-toast></p-toast>
+<div style="width: 100%;height: 100vh" class="container d-flex justify-content-center align-items-center">
+  <div class="row g-3" style="padding-top: 5%">
+
+    <div class="col-md-12">
+      <div class="card">
+        <span class="decor-text mb-2">Tài khoản demo</span>
+        <div class="accordion" id="accordionExample1">
+
+          <div class="card">
+            <div class="card-header p-0" id="headingTwo11111111111">
+              <h2 class="mb-0">
+                <button class="btn btn-light btn-block text-left collapsed p-3 rounded-0 border-bottom-custom" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <img src="https://i.gyazo.com/e92f56ffc6813473826b66d9ccbe81e3.png" width="60" style="margin-right: 10px">
+                    <span>Ngân hàng Quốc dân</span>
+                  </div>
+                </button>
+              </h2>
+            </div>
+            <div class="card-header p-3 mb-4" id="headingTwo11232">
+              <h2 class="mb-0" style="font-size: 13px">
+                Số tài khoản: 9704198526191432198 9704198526191432198
+              </h2>
+              <hr class="faded-line">
+              <h2 class="mb-0" style="font-size: 13px">
+                Tên chủ tài khoản: NGUYEN VAN A
+              </h2>
+              <hr class="faded-line">
+              <h2 class="mb-0" style="font-size: 13px">
+                Ngày phát hành: 07/15
+              </h2>
+              <hr class="faded-line">
+              <h2 class="mb-0" style="font-size: 13px">
+                Mã xác thực: 123456
+              </h2>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+              <div class="card-body">
+                <input type="text" class="form-control" placeholder="Paypal email">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="card">
+        <span class="decor-text mb-2">Cổng thanh toán</span>
+        <div class="accordion" id="accordionExample">
+
+          <div class="card">
+            <div class="card-header p-0" id="headingTwo111111">
+              <h2 class="mb-0">
+                <button class="btn btn-light btn-block text-left collapsed p-3 rounded-0 border-bottom-custom" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR.png" width="60" style="margin-right: 10px">
+                    <span>VNPAY</span>
+                  </div>
+                </button>
+              </h2>
+            </div>
+            <div id="collapseTwo111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+              <div class="card-body">
+                <input type="text" class="form-control" placeholder="Paypal email">
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div id="collapseOne1111" class="collapse show " aria-labelledby="headingOne" data-parent="#accordionExample">
+              <div >
+
+                <span class="font-weight-normal card-text decor-text">Số tiền cần nạp</span>
+                <div class="input">
+                  <i class="fa fa-credit-card"></i>
+                  <input type="number" class="form-control" name="amount" [(ngModel)]="reqRecharge.amount" placeholder="0000">
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+    <div>
+      <button (click)="withdraw()" style="width: 100%" class="btn btn-secondary rounded-0">
+        Rút tiền
+      </button>
+      <p class="decor-text-1 p-2" style="color: red;font-weight: bold;text-align: center">*Lưu ý: Hiện tại ứng dụng đang ở bản thử nghiệm, người dùng vui lòng nạp tiền vào ví bằng tài khoản demo của chúng tôi</p>
+    </div>
+  </div>
+
+
+</div>

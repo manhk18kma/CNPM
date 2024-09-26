@@ -22,8 +22,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
               private tokenService: TokenService,
               private route: ActivatedRoute,
               private router: Router,
-              private spinner: NgxSpinnerService,
-              private toast: ToastrService) {
+              private spinner: NgxSpinnerService) {
   }
 
   showSpinner() {
@@ -49,10 +48,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.router.navigate(['infor'], {relativeTo: this.route});
       this.spinner.hide();
-      // this.toast.success("Hiển thị thành công",'',{
-      //   timeOut: 1500,
-      // })
-    }, 1000)
+    }, 700)
   }
 
 

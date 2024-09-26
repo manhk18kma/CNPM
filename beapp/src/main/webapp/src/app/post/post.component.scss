@@ -715,36 +715,10 @@ select.form-control:not([size]):not([multiple]) {
   object-fit: cover;
   border-radius: 8px;
 }
-.auto-resize-textarea {
-  width: 100%; /* Full width */
-  min-height: 50px; /* Chiều cao tối thiểu */
-  resize: none; /* Ngăn chặn người dùng thay đổi kích thước thủ công */
-  display: flex;
-  padding: 0px !important;
-  margin: 0px !important;
-  text-align: left;
-  font-size: 13px; /* Kích thước chữ */
-  border: none;
-  outline: none;
-}
 button:disabled {
   background-color: #cccccc; /* Màu nút khi bị vô hiệu hóa */
   cursor: no-drop; /* Đổi con trỏ khi hover vào nút bị vô hiệu hóa */
 }
-.profile-cover__info .nav {
-  margin-right: 28px;
-  padding: 15px 0 10px 170px;
-  color: #999;
-  font-size: 12px;
-  line-height: 26px;
-  font-weight: 300;
-  text-align: center;
-  text-transform: uppercase;
-  -ms-flex-pack: end;
-  -webkit-box-pack: end;
-  justify-content: flex-end;
-}
-
 .profile-cover__info .nav li {
   margin-top: 13px;
   margin-bottom: 13px;

@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -39,9 +40,8 @@ public class ShipmentServiceImpl implements ShipmentService {
     public Long createShipment(ShipmentRequest shipmentRequest) {
         Shipment shipment = shipmentMapper.map(shipmentRequest);
         String address = addressService.getAddressById(shipmentRequest.getAddressId());
-        shipment.setShipperId(null);
         shipment.setAddress(address);
-        shipment.setEstimatedDeliveryDate(shipment.getCreatedAt().plusDays(5));
+        shipment.setEstimatedDeliveryDate(LocalDateTime.now().plusDays(5));
         shipmentRepository.save(shipment);
         // gửi thông báo cho shipper
         return shipment.getId();

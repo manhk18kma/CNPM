@@ -152,7 +152,7 @@ public class AccountService {
                 .build();
     }
 
-    public void payOrder(Long id, BigDecimal amount, Boolean rollback) {
+    public void payOrder(BigDecimal amount, Boolean rollback) {
         Account account = getAccount();
         BigDecimal newBalance = new BigDecimal(BigInteger.ZERO);
         if (!rollback) {
