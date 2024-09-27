@@ -44,7 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholders)
                 .type(NotificationType.FOLLOW)
                 .recipientId(createFollow.getFollowedId())
-                .referenceId(createFollow.getFollowerId())
+                .referenceId(createFollow.getFollowerId().toString())
                 .imgUrl(createFollow.getFollowerAvt())
                 .typeRedirect(NotificationTypeRedirect.PROFILE)
                 .build();
@@ -63,7 +63,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholders)
                 .type(NotificationType.USER_VIEW)
                 .recipientId(userView.getUserViewedId())
-                .referenceId(userView.getUserViewId())
+                .referenceId(userView.getUserViewId().toString())
                 .imgUrl(userView.getUserViewAvt())
                 .typeRedirect(NotificationTypeRedirect.PRIVATE_PROFILE)
                 .build();
@@ -97,7 +97,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholders)
                 .type(balanceChange.getNotificationType())
                 .recipientId(balanceChange.getUserId())
-                .referenceId(balanceChange.getTransactionId())
+                .referenceId(balanceChange.getTransactionId().toString())
                 .imgUrl(balanceChange.getBalanceChangeImg())
                 .typeRedirect(typeRedirect)
                 .build();
@@ -111,7 +111,7 @@ public class NotificationServiceImpl implements NotificationService {
         // Handle buyer notification
         String templateBuyer = templateService.getTemplate(NotificationType.ORDER_CREATED_BUYER);
         Map<String, String> placeholdersBuyer = new HashMap<>();
-        placeholdersBuyer.put("orderId", orderCreated.getOrderId().toString());
+        placeholdersBuyer.put("orderId", orderCreated.getOrderId());
         placeholdersBuyer.put("totalAmount", orderCreated.getAmount().toString());
 
         SaveAndSendNotificationRequest requestBuyer = SaveAndSendNotificationRequest.builder()
@@ -129,7 +129,7 @@ public class NotificationServiceImpl implements NotificationService {
         String templateSeller = templateService.getTemplate(NotificationType.ORDER_CREATED_SELLER);
         Map<String, String> placeholdersSeller = new HashMap<>();
         placeholdersSeller.put("totalAmount", orderCreated.getAmount().toString());
-        placeholdersSeller.put("orderId", orderCreated.getOrderId().toString());
+        placeholdersSeller.put("orderId", orderCreated.getOrderId());
 
 
         SaveAndSendNotificationRequest requestSeller = SaveAndSendNotificationRequest.builder()
@@ -161,7 +161,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .placeholders(placeholders)
                     .type(NotificationType.ORDER_CREATED_SHIPPER)
                     .recipientId(shipperDTO.getId())
-                    .referenceId(shipmentCreated.getShipmentId())
+                    .referenceId(shipmentCreated.getShipmentId().toString())
                     .imgUrl(shipmentCreated.getShipmentImg())
                     .typeRedirect(NotificationTypeRedirect.SHIPMENT)
                     .build();
@@ -182,7 +182,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholdersBuyer)
                 .type(NotificationType.SHIPPER_ACCEPTED_BUYER)
                 .recipientId(orderAcceptedShip.getBuyerId())
-                .referenceId(orderAcceptedShip.getOrderId())
+                .referenceId(orderAcceptedShip.getOrderId().toString())
                 .imgUrl(orderAcceptedShip.getOrderImg())
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
@@ -200,7 +200,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholdersSeller)
                 .type(NotificationType.SHIPPER_ACCEPTED_SELLER)
                 .recipientId(orderAcceptedShip.getSellerId())
-                .referenceId(orderAcceptedShip.getOrderId())
+                .referenceId(orderAcceptedShip.getOrderId().toString())
                 .imgUrl(orderAcceptedShip.getOrderImg())
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
@@ -224,7 +224,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholdersBuyer)
                 .type(NotificationType.ORDER_COMPLETE_BUYER)
                 .recipientId(orderCompleted.getBuyerId())
-                .referenceId(orderCompleted.getOrderId())
+                .referenceId(orderCompleted.getOrderId().toString())
                 .imgUrl(orderCompleted.getOrderImg())
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
@@ -240,7 +240,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholdersSeller)
                 .type(NotificationType.ORDER_COMPLETE_SELLER)
                 .recipientId(orderCompleted.getSellerId())
-                .referenceId(orderCompleted.getOrderId())
+                .referenceId(orderCompleted.getOrderId().toString())
                 .imgUrl(orderCompleted.getOrderImg())
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
@@ -263,7 +263,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholdersBuyer)
                 .type(NotificationType.ORDER_CANCELLED_BUYER)
                 .recipientId(orderCancelled.getBuyerId())
-                .referenceId(orderCancelled.getOrderId())
+                .referenceId(orderCancelled.getOrderId().toString())
                 .imgUrl(orderCancelled.getOrderImg())
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
@@ -278,7 +278,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholdersSeller)
                 .type(NotificationType.ORDER_CANCELLED_SELLER)
                 .recipientId(orderCancelled.getSellerId())
-                .referenceId(orderCancelled.getOrderId())
+                .referenceId(orderCancelled.getOrderId().toString())
                 .imgUrl(orderCancelled.getOrderImg())
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
@@ -300,7 +300,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholdersBuyer)
                 .type(NotificationType.ORDER_CONFIRM_BUYER)
                 .recipientId(orderConfirm.getBuyerId())
-                .referenceId(orderConfirm.getOrderId())
+                .referenceId(orderConfirm.getOrderId().toString())
                 .imgUrl(orderConfirm.getOrderImg())
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
@@ -316,7 +316,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .placeholders(placeholdersSeller)
                 .type(NotificationType.ORDER_CONFIRM_SELLER)
                 .recipientId(orderConfirm.getSellerId())
-                .referenceId(orderConfirm.getOrderId())
+                .referenceId(orderConfirm.getOrderId().toString())
                 .imgUrl(orderConfirm.getOrderImg())
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
@@ -348,7 +348,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .placeholders(placeholders)
                     .type(NotificationType.POST_CREATED)
                     .recipientId(followerDTO.getUserId())
-                    .referenceId(postApproved.getPostId())
+                    .referenceId(postApproved.getPostId().toString())
                     .imgUrl(postApproved.getPostUrlImg())
                     .typeRedirect(NotificationTypeRedirect.POST)
                     .build();
@@ -377,7 +377,7 @@ public class NotificationServiceImpl implements NotificationService {
             notification = Notification.builder()
                     .recipientId(likeCreated.getPosterId())
                     .type(NotificationType.LIKE_CREATED)
-                    .referenceId(likeCreated.getPostId())
+                    .referenceId(likeCreated.getPostId().toString())
                     .content(content)
                     .typeRedirect(NotificationTypeRedirect.POST)
                     .isRead(false)
@@ -437,7 +437,7 @@ public class NotificationServiceImpl implements NotificationService {
             notification = Notification.builder()
                     .recipientId(commentCreated.getPosterId())
                     .type(NotificationType.COMMENT_CREATED)
-                    .referenceId(commentCreated.getPostId())
+                    .referenceId(commentCreated.getPostId().toString())
                     .content(content)
                     .typeRedirect(NotificationTypeRedirect.POST)
                     .isRead(false)
@@ -476,7 +476,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .findCommentCreatedForOtherCommentsByRecipientIdAndPostId(id, commentCreated.getPostId())
                     .orElseGet(() -> Notification.builder()
                             .recipientId(id)
-                            .referenceId(commentCreated.getPostId())
+                            .referenceId(commentCreated.getPostId().toString())
                             .type(NotificationType.OTHER_COMMENTER)
                             .typeRedirect(NotificationTypeRedirect.POST)
                             .isRead(false)
@@ -649,7 +649,7 @@ public class NotificationServiceImpl implements NotificationService {
         Map<String,String> placeholders;
         NotificationType type;
         Long recipientId;
-        Long referenceId;
+        String referenceId;
         String imgUrl;
         NotificationTypeRedirect typeRedirect;
     }
