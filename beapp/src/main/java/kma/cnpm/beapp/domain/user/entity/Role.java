@@ -11,7 +11,7 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tbl_permission")
+@Table(name = "tbl_role")
 public class Role extends AbstractEntity<Long>{
     @Column(name = "role_name",  length = 100)
     private String roleName;

@@ -8,6 +8,7 @@ import com.nimbusds.jwt.SignedJWT;
 
 import kma.cnpm.beapp.domain.common.dto.UserDTO;
 import kma.cnpm.beapp.domain.common.enumType.TokenType;
+import kma.cnpm.beapp.domain.common.enumType.UserStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.common.notificationDto.ShipperDTO;
@@ -16,22 +17,23 @@ import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.LoginRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.LogoutRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.RefreshTokenRequest;
-import kma.cnpm.beapp.domain.user.entity.InvalidatedToken;
-import kma.cnpm.beapp.domain.user.entity.Permission;
-import kma.cnpm.beapp.domain.user.entity.Role;
-import kma.cnpm.beapp.domain.user.entity.User;
+import kma.cnpm.beapp.domain.user.entity.*;
 import kma.cnpm.beapp.domain.user.repository.InvalidateTokenRepository;
+import kma.cnpm.beapp.domain.user.repository.RoleRepository;
+import kma.cnpm.beapp.domain.user.repository.UserHasRoleRepository;
 import kma.cnpm.beapp.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -41,7 +43,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthService {
+public class AuthService implements CommandLineRunner {
     @Value("${jwt.valid-duration}")
      long validDuration;
 
@@ -69,6 +71,8 @@ public class AuthService {
     final UserRepository userRepository;
     final InvalidateTokenRepository invalidateTokenRepository;
     final PasswordEncoder passwordEncoder;
+    final RoleRepository roleRepository;
+    final UserHasRoleRepository userHasRoleRepository;
 
 
     public String generateToken(User user , TokenType tokenType) {
@@ -83,7 +87,9 @@ public class AuthService {
                         Instant.now().plus(validTime, ChronoUnit.SECONDS).toEpochMilli()
                 ))
                 .jwtID(UUID.randomUUID().toString())
-                .claim("scope", buildScope(user))
+//                .claim("scope", buildScope(user))
+                .claim("roles", getRoles(user))
+                .claim("authorities", getAuthorities(user))
                 .claim("userId", user.getId().toString())
                 .build();
 
@@ -98,6 +104,20 @@ public class AuthService {
             log.error("Cannot create token", e);
             throw new AppException(AppErrorCode.INVALID_TOKEN_TYPE);
         }
+    }
+    private List<String> getRoles(User user) {
+        List<Role> roles = userRepository.getRolesByUserId(user.getId());
+        return roles.stream()
+                .map(role -> "ROLE_" + role.getRoleName())
+                .collect(Collectors.toList());
+    }
+
+    private List<String> getAuthorities(User user) {
+        List<Role> roles = userRepository.getRolesByUserId(user.getId());
+        return roles.stream()
+                .flatMap(role -> userRepository.getPermissionByRoleId(role.getId()).stream())
+                .map(Permission::getPermissionName)
+                .collect(Collectors.toList());
     }
 
 
@@ -334,5 +354,66 @@ public class AuthService {
         return userId;
     }
 
+
+    @Override
+    public void run(String... args) throws Exception {
+        // Khởi tạo các vai trò nếu chưa tồn tại
+        createRoleIfNotExists("USER", "Người dùng bình thường");
+        createRoleIfNotExists("ADMIN", "Quản trị viên hệ thống");
+        createRoleIfNotExists("SHIPPER", "Người giao hàng");
+
+        // Khởi tạo tài khoản admin nếu chưa tồn tại
+        createUserIfNotExists("admin@gmail.com", "admin", "ADMIN");
+
+        // Khởi tạo tài khoản shipper nếu chưa tồn tại
+        createUserIfNotExists("shipper@gmail.com", "shipper", "SHIPPER");
+    }
+
+    private void createRoleIfNotExists(String roleName, String description) {
+        Role role = roleRepository.findByRoleName(roleName);
+        if (role == null) {
+            role = Role.builder()
+                    .roleName(roleName)
+                    .description(description)
+                    .build();
+            roleRepository.save(role);
+        }
+    }
+
+    private void createUserIfNotExists(String email, String password, String roleName) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            String salt = generateSalt();
+            String encodedPassword = encodePassword(password, salt);
+
+            User newUser = User.builder()
+                    .email(email)
+                    .status(UserStatus.ACTIVE)
+                    .salt(salt)
+                    .password(encodedPassword)
+                    .build();
+            userRepository.save(newUser);
+
+            Role role = roleRepository.findByRoleName(roleName);
+            if (role != null) {
+                UserHasRole userHasRole = UserHasRole.builder()
+                        .role(role)
+                        .user(newUser)
+                        .build();
+                userHasRoleRepository.save(userHasRole);
+            } else {
+                throw new RuntimeException("Role '" + roleName + "' not found");
+            }
+        }
+    }
+    private String encodePassword(String rawPassword, String salt) {
+        return passwordEncoder.encode(rawPassword + salt);
+    }
+    private String generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return new String(salt);
+    }
 
 }
