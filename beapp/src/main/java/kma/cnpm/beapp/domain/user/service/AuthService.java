@@ -380,6 +380,7 @@ public class AuthService implements CommandLineRunner {
         }
     }
 
+
     private void createUserIfNotExists(String email, String password, String roleName) {
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
