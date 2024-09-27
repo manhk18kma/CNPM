@@ -23,4 +23,7 @@ export class PostService {
   getPostsByUserID(userId: any): Observable<any> {
     return this.http.get(`${this.baseURL}/user/${userId}`);
   }
+  getPostByID(id: any): Observable<any> {
+    return this.http.get(`${this.baseURL}/${id}`);
+  }
 }

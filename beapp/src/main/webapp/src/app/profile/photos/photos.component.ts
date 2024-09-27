@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MediaService} from "../../service/media.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-photos',
@@ -11,14 +11,17 @@ export class PhotosComponent implements OnInit{
   photos: any[] = [];
   private id: any;
   constructor(private mediaService: MediaService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private router: Router) {
   }
 
   ngOnInit(): void {
     this.id = this.route.parent?.snapshot.paramMap.get('id');
     this.mediaService.getMediaBySeller(this.id).subscribe(res => {
       this.photos = res.data
-      console.log(this.photos)
     })
+  }
+  navigateDetailPost(id: any){
+    this.router.navigate([`post/${id}`],id)
   }
 }

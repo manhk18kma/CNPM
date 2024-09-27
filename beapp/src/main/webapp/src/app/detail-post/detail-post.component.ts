@@ -1,39 +1,38 @@
 import { Component } from '@angular/core';
-import {AuthService} from "../../service/auth/auth.service";
-import {CategoryService} from "../../service/category.service";
-import {PostService} from "../../service/post.service";
+import {AuthService} from "../service/auth/auth.service";
+import {CategoryService} from "../service/category.service";
+import {PostService} from "../service/post.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
 import {DomSanitizer} from "@angular/platform-browser";
-import {CommentsService} from "../../service/comments.service";
-import {LikeService} from "../../service/like.service";
+import {CommentsService} from "../service/comments.service";
+import {LikeService} from "../service/like.service";
 import {MessageService} from "primeng/api";
 import {catchError, of, tap} from "rxjs";
 
 @Component({
-  selector: 'app-liked',
-  templateUrl: './liked.component.html',
-  styleUrls: ['./liked.component.scss']
+  selector: 'app-detail-post',
+  templateUrl: './detail-post.component.html',
+  styleUrls: ['./detail-post.component.scss']
 })
-export class LikedComponent {
+export class DetailPostComponent {
   openPost: boolean = false;
   imageFiles: File[] = [];
   images: Awaited<string>[] = [];
-  post: any = {};
   addProduct: boolean = false;
   product: any = {};
   categories: any;
-  posts: any;
+  post: any = {};
   userDetail: any;
   id: any;
   imagePreviewUrls: any = [];
   selectedPost: any = null;
   newComment: any = {}
   comments: any;
-
+  openComment = false;
   constructor(public authService: AuthService,
               private categoryService: CategoryService,
-              private postService: PostService,
+              private postervice: PostService,
               private route: ActivatedRoute,
               private spinner: NgxSpinnerService,
               private router: Router,
@@ -45,27 +44,20 @@ export class LikedComponent {
   }
 
   ngOnInit(): void {
-    this.post.product = null;
-    this.id = this.route.parent?.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id');
     // @ts-ignore
     this.userDetail = JSON.parse(sessionStorage.getItem('userProfile'));
-    this.getPostsByUserID(this.id)
+    console.log(this.userDetail)
+    this.getPostsByPostID(this.id)
   }
 
   openCommentModal(post: any) {
+    this.openComment = true;
     this.newComment.content = ''
     this.selectedPost = post;
     this.getCommentsByPost(post.id);
-  }
 
-  get lockScroll() {
-    return {
-      'overflow-y': this.selectedPost ? 'hidden' : 'auto',
-      'position': this.selectedPost ? 'fixed' : 'relative',
-      'width': '100%'
-    };
   }
-
   getCommentsByPost(id: any) {
     this.cmtService.getCommentsByPostID(id).pipe(
       tap(res => {
@@ -128,69 +120,11 @@ export class LikedComponent {
     textarea.style.height = textarea.scrollHeight + 'px';
   }
 
-  // Method to handle image selection
-  onFilesSelected(event: any): void {
-    const files: File[] = event.target.files;
+  getPostsByPostID(id: any) {
+    this.postervice.getPostByID(id).subscribe(res => {
 
-    if (files.length > 0) {
-      this.images = []; // Clear previous file selection
-      // this.imagePreviewUrls = []; // Clear previous previews
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        this.imageFiles.push(file); // Add to the array of selected files
-
-        // Generate a URL to display the image preview
-        const objectURL = URL.createObjectURL(file);
-        this.imagePreviewUrls.push(this.sanitizer.bypassSecurityTrustUrl(objectURL) as string);
-      }
-    }
-  }
-
-  private convertToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result as string); // Resolve with the Base64 string
-      };
-      reader.onerror = reject; // Handle any error
-      reader.readAsDataURL(file); // Convert file to Base64
-    });
-  }
-
-
-  onCategoryChange(event: any) {
-    this.product.categoryId = event.target.value;
-  }
-
-  upPost() {
-    if (this.addProduct == true) {
-      if (this.imageFiles.length > 0) {
-        this.product.imageBase64 = [];
-        this.images = [];
-        const promises = this.imageFiles.map(file => this.convertToBase64(file));
-        Promise.all(promises).then((base64Array) => {
-          this.images = base64Array;
-          this.product.imageBase64 = this.images;
-        });
-      }
-      this.post.product = this.product;
-    }
-    this.spinner.show()
-    this.postService.post(this.post).subscribe(res => {
-      setTimeout(() => {
-        this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
-        this.spinner.hide()
-        this.openPost = false;
-      }, 500)
-    }, error => {
-      this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.message});
-    })
-  }
-
-  getPostsByUserID(id: any) {
-    this.likeService.getLikedPosts().subscribe(res => {
-      this.posts = res.data
+      this.post = res.data
+      console.log(this.post)
     })
   }
 

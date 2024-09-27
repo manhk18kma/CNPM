@@ -24,6 +24,7 @@ import {RechargeComponent} from "./recharge/recharge.component";
 import {WithdrawComponent} from "./withdraw/withdraw.component";
 import {ResponseTransactionComponent} from "./response-transaction/response-transaction.component";
 import {LikedComponent} from "./profile/liked/liked.component";
+import {DetailPostComponent} from "./detail-post/detail-post.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -67,6 +68,7 @@ const routes: Routes = [
   {path: 'recharge/:id', component: RechargeComponent,canActivate: [AuthGuard]},
   {path: 'withdraw/:id', component: WithdrawComponent,canActivate: [AuthGuard]},
   {path: 'response-transaction', component: ResponseTransactionComponent,canActivate: [AuthGuard]},
+  {path: 'post/:id', component: DetailPostComponent,canActivate: [AuthGuard]},
 
 ];
 

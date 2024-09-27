@@ -21,6 +21,7 @@
     "@angular/router": "^16.1.0",
     "moment": "^2.29.1",
     "ng-http-loader": "^9.0.0",
+    "ng-recaptcha": "^13.2.1",
     "ngx-spinner": "^16.0.0",
     "primeicons": "^7.0.0",
     "primeng": "^17.18.10",

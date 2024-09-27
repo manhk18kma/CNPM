@@ -6,6 +6,8 @@ import {CookieService} from "ngx-cookie-service";
 import {ToastrService} from "ngx-toastr";
 import {catchError, of} from "rxjs";
 import {AuthService} from "../service/auth/auth.service";
+import {MessageService} from "primeng/api";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-login',
@@ -18,7 +20,8 @@ export class LoginComponent {
   constructor(private authService: AuthService,
               private router: Router,
               private cookieService: CookieService,
-              private toastrService: ToastrService) {
+              private messageService: MessageService,
+              private spinner: NgxSpinnerService) {
   }
 
   ngOnInit(): void {
@@ -26,30 +29,31 @@ export class LoginComponent {
   }
 
   login() {
-
-    this.authService.loginUser(this.user).pipe(
-      catchError(error => {
-        this.showFail()
-        return of({error: 'Login failed, please try again later.'});
-      })
-    ).subscribe(res => {
-      this.cookieService.set('accessToken', res.data.accessToken, {expires: 1, path: '/'});
-      if (res.data.accessToken != null) {
-        this.showSuccess()
-        this.router.navigate(["/home"]);
-      }
+    this.spinner.show().then(r =>{
+      this.authService.loginUser(this.user).pipe(
+        catchError(error => {
+          this.showFail()
+          return of({error: 'Đăng nhập thất bại'});
+        })
+      ).subscribe(res => {
+        this.cookieService.set('accessToken', res.data.accessToken, {expires: 1, path: '/'});
+        if (res.data.accessToken != null) {
+          this.showSuccess();
+          setTimeout(() => {
+            this.router.navigate(["/home"]);
+          },1000)
+          this.spinner.hide()
+        }
+      });
     });
+
   }
 
   showSuccess() {
-    this.toastrService.success('Đăng nhập thành công !','',{
-      timeOut: 1500,
-    });
+    this.messageService.add({severity: 'success', summary: 'Thao tác', detail: 'Đăng nhập thành công'});
   }
 
   showFail() {
-    this.toastrService.error('Đăng nhập thất bại','',{
-      timeOut: 1500,
-    });
+    this.messageService.add({severity: 'error', summary: 'Thao tác', detail: 'Đăng nhập thất bại'});
   }
 }

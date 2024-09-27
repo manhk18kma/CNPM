@@ -5,6 +5,7 @@ import {TokenService} from "../service/token/token.service";
 import {UserService} from "../service/user.service";
 import {ToastrService} from "ngx-toastr";
 import {catchError, of} from "rxjs";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-signup',
@@ -20,27 +21,26 @@ export class SignupComponent {
   constructor(private router: Router,
               private tokenService: TokenService,
               private userService: UserService,
-              private toast: ToastrService) {
+              private messageService: MessageService) {
 
   }
 
   ngOnInit(): void {
 
   }
-
+  onCaptchaResolved(captchaResponse: any){
+    this.user.captchaToken = captchaResponse;
+  }
   register() {
-
-
       this.userService.registerUser(this.user).pipe(
         catchError(error => {
-          return of({error: 'register failed, please try again later.'});
+          return of({error: 'Có lỗi xảy ra'});
         })
       ).subscribe(res => {
-          console.log(res)
+          this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
         },
         error => {
-          console.error(error)
+          this.messageService.add({severity: 'error', summary: 'Thao tác', detail: 'Có lỗi xảy ra'});
         });
-
   }
 }

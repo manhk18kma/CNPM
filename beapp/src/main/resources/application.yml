@@ -1,4 +1,4 @@
-urlClient: http://localhost:4000
+urlClient: http://localhost:4200
 urlServer: http://localhost:8080
 urlDefaultAvt : https://tse1.mm.bing.net/th?id=OIP._prlVvISXU3EfqFW3GF-RwHaHa&pid=Api&P=0&h=220
 recaptcha:
@@ -50,7 +50,7 @@ payment:
 
     init-payment-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
 #    return-url: https://dev.roninhub.com/order/%s/status
-    return-url: http://localhost:3000/transactions/%s/info
+    return-url: http://localhost:4200/response-transaction
     timeout: 15 # in minutes
 
 
