@@ -13,7 +13,7 @@ import {timeout} from "rxjs";
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export class ProfileComponent implements OnInit{
   idUser: any;
   userDetail: any;
 
@@ -57,7 +57,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy(): void {
-    sessionStorage.removeItem('userProfile');
-  }
+  // ngOnDestroy(): void {
+  //   sessionStorage.removeItem('userProfile');
+  // }
 }

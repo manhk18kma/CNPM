@@ -42,6 +42,9 @@ import {MessageModule} from "primeng/message";
 import {MessagesModule} from "primeng/messages";
 import { LikedComponent } from './profile/liked/liked.component';
 import { ResponseTransactionComponent } from './response-transaction/response-transaction.component';
+import { DetailPostComponent } from './detail-post/detail-post.component';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+import { OrderShipperComponent } from './order-shipper/order-shipper.component';
 
 @NgModule({
   declarations: [
@@ -69,24 +72,28 @@ import { ResponseTransactionComponent } from './response-transaction/response-tr
     WithdrawComponent,
     AddComponent,
     LikedComponent,
-    ResponseTransactionComponent
+    ResponseTransactionComponent,
+    DetailPostComponent,
+    OrderShipperComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpClientModule,
-    NgIf,
-    RouterLink,
-    RouterLinkActive,
-    BrowserAnimationsModule,
-    ToastrModule.forRoot(),
-    NgbModule,
-    NgxSpinnerModule.forRoot({type: 'ball-clip-rotate'}),
-    ToastModule,
-    MessageModule,
-    MessagesModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        HttpClientModule,
+        NgIf,
+        RouterLink,
+        RouterLinkActive,
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        NgbModule,
+        NgxSpinnerModule.forRoot({type: 'ball-clip-rotate'}),
+        ToastModule,
+        MessageModule,
+        MessagesModule,
+        RecaptchaModule,
+        RecaptchaFormsModule
+    ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard, provideAnimations(),MessageService, // required animations providers
     provideToastr(),
   ],

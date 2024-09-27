@@ -25,4 +25,7 @@ export class LikeService {
   undoLike(postId: any): Observable<any> {
     return this.http.delete(`${this.baseURL}/post/${postId}`);
   }
+  getLikedPosts(): Observable<any> {
+    return this.http.get(`${this.baseURL}/post`);
+  }
 }

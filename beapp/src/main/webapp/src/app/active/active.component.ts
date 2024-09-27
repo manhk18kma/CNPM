@@ -4,6 +4,7 @@ import {ToastrService} from "ngx-toastr";
 import {UserService} from "../service/user.service";
 import {ActivatedRoute} from "@angular/router";
 import {timestamp} from "rxjs";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-active',
@@ -15,14 +16,14 @@ export class ActiveComponent implements OnInit {
   isActivating = true;
   activationSuccess = false;
 
-  constructor(private toastrService: ToastrService,
+  constructor(private messageService: MessageService,
               private userService: UserService,
               private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
     const token = this.route.snapshot.paramMap.get('token');
-    this.activeToken.tokenDevice = null;
+    this.activeToken.tokenDevice = '1';
     if (token) {
       this.activeToken.token = token;
       this.activateAccount(this.activeToken);
@@ -34,10 +35,9 @@ export class ActiveComponent implements OnInit {
 
   activateAccount(token: any): void {
     this.userService.activeToken(token).subscribe(res => {
-        this.toastrService.success(res.message)
+      this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
     },error => {
-      console.log(error)
-      this.toastrService.error(error.error.message)
+      this.messageService.add({severity: 'error', summary: 'Thao tác', detail: 'Lỗi hệ thống'});
     })
   }
 }

@@ -1,52 +1,52 @@
 <p-toast></p-toast>
-<div *ngIf="selectedPost" class="modal-overlay" (click)="closeModal()"></div>
-<div class="profile-content decor-text-1">
+<div *ngIf="openComment" class="modal-overlay" (click)="closeModal()"></div>
+<div *ngIf="!openComment" class="profile-content decor-text-1">
   <div class="tab-content p-0">
-    <div class="tab-pane fade active show" id="profile-post">
+    <div class="tab-pane fade active show" id="profile-post?">
       <ul class="timeline">
-        <li *ngFor="let post of posts">
-          <div *ngIf="selectedPost != post" class="timeline-body">
+        <li>
+          <div class="timeline-body">
             <div class="timeline-header">
                       <span class="userimage"><img
                         src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
                         alt=""></span>
               <span class="username"><a>{{userDetail.fullName}}</a> <small></small></span>
               <div class="pull-right text-muted">
-                <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
-                <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
+                <span class="date">{{post?.createdAt | date: 'dd/MM/yyyy '}}</span>
+                <span class="date">{{post?.createdAt | date: ' HH:mm:ss'}}</span>
               </div>
             </div>
             <div class="timeline-content">
               <p style="font-weight: bold">
-                {{post.content}}
+                {{post?.content}}
               </p>
             </div>
-            <hr *ngIf="post.product.id != null" class="faded-line">
-            <div *ngIf="post.product.id != null" class="timeline-content" style="flex-wrap: wrap">
+            <hr *ngIf="post?.product.id != null" class="faded-line">
+            <div *ngIf="post?.product.id != null" class="timeline-content" style="flex-wrap: wrap">
               <p>
-                Tên sản phẩm: {{post.product.name}}
+                Tên sản phẩm: {{post?.product.name}}
               </p>
               <p>
-                Mô tả: {{post.product.description}}
+                Mô tả: {{post?.product.description}}
               </p>
               <p>
-                Số lượng: {{post.product.quantity}}
+                Số lượng: {{post?.product.quantity}}
               </p>
               <p>
-                Loại sản phẩm: {{post.product.categoryName}}
+                Loại sản phẩm: {{post?.product.categoryName}}
               </p>
               <div class="image-grid">
-                <div class="image-item" *ngFor="let media of post.product.medias">
+                <div class="image-item" *ngFor="let media of post?.product.medias">
                   <img [src]="media.url" alt="User uploaded image">
                 </div>
               </div>
             </div>
             <div class="timeline-likes">
               <div class="stats-right">
-                <span class="stats-text">{{post.commentTotal}} Bình luận</span>
+                <span class="stats-text">{{post?.commentTotal}} Bình luận</span>
               </div>
               <div class="stats">
-                <span class="stats-total">{{post.likeTotal}}</span>
+                <span class="stats-total">{{post?.likeTotal}}</span>
                 <i class="bi bi-heart-fill p-1" style="color: red"></i>
               </div>
             </div>
@@ -54,9 +54,9 @@
             <div class="timeline-comment-box rounded-0">
               <div class="d-flex align-items-center">
 
-                <i *ngIf="!post.liked" (click)="toggleLike(post.id, post)" class="bi bi-heart decor-text p-1"
+                <i *ngIf="!post?.liked" (click)="toggleLike(post.id, post)" class="bi bi-heart decor-text p-1"
                    style="color: red;cursor: pointer"></i>
-                <i *ngIf="post.liked" (click)="toggleLike(post.id, post)" class="bi bi-heart-fill decor-text p-1" style="color: red;cursor: pointer"></i>
+                <i *ngIf="post?.liked" (click)="toggleLike(post.id, post)" class="bi bi-heart-fill decor-text p-1" style="color: red;cursor: pointer"></i>
                 <span class="separator">|</span>
                 <i (click)="openCommentModal(post)" class="bi bi-chat-dots decor-text"
                    style="color: #5dc486;cursor: pointer"></i>
@@ -65,7 +65,8 @@
               </div>
             </div>
           </div>
-          <div *ngIf="selectedPost == post">
+
+          <div *ngIf="openComment">
             <div class="timeline-body modal-fix">
               <div class="timeline-header">
                       <span class="userimage"><img
@@ -73,45 +74,45 @@
                         alt=""></span>
                 <span class="username"><a>{{userDetail.fullName}}</a> <small></small></span>
                 <div class="pull-right text-muted">
-                  <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
-                  <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
+                  <span class="date">{{post?.createdAt | date: 'dd/MM/yyyy '}}</span>
+                  <span class="date">{{post?.createdAt | date: ' HH:mm:ss'}}</span>
                 </div>
               </div>
               <div class="timeline-content">
                 <p style="font-weight: bold">
-                  {{post.content}}
+                  {{post?.content}}
                 </p>
               </div>
-              <hr *ngIf="post.product.id != null" class="faded-line">
-              <div *ngIf="post.product.id != null" class="timeline-content" style="flex-wrap: wrap">
+              <hr *ngIf="post?.product.id != null" class="faded-line">
+              <div *ngIf="post?.product.id != null" class="timeline-content" style="flex-wrap: wrap">
                 <p>
-                  Tên sản phẩm: {{post.product.name}}
+                  Tên sản phẩm: {{post?.product.name}}
                 </p>
                 <p>
-                  Mô tả: {{post.product.description}}
+                  Mô tả: {{post?.product.description}}
                 </p>
                 <p>
-                  Số lượng: {{post.product.quantity}}
+                  Số lượng: {{post?.product.quantity}}
                 </p>
                 <p>
-                  Loại sản phẩm: {{post.product.categoryName}}
+                  Loại sản phẩm: {{post?.product.categoryName}}
                 </p>
                 <div class="image-grid">
-                  <div class="image-item" *ngFor="let media of post.product.medias">
+                  <div class="image-item" *ngFor="let media of post?.product.medias">
                     <img [src]="media.url" alt="User uploaded image">
                   </div>
                 </div>
               </div>
               <div class="timeline-likes">
                 <div class="stats-right">
-                  <span class="stats-text">{{post.commentTotal}} bình luận</span>
+                  <span class="stats-text">{{post?.commentTotal}} bình luận</span>
                 </div>
                 <div class="stats">
-                  <span class="stats-total">{{post.likeTotal}}</span>
+                  <span class="stats-total">{{post?.likeTotal}}</span>
                   <i class="bi bi-heart-fill p-1" style="color: red"></i>
                 </div>
               </div>
-              <hr *ngIf="post.product.id != null" class="faded-line">
+              <hr *ngIf="post?.product.id != null" class="faded-line">
               <!--                comment-->
               <div class="container decor-text-1">
                 <div class="row">
