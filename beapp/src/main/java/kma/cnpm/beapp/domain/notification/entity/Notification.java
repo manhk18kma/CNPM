@@ -27,7 +27,7 @@ public class Notification extends AbstractEntity<Long> {
     private NotificationTypeRedirect typeRedirect;
 
     @Column(name = "reference_id")
-    private Long referenceId;
+    private String referenceId;
 
     @Column(name = "content")
     private String content;

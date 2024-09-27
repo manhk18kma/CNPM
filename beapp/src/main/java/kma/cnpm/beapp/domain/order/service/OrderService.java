@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface OrderService {
 
+    String createOrderByCart(OrderRequest orderRequest);
     String createOrder(OrderRequest orderRequest);
     String acceptShipment(String id);
     String completeOrder(String id);

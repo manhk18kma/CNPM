@@ -1,16 +1,20 @@
 package kma.cnpm.beapp.domain.order.service.impl;
 
+import kma.cnpm.beapp.domain.common.dto.ProductResponse;
 import kma.cnpm.beapp.domain.common.dto.ShipmentRequest;
 import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.OrderCreated;
+import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.order.dto.request.OrderRequest;
+import kma.cnpm.beapp.domain.order.dto.response.CartItemResponse;
 import kma.cnpm.beapp.domain.order.dto.response.OrderResponse;
 import kma.cnpm.beapp.domain.order.entity.Order;
 import kma.cnpm.beapp.domain.order.entity.OrderItem;
 import kma.cnpm.beapp.domain.order.mapper.OrderMapper;
-import kma.cnpm.beapp.domain.order.repository.OrderItemRepository;
 import kma.cnpm.beapp.domain.order.repository.OrderRepository;
+import kma.cnpm.beapp.domain.order.service.CartService;
 import kma.cnpm.beapp.domain.order.service.OrderService;
 import kma.cnpm.beapp.domain.payment.service.AccountService;
 import kma.cnpm.beapp.domain.product.service.ProductService;
@@ -27,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,28 +46,38 @@ import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.*;
 public class OrderServiceImpl implements OrderService {
 
     OrderRepository orderRepository;
-    OrderItemRepository orderItemRepository;
     OrderMapper orderMapper;
     UserService userService;
     AuthService authService;
+    CartService cartService;
     ProductService productService;
     ShipmentService shipmentService;
     AccountService accountService;
+    NotificationService notificationService;
 
     @Override
-    public String createOrder(OrderRequest orderRequest) {
-        Order order = orderMapper.map(orderRequest);
+    public String createOrderByCart(OrderRequest orderRequest) {
+        Order order = new Order();
         order.setId(UUID.randomUUID().toString());
         User user = userService.findUserById(authService.getAuthenticationName());
+
+        List<OrderItem> orderItems = new ArrayList<>();
         BigDecimal totalAmount = new BigDecimal(BigInteger.ZERO);
-        for (OrderItem orderItem : order.getOrderItems()) {
-            // logic trừ số lượng product
+        for (CartItemResponse cartItemResponse : cartService.getCartByBuyerId(user.getId())) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setQuantity(cartItemResponse.getQuantity());
+            orderItem.setProductId(cartItemResponse.getProductResponse().getId());
+            cartService.removeCartItem(cartItemResponse.getId());
+            // trừ số lượng product trong kho
             BigDecimal price = productService.reduceProductQuantity(orderItem.getProductId(), orderItem.getQuantity(), false).getPrice();
             totalAmount = totalAmount.add(price.multiply(new BigDecimal(orderItem.getQuantity())));
         }
+        order.setOrderItems(orderItems);
         order.setBuyerId(user.getId());
         order.setTotalAmount(totalAmount);
         order.setStatus(OrderStatus.READY_FOR_DELIVERY);
+//        orderItemRepository.saveAll(order.getOrderItems());
         // tạo yêu cầu giao hàng
         order.setShipmentId(shipmentService.createShipment(
                 ShipmentRequest.builder()
@@ -72,11 +88,53 @@ public class OrderServiceImpl implements OrderService {
 
         // thanh toán
         accountService.payOrder(order.getTotalAmount(), false);
-        orderItemRepository.saveAll(order.getOrderItems().stream()
-                .peek(orderItem -> orderItem.setOrder(order))
-                .toList());
 
         // tạo thông báo cho cả seller và buyer
+        //
+
+        orderRepository.save(order);
+        return order.getId();
+    }
+
+    @Override
+    public String createOrder(OrderRequest orderRequest) {
+        Order order = orderMapper.map(orderRequest);
+        order.setId(UUID.randomUUID().toString());
+
+        User user = userService.findUserById(authService.getAuthenticationName());
+        order.setBuyerId(user.getId());
+
+        OrderItem orderItem = order.getOrderItems().get(0);
+        orderItem.setOrder(order);
+        order.setOrderItems(new ArrayList<>(Collections.singleton(orderItem)));
+
+        // trừ số lượng product trong kho
+        BigDecimal price = productService.reduceProductQuantity(orderItem.getProductId(), orderItem.getQuantity(), false).getPrice();
+        BigDecimal totalAmount = price.multiply(new BigDecimal(orderItem.getQuantity()));
+        order.setTotalAmount(totalAmount);
+
+        // tạo yêu cầu giao hàng
+        order.setShipmentId(shipmentService.createShipment(
+                ShipmentRequest.builder()
+                        .orderId(order.getId())
+                        .shipperId(null)
+                        .addressId(orderRequest.getAddressId())
+                        .build()));
+
+        // thanh toán
+        accountService.payOrder(order.getTotalAmount(), false);
+
+        // tạo thông báo cho cả seller và buyer
+        ProductResponse productResponse = productService.getProductById(orderItem.getProductId());
+        notificationService.orderCreated(OrderCreated.builder()
+                .orderId(order.getId())
+                .amount(totalAmount)
+                .sellerId(productResponse.getSellerId())
+                .buyerId(order.getBuyerId())
+                .orderImg(productResponse.getMediaResponses().get(0).getUrl())
+                .build());
+
+        order.setStatus(OrderStatus.READY_FOR_DELIVERY);
         orderRepository.save(order);
         return order.getId();
     }
