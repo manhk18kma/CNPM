@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {NgIf} from "@angular/common";
+import {NgIf, NgOptimizedImage} from "@angular/common";
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {BrowserAnimationsModule, provideAnimations} from "@angular/platform-browser/animations";
 import {provideToastr, ToastrModule} from "ngx-toastr";
@@ -45,6 +45,11 @@ import { ResponseTransactionComponent } from './response-transaction/response-tr
 import { DetailPostComponent } from './detail-post/detail-post.component';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 import { OrderShipperComponent } from './order-shipper/order-shipper.component';
+import { PendingComponent } from './profile/pending/pending.component';
+import { DeliveringComponent } from './profile/delivering/delivering.component';
+import { SuccessComponent } from './profile/success/success.component';
+import { AccessDenyComponent } from './access-deny/access-deny.component';
+import { CancelDeliveryComponent } from './profile/cancel-delivery/cancel-delivery.component';
 
 @NgModule({
   declarations: [
@@ -74,26 +79,32 @@ import { OrderShipperComponent } from './order-shipper/order-shipper.component';
     LikedComponent,
     ResponseTransactionComponent,
     DetailPostComponent,
-    OrderShipperComponent
+    OrderShipperComponent,
+    PendingComponent,
+    DeliveringComponent,
+    SuccessComponent,
+    AccessDenyComponent,
+    CancelDeliveryComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        FormsModule,
-        HttpClientModule,
-        NgIf,
-        RouterLink,
-        RouterLinkActive,
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        NgbModule,
-        NgxSpinnerModule.forRoot({type: 'ball-clip-rotate'}),
-        ToastModule,
-        MessageModule,
-        MessagesModule,
-        RecaptchaModule,
-        RecaptchaFormsModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    NgIf,
+    RouterLink,
+    RouterLinkActive,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
+    NgbModule,
+    NgxSpinnerModule.forRoot({type: 'ball-clip-rotate'}),
+    ToastModule,
+    MessageModule,
+    MessagesModule,
+    RecaptchaModule,
+    RecaptchaFormsModule,
+    NgOptimizedImage
+  ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard, provideAnimations(),MessageService, // required animations providers
     provideToastr(),
   ],

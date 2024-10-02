@@ -75,7 +75,7 @@
                 <form>
                   <div class="input-group">
                     <button class="btn btn-secondary f-s-12 rounded-0 w-100" type="button" [disabled]="!post.content"
-                            (click)="upPost()">Gửi
+                            (click)="upPost()">Đăng bài
                     </button>
                   </div>
                 </form>
@@ -120,6 +120,9 @@
                 Số lượng: {{post.product.quantity}}
               </p>
               <p>
+                Giá bán/sản phẩm: {{userService.formatMoneyVND(post.product.price)}}
+              </p>
+              <p>
                 Loại sản phẩm: {{post.product.categoryName}}
               </p>
               <div class="image-grid">
@@ -148,7 +151,7 @@
                 <i (click)="openCommentModal(post)" class="bi bi-chat-dots decor-text"
                    style="color: #5dc486;cursor: pointer"></i>
                 <span class="separator">|</span>
-                <i class="bi bi-cart-plus decor-text" style="color: #000000;cursor: pointer"></i>
+                <i *ngIf="post.product.id != null" class="bi bi-cart-plus decor-text" (click)="navigatePayment(post.id)" style="color: #000000;cursor: pointer"></i>
               </div>
             </div>
           </div>
@@ -179,6 +182,9 @@
                 </p>
                 <p>
                   Số lượng: {{post.product.quantity}}
+                </p>
+                <p>
+                  Giá bán/sản phẩm: {{post.product.price}}
                 </p>
                 <p>
                   Loại sản phẩm: {{post.product.categoryName}}

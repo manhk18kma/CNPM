@@ -15,6 +15,7 @@ export class AppComponent implements OnInit{
   key: any;
   isMobile: boolean = false;
   showMobileMenu: boolean = false;
+  currentRole: any;
   constructor(public userService: UserService,
               private router: Router,
               private tokenService: TokenService,
@@ -55,6 +56,7 @@ export class AppComponent implements OnInit{
       .subscribe(result => {
         this.isMobile = result.matches;
       });
+    this.currentRole = this.tokenService.getRoleUserFromToken();
   }
   openMobileMenu() {
     this.showMobileMenu = !this.showMobileMenu;  // Toggles the mobile menu visibility

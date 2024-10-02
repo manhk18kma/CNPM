@@ -1,0 +1,68 @@
+<div class="container">
+  <div style="font-size: 13px"  id="tab2" class="tab-pane active">
+    <div class="decor-text" style="font-size: 20px; text-align: center; margin:30px 0;font-weight: bold">
+      Đơn hàng đang giao
+    </div>
+    <hr class="faded-line">
+    <table class="table">
+      <thead>
+      <tr class="decor-text-0">
+        <th scope="col">Mã đơn</th>
+        <th scope="col">Người bán</th>
+        <th scope="col">Người mua</th>
+        <th scope="col">Sản phẩm</th>
+        <th scope="col">Số lượng</th>
+        <th scope="col">Địa chỉ giao</th>
+        <th scope="col">Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr style="cursor: pointer" *ngFor="let i of dataShow;let j = index"
+          [class.row-selected]="this.selectedRows.indexOf(i) !== -1"
+          class="decor-text-1"
+          (click)="selectRow(i, $event, syslogs)">
+        <td>1</td>
+        <td>Khánh</td>
+        <td>Mạnh</td>
+        <td>Mũ đỏ</td>
+        <td>1</td>
+        <td>Nam Định</td>
+        <td>
+          <button class="btn rounded-0" style="font-size: 9px;background-color: #fcd346; padding:4px">Đang giao</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="footer-dynamic-report">
+      <div style="padding-right: 16px;">
+        <div class="row" style="height: 20px;width: 100%">
+          <div class="col-md-6">
+            <div class="form-group row">
+              <label class="col-sm-9 col-form-label" style="font-size: 10px"
+              ><span></span>Số lượng: {{ syslogs.length }}
+              </label>
+
+            </div>
+
+          </div>
+          <!--        <div class="col-md-6">-->
+          <!--          <div class="row justify-content-end pagination-container">-->
+          <!--            <ngb-pagination-->
+          <!--              class="ngb-pagination"-->
+          <!--              [size]="'sm'"-->
+          <!--              [collectionSize]="syslogs.length"-->
+          <!--              [(page)]="page"-->
+          <!--              [pageSize]="itemsPerPage"-->
+          <!--              [maxSize]="5"-->
+          <!--              [rotate]="true"-->
+          <!--              [boundaryLinks]="true"-->
+          <!--              (pageChange)="loadPage(page)"-->
+          <!--            ></ngb-pagination>-->
+          <!--          </div>-->
+          <!--        </div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

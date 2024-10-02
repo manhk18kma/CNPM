@@ -1,110 +1,59 @@
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css"
-      integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous"/>
-<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
-<div class="container position-absolute" style="margin-top: 100px">
-  <div class="row">
-    <div class="col-xl-8">
-      <div class="card border shadow-none">
-        <div class="card-body">
-
-          <div class="d-flex align-items-start border-bottom pb-3">
-            <div class="me-4">
-              <img src="https://www.bootdey.com/image/380x380/008B8B/000000" alt="" class="avatar-lg rounded">
-            </div>
-            <div class="flex-grow-1 align-self-center overflow-hidden">
-              <div>
-                <h5 class="text-truncate font-size-18 text-cart"><a href="#" class="text-dark">Bàn phím</a></h5>
-                <p class="mb-0 mt-1 decor-text-0">Mô tả : <span class="fw-medium">Ngoại hình đẹp</span></p>
-              </div>
-            </div>
-            <div class="profile-comments__item d-flex align-items-center decor-text-1" style="cursor: pointer">
-              <div class="profile-comments__avatar">
-                <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="...">
-              </div>
-              <div class="profile-comments__body">
-                <h5 style="font-size: 11px" class="profile-comments__sender">
-                  Duy Khánh
-                </h5>
-              </div>
-            </div>
-            <div class="flex-shrink-0 ms-2">
-              <ul class="list-inline mb-0 font-size-16">
-                <li class="list-inline-item">
-                  <a href="#" class="text-muted px-1">
-                    <i class="mdi mdi-trash-can-outline"></i>
-                  </a>
-                </li>
-              </ul>
-            </div>
+<p-toast></p-toast>
+<div class="container">
+  <!-- product -->
+  <div class="product-content product-wrap clearfix product-deatil">
+    <div class="row">
+      <div class="col-md-5 col-sm-12 col-xs-12">
+        <div class="slider-container">
+          <div class="slider">
+            <button (click)="prevImage(product?.medias)">&#10094;</button>
+            <img src="{{product?.medias[currentIndex].url}}" class="slide-image">
+            <button (click)="nextImage(product?.medias)">&#10095;</button>
           </div>
 
-          <div>
-            <div class="row">
-              <div class="col-md-4">
-                <div class="mt-3">
-                  <p class="text-muted mb-2 decor-text">Giá</p>
-                  <h5 class="mb-0 mt-2 decor-text-1" style="font-size: 17px">200.000 đồng</h5>
-                </div>
-              </div>
-            </div>
+          <!-- Hiển thị các ảnh thu nhỏ (nếu muốn) -->
+          <div class="thumbnail-container">
+            <img *ngFor="let image of product?.medias; let i = index"
+                 src="{{image.url}}"
+                 [class.active]="i === currentIndex"
+                 (click)="goToImage(i)"
+                 class="thumbnail-image">
           </div>
-
         </div>
       </div>
-      <!-- end card -->
-      <div class="row my-4">
-        <div class="col-sm-6">
-          <a href="ecommerce-products.html" class="btn btn-link text-muted decor-text-1">
-            <i class="mdi mdi-arrow-left me-1 "></i> Quay lại </a>
-        </div> <!-- end col -->
-        <div class="col-sm-6">
-          <div class="text-sm-end mt-2 mt-sm-0 decor-text">
-            <button class="btn rounded-0 btn-dark" style="font-size: 12px">Thanh toán</button>
-          </div>
-        </div> <!-- end col -->
-      </div> <!-- end row-->
-    </div>
 
-    <div class="col-xl-4">
-      <div class="mt-5 mt-lg-0">
-        <div class="card border shadow-none">
-          <div class="card-header bg-transparent border-bottom py-3 px-4">
-            <h5 class="font-size-16 mb-0 decor-text" style="font-weight: bold">Hóa đơn<span class="float-end">01</span></h5>
-          </div>
-          <div class="card-body p-4 pt-2">
-
-            <div class="table-responsive">
-              <table class="table mb-0 decor-text-1" style="font-size: 15px">
-                <tbody>
-                <tr>
-                  <td>Giá sản phẩm</td>
-                  <td class="text-end">200.000</td>
-                </tr>
-                <tr>
-                  <td>Phí vận chuyển</td>
-                  <td class="text-end">2.000</td>
-                </tr>
-                <tr>
-                  <td>Người bán</td>
-                  <td class="text-end">Duy Khánh</td>
-                </tr>
-                <tr class="bg-light">
-                  <th>Total :</th>
-                  <td class="text-end">
-                    <span class="fw-bold">
-                      202.000
-                    </span>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
+      <div class="col-md-6 col-md-offset-1 col-sm-12 col-xs-12 decor-text-1">
+        <h2 class="name decor-text" style="font-size: 20px; font-weight: bold;margin-bottom: 5px">
+          {{product.name}}
+        </h2>
+        <p>
+          Mô tả: {{product.description}}
+        </p>
+        <p>
+          Số lượng trong kho: {{post.product.quantity}}
+        </p>
+        <p>
+          Loại sản phẩm: {{product.categoryName}}
+        </p>
+        <hr />
+        <h3 class="price-container">
+          Số lượng mua:
+          <i class="bi bi-dash-lg p-2" (click)="decreaseQuantity()"></i>
+          <input type="number" [(ngModel)]="this.orderItem.quantity" (change)="onQuantityChange($event,post.product.quantity)" min="1" [max]="post.product.quantity" >
+          <i class="bi bi-plus-lg p-2" (click)="increaseQuantity(post.product.quantity)"></i>
+        </h3>
+        <hr />
+        <h3 class="price-container">
+          Số tiền cần thanh toán: {{userService.formatMoneyVND(product.price * this.orderItem.quantity)}}
+        </h3>
+        <hr />
+        <div class="row">
+          <div class="col-sm-12 col-md-6 col-lg-12">
+            <a (click)="payment()" class="btn btn-success rounded-0" style="float: right">Thanh toán</a>
           </div>
         </div>
       </div>
     </div>
   </div>
-
+  <!-- end product -->
 </div>

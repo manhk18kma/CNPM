@@ -21,9 +21,9 @@
             </tr>
             <tr style="cursor: pointer">
               <th class="decor-text"><strong><i class="bi bi-geo"></i></strong></th>
-              <td *ngIf="userDetail.addresses.length != 0">{{userDetail?.addresses}}</td>
-              <td *ngIf="userDetail.addresses.length == 0">
-                <i class="bi bi-plus-circle text-info decor-text-1">Thêm địa chỉ</i>
+              <td (click)="navigateAddress()" *ngIf="userDetail?.addresses.length != 0">{{userDetail?.addresses[0].address}}</td>
+              <td *ngIf="userDetail?.addresses.length == 0">
+                <i (click)="navigateAddress()" class="bi bi-plus-circle text-info decor-text-1">Thêm địa chỉ</i>
               </td>
             </tr>
             <tr>

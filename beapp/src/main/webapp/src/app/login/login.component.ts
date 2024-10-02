@@ -8,6 +8,8 @@ import {catchError, of} from "rxjs";
 import {AuthService} from "../service/auth/auth.service";
 import {MessageService} from "primeng/api";
 import {NgxSpinnerService} from "ngx-spinner";
+import {TokenService} from "../service/token/token.service";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-login',
@@ -16,20 +18,27 @@ import {NgxSpinnerService} from "ngx-spinner";
 })
 export class LoginComponent {
   user = new User();
+  currentRole: any;
 
   constructor(private authService: AuthService,
               private router: Router,
               private cookieService: CookieService,
               private messageService: MessageService,
-              private spinner: NgxSpinnerService) {
+              private spinner: NgxSpinnerService,
+              private tokenService: TokenService,
+              private location: Location) {
   }
 
   ngOnInit(): void {
-    this.user.deviceToken = '1';
+    this.currentRole = this.tokenService.getRoleUserFromToken();
+    if (this.currentRole != null || this.currentRole != '') {
+      this.router.navigate([`profile/${this.tokenService.getIDUserFromToken()}`])
+    }
+      this.user.deviceToken = '1';
+
   }
 
   login() {
-    this.spinner.show().then(r =>{
       this.authService.loginUser(this.user).pipe(
         catchError(error => {
           this.showFail()
@@ -40,12 +49,11 @@ export class LoginComponent {
         if (res.data.accessToken != null) {
           this.showSuccess();
           setTimeout(() => {
-            this.router.navigate(["/home"]);
-          },1000)
-          this.spinner.hide()
+            this.router.navigate([`profile/${this.tokenService.getIDUserFromToken()}`])
+            window.location.reload();
+          }, 500)
         }
       });
-    });
 
   }
 
