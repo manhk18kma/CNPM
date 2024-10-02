@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public class OrderAcceptedShip {
     Long buyerId;
     Long sellerId;
-    Long orderId;
+    String orderId;
     String orderImg;
 
 

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Data
 @Builder
 public class OrderConfirm {
-    Long orderId;
+    String orderId;
     Long sellerId;
     Long BuyerId;
     BigDecimal totalAmount;

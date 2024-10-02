@@ -2,6 +2,9 @@ package kma.cnpm.beapp.domain.post.service.impl;
 
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.LikeCreated;
+import kma.cnpm.beapp.domain.common.notificationDto.UnLiked;
+import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.post.dto.response.PostResponse;
 import kma.cnpm.beapp.domain.post.entity.Like;
 import kma.cnpm.beapp.domain.post.entity.Post;
@@ -40,6 +43,7 @@ public class LikeServiceImpl implements LikeService {
     CommentService commentService;
     ProductService productService;
     PostMapper postMapper;
+    NotificationService notificationService;
 
     @Override
     public void likePost(Integer postId) {
@@ -52,6 +56,14 @@ public class LikeServiceImpl implements LikeService {
         like.setPost(post);
         like.setUserId(user.getId());
         likeRepository.save(like);
+//        notificationService.likeCreated(LikeCreated.builder()
+//                .postId(Long.valueOf(like.getPost().getId()))
+//                .countLikes(countLikes(postId))
+//                .contentSnippet(post.getContent())
+//                .postUrlImg(null)
+//                .posterId(post.getUserId())
+//                .likerId(user.getId())
+//                .build());
     }
 
     @Override
@@ -65,6 +77,8 @@ public class LikeServiceImpl implements LikeService {
         likeRepository.existsByPostAndUserId(post, user.getId());
         Like like = likeRepository.findByPostAndUserId(post, user.getId());
         likeRepository.delete(like);
+//        notificationService.unLiked(UnLiked.builder()
+//                .postId(Long.valueOf(post.getId())).build());
     }
 
     @Override

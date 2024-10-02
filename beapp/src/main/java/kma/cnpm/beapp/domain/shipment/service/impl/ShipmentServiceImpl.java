@@ -5,6 +5,8 @@ import kma.cnpm.beapp.domain.common.dto.ShipmentResponse;
 import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.ShipmentCreated;
+import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.shipment.entity.Shipment;
 import kma.cnpm.beapp.domain.shipment.mapper.ShipmentMapper;
 import kma.cnpm.beapp.domain.shipment.repository.ShipmentRepository;
@@ -35,6 +37,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     AddressService addressService;
     UserService userService;
     AuthService authService;
+    NotificationService notificationService;
 
     @Override
     public Long createShipment(ShipmentRequest shipmentRequest) {
@@ -54,6 +57,11 @@ public class ShipmentServiceImpl implements ShipmentService {
         User user = userService.findUserById(authService.getAuthenticationName());
         shipment.setShipperId(user.getId());
         shipmentRepository.save(shipment);
+        notificationService.shipmentCreated(ShipmentCreated.builder()
+                .orderId(shipment.getOrderId())
+                .shipmentImg(null)
+                .shipmentId(shipment.getShipperId())
+                .build());
     }
 
     @Override
