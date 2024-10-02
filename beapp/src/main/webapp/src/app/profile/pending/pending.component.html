@@ -7,7 +7,6 @@
       <thead>
       <tr class="decor-text-0">
         <th scope="col">Mã đơn</th>
-        <th scope="col">Người mua</th>
         <th scope="col">Thời gian đặt</th>
         <th scope="col">Sản phẩm</th>
         <th scope="col">Số lượng</th>
@@ -21,12 +20,12 @@
           class="decor-text-1"
           (click)="selectRow(i, $event, syslogs)">
         <td>{{cutAndJoinString(i.id)}}</td>
-        <td>{{i.buyerId}}</td>
         <td>{{i.endDate  | date: 'dd/MM/yyyy '}}</td>
+        <td>{{i.orderItem[0].productName}}</td>
         <td>{{i.orderItem[0].quantity}}</td>
-        <td>Nam Định</td>
+        <td>{{i.shipment.address}}</td>
         <td>
-          <button class="btn rounded-0" style="font-size: 9px;background-color: #93e0db; padding:4px">Nhận đơn</button>
+          <button (click)="acceptOrder(i.id)" class="btn rounded-0" style="font-size: 9px;background-color: #93e0db; padding:4px">Nhận đơn</button>
         </td>
       </tr>
       </tbody>

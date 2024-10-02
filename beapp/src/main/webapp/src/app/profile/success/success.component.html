@@ -1,14 +1,13 @@
 <div class="container">
   <div style="font-size: 13px"  id="tab2" class="tab-pane active">
     <div class="decor-text" style="font-size: 20px; text-align: center; margin:30px 0;font-weight: bold">
-      Đơn hàng đã hoàn thành
+      Đơn hàng đang giao
     </div>
     <table class="table">
       <thead>
       <tr class="decor-text-0">
         <th scope="col">Mã đơn</th>
-        <th scope="col">Người bán</th>
-        <th scope="col">Người mua</th>
+        <th scope="col">Thời gian đặt</th>
         <th scope="col">Sản phẩm</th>
         <th scope="col">Số lượng</th>
         <th scope="col">Địa chỉ giao</th>
@@ -20,14 +19,13 @@
           [class.row-selected]="this.selectedRows.indexOf(i) !== -1"
           class="decor-text-1"
           (click)="selectRow(i, $event, syslogs)">
-        <td>1</td>
-        <td>Khánh</td>
-        <td>Mạnh</td>
-        <td>Mũ đỏ</td>
-        <td>1</td>
-        <td>Nam Định</td>
+        <td>{{cutAndJoinString(i.id)}}</td>
+        <td>{{i.endDate  | date: 'dd/MM/yyyy '}}</td>
+        <td>{{i.orderItem[0].productName}}</td>
+        <td>{{i.orderItem[0].quantity}}</td>
+        <td>{{i.shipment.address}}</td>
         <td>
-          <button class="btn rounded-0 btn-success" style="font-size: 9px; padding:4px">Hoàn thành</button>
+          <button class="btn rounded-0" style="font-size: 9px;background-color: #93e0db; padding:4px">Đơn hàng đã hoàn thành</button>
         </td>
       </tr>
       </tbody>

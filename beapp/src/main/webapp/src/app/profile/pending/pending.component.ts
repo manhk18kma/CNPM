@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import {OrderService} from "../../service/order.service";
+import {ProductService} from "../../service/product.service";
+import {UserService} from "../../service/user.service";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-pending',
@@ -16,7 +19,9 @@ export class PendingComponent {
   selectedRow: any;
   ordersPending: any  = [];
   constructor(private orderService: OrderService,
-              private ) {
+              private productService: ProductService,
+              private userService: UserService,
+              private messageService: MessageService) {
   }
   ngOnInit(): void {
     this.page = 1
@@ -34,9 +39,15 @@ export class PendingComponent {
     this.selectedRow = object;
   }
   loadPage(page:any){
-
   }
   cutAndJoinString(inputStr: string): string {
     return inputStr.split('-').map(part => part[0]).join('');
+  }
+  acceptOrder(id: any){
+    this.orderService.acceptOrder(id).subscribe(res => {
+      this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: res.message });
+    },error => {
+      this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
+    })
   }
 }
