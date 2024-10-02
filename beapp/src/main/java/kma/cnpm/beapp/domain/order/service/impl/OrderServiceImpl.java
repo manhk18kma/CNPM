@@ -9,6 +9,7 @@ import kma.cnpm.beapp.domain.common.notificationDto.OrderCreated;
 import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.order.dto.request.OrderRequest;
 import kma.cnpm.beapp.domain.order.dto.response.CartItemResponse;
+import kma.cnpm.beapp.domain.order.dto.response.OrderItemResponse;
 import kma.cnpm.beapp.domain.order.dto.response.OrderResponse;
 import kma.cnpm.beapp.domain.order.entity.Order;
 import kma.cnpm.beapp.domain.order.entity.OrderItem;
@@ -193,6 +194,14 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(ORDER_NOT_EXISTED));
         OrderResponse orderResponse = orderMapper.map(order);
         orderResponse.setShipmentResponse(shipmentService.getShipmentById(order.getShipmentId()));
+        List<OrderItemResponse> orderItemResponses = orderResponse.getOrderItemResponses()
+                .stream()
+                .peek(orderItemResponse -> {
+                    orderItemResponse.setProductName(productService.getProductById(orderItemResponse.getProductId()).getName());
+                    orderItemResponse.setProductPrice(productService.getProductById(orderItemResponse.getProductId()).getPrice());
+                })
+                .toList();
+        orderResponse.setOrderItemResponses(orderItemResponses);
         return orderResponse;
     }
 
@@ -201,9 +210,17 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findAll();
         return orders.stream()
                 .map(orderMapper::map)
-                .peek(orderResponse -> orderResponse
-                        .setShipmentResponse(shipmentService.getShipmentById(
-                                orderResponse.getShipmentResponse().getId())))
+                .peek(orderResponse -> {
+                    orderResponse.setShipmentResponse(shipmentService.getShipmentById(orderResponse.getShipmentResponse().getId()));
+                    List<OrderItemResponse> orderItemResponses = orderResponse.getOrderItemResponses()
+                            .stream()
+                            .peek(orderItemResponse -> {
+                                orderItemResponse.setProductName(productService.getProductById(orderItemResponse.getProductId()).getName());
+                                orderItemResponse.setProductPrice(productService.getProductById(orderItemResponse.getProductId()).getPrice());
+                            })
+                            .toList();
+                    orderResponse.setOrderItemResponses(orderItemResponses);
+                })
                 .toList();
     }
 
@@ -213,9 +230,17 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findAllByBuyerId(user.getId());
         return orders.stream()
                 .map(orderMapper::map)
-                .peek(orderResponse -> orderResponse
-                        .setShipmentResponse(shipmentService.getShipmentById(
-                                orderResponse.getShipmentResponse().getId())))
+                .peek(orderResponse -> {
+                    orderResponse.setShipmentResponse(shipmentService.getShipmentById(orderResponse.getShipmentResponse().getId()));
+                    List<OrderItemResponse> orderItemResponses = orderResponse.getOrderItemResponses()
+                            .stream()
+                            .peek(orderItemResponse -> {
+                                orderItemResponse.setProductName(productService.getProductById(orderItemResponse.getProductId()).getName());
+                                orderItemResponse.setProductPrice(productService.getProductById(orderItemResponse.getProductId()).getPrice());
+                            })
+                            .toList();
+                    orderResponse.setOrderItemResponses(orderItemResponses);
+                })
                 .toList();
     }
 
@@ -224,9 +249,17 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findAllByStatus(orderStatus);
         return orders.stream()
                 .map(orderMapper::map)
-                .peek(orderResponse -> orderResponse
-                        .setShipmentResponse(shipmentService.getShipmentById(
-                                orderResponse.getShipmentResponse().getId())))
+                .peek(orderResponse -> {
+                    orderResponse.setShipmentResponse(shipmentService.getShipmentById(orderResponse.getShipmentResponse().getId()));
+                    List<OrderItemResponse> orderItemResponses = orderResponse.getOrderItemResponses()
+                            .stream()
+                            .peek(orderItemResponse -> {
+                                orderItemResponse.setProductName(productService.getProductById(orderItemResponse.getProductId()).getName());
+                                orderItemResponse.setProductPrice(productService.getProductById(orderItemResponse.getProductId()).getPrice());
+                            })
+                            .toList();
+                    orderResponse.setOrderItemResponses(orderItemResponses);
+                })
                 .toList();
     }
 
@@ -236,9 +269,17 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = orderRepository.findAllByBuyerIdAndStatus(user.getId(), orderStatus);
         return orders.stream()
                 .map(orderMapper::map)
-                .peek(orderResponse -> orderResponse
-                        .setShipmentResponse(shipmentService.getShipmentById(
-                                orderResponse.getShipmentResponse().getId())))
+                .peek(orderResponse -> {
+                    orderResponse.setShipmentResponse(shipmentService.getShipmentById(orderResponse.getShipmentResponse().getId()));
+                    List<OrderItemResponse> orderItemResponses = orderResponse.getOrderItemResponses()
+                            .stream()
+                            .peek(orderItemResponse -> {
+                                orderItemResponse.setProductName(productService.getProductById(orderItemResponse.getProductId()).getName());
+                                orderItemResponse.setProductPrice(productService.getProductById(orderItemResponse.getProductId()).getPrice());
+                            })
+                            .toList();
+                    orderResponse.setOrderItemResponses(orderItemResponses);
+                })
                 .toList();
     }
 
