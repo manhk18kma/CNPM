@@ -23,4 +23,13 @@ export class OrderService {
   getOrderUsersByStatus(orderStatus: any):Observable<any>{
     return this.http.get(`${this.baseURL}/status/${orderStatus}`);
   }
+  acceptOrder(id: any):Observable<any>{
+    return this.http.patch(`${this.baseURL}/accept/${id}`,id);
+  }
+  completeOrder(id: any):Observable<any>{
+    return this.http.patch(`${this.baseURL}/complete/${id}`,id);
+  }
+  cancelOrder(id: any):Observable<any>{
+    return this.http.patch(`${this.baseURL}/delete/${id}`,id);
+  }
 }
