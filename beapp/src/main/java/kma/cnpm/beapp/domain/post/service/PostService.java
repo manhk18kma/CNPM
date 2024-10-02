@@ -10,6 +10,7 @@ public interface PostService {
     void createPost(PostRequest postRequest);
     void updatePost(Integer id, PostRequest postRequest);
     void deletePost(Integer id);
+    void approvePost(Integer id);
 
     PostResponse getPostById(Integer id);
     PostResponse getPostByProductId(Integer productId);

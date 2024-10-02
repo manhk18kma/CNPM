@@ -5,7 +5,7 @@ import kma.cnpm.beapp.domain.common.dto.ShipmentRequest;
 import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
-import kma.cnpm.beapp.domain.common.notificationDto.OrderCreated;
+import kma.cnpm.beapp.domain.common.notificationDto.*;
 import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.order.dto.request.OrderRequest;
 import kma.cnpm.beapp.domain.order.dto.response.CartItemResponse;
@@ -152,6 +152,12 @@ public class OrderServiceImpl implements OrderService {
         shipmentService.updateShipperId(order.getShipmentId());
         order.setStatus(OrderStatus.IN_TRANSIT);
         orderRepository.save(order);
+        notificationService.orderAcceptShip(OrderAcceptedShip.builder()
+                .orderId(order.getId())
+                .orderImg(null)
+                .buyerId(order.getBuyerId())
+                .sellerId(productService.getProductById(order.getOrderItems().get(0).getProductId()).getSellerId())
+                .build());
         return order.getId();
     }
 
@@ -173,6 +179,12 @@ public class OrderServiceImpl implements OrderService {
                 });
         order.setStatus(OrderStatus.DELIVERED);
         orderRepository.save(order);
+        notificationService.orderComplete(OrderCompleted.builder()
+                .orderId(order.getId())
+                .orderImg(null)
+                .BuyerId(order.getBuyerId())
+                .sellerId(productService.getProductById(order.getOrderItems().get(0).getProductId()).getSellerId())
+                .build());
         return order.getId();
     }
 
@@ -189,9 +201,17 @@ public class OrderServiceImpl implements OrderService {
             // logic trừ số lượng product
             productService.reduceProductQuantity(orderItem.getProductId(), orderItem.getQuantity(), true);
         }
+        // hoan tien
         accountService.payOrder(order.getTotalAmount(), true);
         // chinh sua status shipment
         order.setStatus(OrderStatus.CANCELED);
+        notificationService.orderCancelled(OrderCancelled.builder()
+                .totalAmount(order.getTotalAmount())
+                .orderId(order.getId())
+                .orderImg(null)
+                .BuyerId(order.getBuyerId())
+                .sellerId(productService.getProductById(order.getOrderItems().get(0).getProductId()).getSellerId())
+                .build());
         return order.getId();
     }
 

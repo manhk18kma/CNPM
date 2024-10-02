@@ -2,6 +2,9 @@ package kma.cnpm.beapp.domain.post.service.impl;
 
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.CommentCreated;
+import kma.cnpm.beapp.domain.common.notificationDto.CommentRemoved;
+import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.post.dto.request.CommentRequest;
 import kma.cnpm.beapp.domain.post.dto.response.CommentResponse;
 import kma.cnpm.beapp.domain.post.entity.Comment;
@@ -20,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static kma.cnpm.beapp.domain.common.exception.AppErrorCode.COMMENT_NOT_EXISTED;
@@ -37,6 +41,7 @@ public class CommentServiceImpl implements CommentService {
     CommentMapper commentMapper;
     AuthService authService;
     UserService userService;
+    NotificationService notificationService;
 
 
     @Override
@@ -48,6 +53,13 @@ public class CommentServiceImpl implements CommentService {
         comment.setUserId(user.getId());
         comment.setPost(post);
         commentRepository.save(comment);
+//        notificationService.commentCreated(CommentCreated.builder()
+//                .commenterId(user.getId())
+//                .commentSnippet(comment.getContent())
+//                .otherCommentersId(null)
+//                .posterId(post.getUserId())
+//                .postId(comment.getId())
+//                .build());
     }
 
     @Override
@@ -58,6 +70,13 @@ public class CommentServiceImpl implements CommentService {
         if (!user.getId().equals(comment.getUserId()))
             throw new AppException(UNAUTHORIZED);
         commentRepository.deleteById(id);
+//        notificationService.commentRemoved(CommentRemoved.builder()
+//                .lastCommenterId(user.getId())
+//                .lastCommentSnippet(comment.getContent())
+//                .posterId(comment.getPost().getUserId())
+//                .postUrlImg(null)
+//                .otherCommentersId(null)
+//                .build());
     }
 
     @Override

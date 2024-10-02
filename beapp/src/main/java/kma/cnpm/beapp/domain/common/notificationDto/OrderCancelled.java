@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Data
 @Builder
 public class OrderCancelled {
-    Long orderId;
+    String orderId;
     Long sellerId;
     Long BuyerId;
     BigDecimal totalAmount;

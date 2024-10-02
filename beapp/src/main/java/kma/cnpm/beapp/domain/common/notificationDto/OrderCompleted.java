@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class OrderCompleted {
-    Long orderId;
+    String orderId;
     Long sellerId;
     Long BuyerId;
     String orderImg;
