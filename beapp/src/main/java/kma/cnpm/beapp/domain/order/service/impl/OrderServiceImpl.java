@@ -147,8 +147,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException(AppErrorCode.ORDER_NOT_EXISTED));
         if (!order.getStatus().equals(OrderStatus.READY_FOR_DELIVERY))
             throw new AppException(ORDER_CANNOT_BE_ACCEPT);
-        User user = userService.findUserById(authService.getAuthenticationName());
-        shipmentService.updateShipperId(user.getId());
+        shipmentService.updateShipperId(order.getShipmentId());
         order.setStatus(OrderStatus.IN_TRANSIT);
         orderRepository.save(order);
         return order.getId();
