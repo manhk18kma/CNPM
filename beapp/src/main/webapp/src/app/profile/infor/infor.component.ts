@@ -31,4 +31,7 @@ export class InforComponent implements OnInit {
   navigateBank(id: any){
     this.router.navigate([`bank/${id}`],id)
   }
+  navigateAddress(){
+    this.router.navigate([`address`])
+  }
 }

@@ -9,6 +9,7 @@ import {CommentsService} from "../../service/comments.service";
 import {catchError, of, tap} from "rxjs";
 import {LikeService} from "../../service/like.service";
 import {MessageService} from "primeng/api";
+import {UserService} from "../../service/user.service";
 
 @Component({
   selector: 'app-posts',
@@ -40,7 +41,8 @@ export class PostsComponent implements OnInit {
               private sanitizer: DomSanitizer,
               private cmtService: CommentsService,
               private likeService: LikeService,
-              private messageService: MessageService
+              private messageService: MessageService,
+              public userService: UserService
   ) {
   }
 
@@ -135,11 +137,9 @@ export class PostsComponent implements OnInit {
     if (files.length > 0) {
       this.images = []; // Clear previous file selection
       // this.imagePreviewUrls = []; // Clear previous previews
-
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         this.imageFiles.push(file); // Add to the array of selected files
-
         // Generate a URL to display the image preview
         const objectURL = URL.createObjectURL(file);
         this.imagePreviewUrls.push(this.sanitizer.bypassSecurityTrustUrl(objectURL) as string);
@@ -163,16 +163,21 @@ export class PostsComponent implements OnInit {
     this.product.categoryId = event.target.value;
   }
 
-  upPost() {
+  async upPost() {
     if (this.addProduct == true) {
       if (this.imageFiles.length > 0) {
         this.product.imageBase64 = [];
         this.images = [];
-        const promises = this.imageFiles.map(file => this.convertToBase64(file));
-        Promise.all(promises).then((base64Array) => {
-          this.images = base64Array;
-          this.product.imageBase64 = this.images;
-        });
+        for (let file of this.imageFiles) {
+          try {
+            const base64String = await this.convertToBase64(file);
+            this.images.push(base64String);
+          } catch (error) {
+            this.messageService.add({severity: 'error', summary: 'Error', detail: 'Failed to convert image to Base64'});
+            return; // Stop the process if any image conversion fails
+          }
+        }
+        this.product.imageBase64 = this.images;
       }
       this.post.product = this.product;
     }
@@ -212,5 +217,8 @@ export class PostsComponent implements OnInit {
         this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.message});
       })
     }
+  }
+  navigatePayment(id: any){
+    this.router.navigate([`payment/${id}`],id);
   }
 }

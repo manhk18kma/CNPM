@@ -5,7 +5,7 @@
       <img width="60px"  src="https://github.com/NgDuyKhanhs/image/blob/main/Remove-bg.ai_1726026879198.png?raw=true"/>
     </a>
 
-    <ul class="navbar-nav d-flex justify-content-center" *ngIf="!isMobile">
+    <ul class="navbar-nav d-flex justify-content-center" *ngIf="!isMobile && this.currentRole != 'ROLE_SHIPPER'">
       <li class="nav-item decor-text">
         <a class="nav-link" routerLink="home" routerLinkActive="active">Trang chủ</a>
       </li>
@@ -40,12 +40,6 @@
         <a class="nav-link" (click)="navigateProfile()">
           <i class="bi bi-person" style="font-size: 20px;"></i>
         </a>
-      </li>
-      <li class="nav-item decor-text" *ngIf="userService.authenticated()">
-        <a class="nav-link" routerLink="cart" routerLinkActive="active">
-          <i class="bi bi-minecart-loaded"  style="font-size: 15px;"></i>
-        </a>
-
       </li>
     </ul>
     <!-- Mobile view -->
@@ -94,12 +88,7 @@
           <hr class="faded-line">
           <a class="nav-link" routerLink="login" routerLinkActive="active">Đăng nhập</a>
         </li>
-        <hr class="faded-line">
-        <li class="nav-item decor-text" *ngIf="userService.authenticated()">
-          <a class="nav-link" routerLink="cart" routerLinkActive="active">
-            Giỏ hàng
-          </a>
-        </li>
+
       </ul>
     </div>
   </div>
