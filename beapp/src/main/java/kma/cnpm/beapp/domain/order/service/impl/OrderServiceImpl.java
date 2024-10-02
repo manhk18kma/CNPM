@@ -17,7 +17,9 @@ import kma.cnpm.beapp.domain.order.mapper.OrderMapper;
 import kma.cnpm.beapp.domain.order.repository.OrderRepository;
 import kma.cnpm.beapp.domain.order.service.CartService;
 import kma.cnpm.beapp.domain.order.service.OrderService;
+import kma.cnpm.beapp.domain.payment.entity.Account;
 import kma.cnpm.beapp.domain.payment.service.AccountService;
+import kma.cnpm.beapp.domain.product.entity.Product;
 import kma.cnpm.beapp.domain.product.service.ProductService;
 import kma.cnpm.beapp.domain.shipment.service.ShipmentService;
 import kma.cnpm.beapp.domain.user.entity.User;
@@ -163,6 +165,12 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException(UNAUTHORIZED);
         if (!order.getStatus().equals(OrderStatus.IN_TRANSIT))
             throw new AppException(ORDER_CANNOT_BE_COMPLETE);
+        order.getOrderItems()
+                .forEach(orderItem -> {
+                    ProductResponse productResponse = productService.getProductById(orderItem.getProductId());
+                    Account account = accountService.getAccountByUserId(productResponse.getSellerId());
+                    account.setBalance(account.getBalance().add(productResponse.getPrice().multiply(new BigDecimal(orderItem.getQuantity()))));
+                });
         order.setStatus(OrderStatus.DELIVERED);
         orderRepository.save(order);
         return order.getId();
