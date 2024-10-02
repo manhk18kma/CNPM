@@ -47,6 +47,11 @@ public class AccountService {
                 .orElseThrow(() -> new AppException(AppErrorCode.ACCOUNT_NOT_EXIST));
     }
 
+    public Account getAccountByUserId(Long userId){
+        return accountRepository.findAccountByUserId(userId)
+                .orElseThrow(() -> new AppException(AppErrorCode.ACCOUNT_NOT_EXIST));
+    }
+
     public AccountHasBank getAccountHasBank(Long id){
         return  accountHasBankRepository.findByIdOptional(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.ACCOUNT_HAS_BANK_NOT_EXIST));
