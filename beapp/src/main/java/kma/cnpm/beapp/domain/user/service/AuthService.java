@@ -18,10 +18,7 @@ import kma.cnpm.beapp.domain.user.dto.resquest.LoginRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.LogoutRequest;
 import kma.cnpm.beapp.domain.user.dto.resquest.RefreshTokenRequest;
 import kma.cnpm.beapp.domain.user.entity.*;
-import kma.cnpm.beapp.domain.user.repository.InvalidateTokenRepository;
-import kma.cnpm.beapp.domain.user.repository.RoleRepository;
-import kma.cnpm.beapp.domain.user.repository.UserHasRoleRepository;
-import kma.cnpm.beapp.domain.user.repository.UserRepository;
+import kma.cnpm.beapp.domain.user.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +70,7 @@ public class AuthService implements CommandLineRunner {
     final PasswordEncoder passwordEncoder;
     final RoleRepository roleRepository;
     final UserHasRoleRepository userHasRoleRepository;
+    final FollowRepository followRepository;
 
 
     public String generateToken(User user , TokenType tokenType) {
@@ -417,4 +415,37 @@ public class AuthService implements CommandLineRunner {
         return new String(salt);
     }
 
+
+    public List<ShipperDTO> getTokenDeviceShipper() {
+        return userRepository.getTokenDeviceShipper().stream()
+                .map(user -> {
+                    return ShipperDTO.builder()
+                            .tokenDevice(user.getTokenDevice())
+                            .id(user.getId())
+                            .build();
+                }).collect(Collectors.toList());
+    }
+
+    public UserDTO getUserInfo(Long id){
+        User user = userRepository.findUserById((id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+        return UserDTO.builder()
+                .userId(user.getId())
+                .fullName(user.getFullName())
+                .build();
+    }
+
+    public List<UserDTO> getFollowersOfUser(Long userId) {
+        List<User> followers = followRepository.getUserFollowersOfUser(userId);
+        return followers.stream()
+                .map(user->{
+                    return UserDTO.builder()
+                            .userId(user.getId())
+                            .tokenDevice(user.getTokenDevice())
+                            .build();
+                }).collect(Collectors.toList());
+    }
+    public String getTokenDeviceByUserId(Long userId){
+        return userRepository.getTokenDeviceByUserId(userId);
+    }
 }

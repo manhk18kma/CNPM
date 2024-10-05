@@ -24,4 +24,7 @@ public interface NotificationRepository extends JpaRepository<Notification , Lon
     @Query("UPDATE Notification n SET n.isRemoved = true WHERE n.referenceId = :postId")
     void markAllNotificationsAsRemovedByReferenceId(@Param("postId") Long postId);
 
+    @Query("SELECT n FROM Notification n WHERE n.referenceId = :recipientId and n.type = 'USER_VIEW'")
+    Notification findUserViewNotificationByReferenceId(@Param("recipientId") Long recipientId);
+
 }

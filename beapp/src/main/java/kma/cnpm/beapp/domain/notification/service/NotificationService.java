@@ -7,6 +7,8 @@ public interface NotificationService {
     //USER DOMAIN
     void createNotificationFollow(CreateFollow createFollow);
 
+    void removeFollow();
+
     void createNotificationUserView(UserView userView);
 
     //PAYMENT DOMAIN

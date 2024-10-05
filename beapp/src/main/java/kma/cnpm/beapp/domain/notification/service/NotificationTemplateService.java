@@ -14,7 +14,6 @@ public class NotificationTemplateService {
     static {
         // Existing notifications
         templates.put(NotificationType.FOLLOW, "<strong>{followerFullName}</strong> đã theo dõi bạn.");
-        templates.put(NotificationType.USER_VIEW, "<strong>{userViewFullName}</strong> đã xem hồ sơ của bạn.");
 
         // Balance change notifications
         templates.put(NotificationType.BALANCE_CHANGE,

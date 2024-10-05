@@ -12,4 +12,5 @@ public class UserView {
     String userViewAvt;
     Long userViewId;
     Long userViewedId;
+    int totalOtherViews;
 }

@@ -4,7 +4,9 @@ import kma.cnpm.beapp.domain.common.dto.UserDTO;
 import kma.cnpm.beapp.domain.common.enumType.FollowType;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.CreateFollow;
 import kma.cnpm.beapp.domain.common.notificationDto.ShipperDTO;
+import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.user.dto.response.FollowResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.CreateFollowRequest;
@@ -32,6 +34,7 @@ public class UserRelationService {
     private final UserViewRepository userViewRepository;
     private final AuthService authService;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
 
     @Transactional
@@ -45,6 +48,16 @@ public class UserRelationService {
 
         Follow follow = buildFollow(user, targetUser);
         followRepository.save(follow);
+
+        notificationService.createNotificationFollow(
+                CreateFollow.builder()
+                        .followerId(user.getId())
+                        .followedId(targetUser.getId())
+                        .followerFullName(user.getFullName())
+                        .followerAvt(user.getAvt())
+                        .build()
+        );
+
         return UserResponse.builder()
                 .userId(userId)
                 .userTargetId(targetUser.getId())
@@ -79,6 +92,12 @@ public class UserRelationService {
             existingUserView.setViewCount(existingUserView.getViewCount() + 1);
             userViewRepository.save(existingUserView);
         }
+        notificationService.createNotificationUserView(kma.cnpm.beapp.domain.common.notificationDto.UserView.builder()
+                        .userViewedId(userTarget.getId())
+                        .userViewId(userViewer.getId())
+                        .userViewAvt(userViewer.getAvt())
+                        .totalOtherViews(userViewRepository.countOtherView(userTarget.getId() , userViewer.getId()))
+                        .userViewFullName(userViewer.getFullName()).build());
     }
 
     public List<FollowResponse> getFollows(Long userId, String type) {

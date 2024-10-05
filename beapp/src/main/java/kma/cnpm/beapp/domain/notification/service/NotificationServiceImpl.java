@@ -31,7 +31,8 @@ public class NotificationServiceImpl implements NotificationService {
     final NotificationRepository notificationRepository;
     final NotificationTemplateService templateService;
     final FirebaseService firebaseService;
-    final UserRelationService userRelationService;
+//    final UserRelationService userRelationService;
+    final AuthService authService;
 
     @Override
     public void createNotificationFollow(CreateFollow createFollow) {
@@ -49,28 +50,46 @@ public class NotificationServiceImpl implements NotificationService {
                 .typeRedirect(NotificationTypeRedirect.PROFILE)
                 .build();
         saveAndSendNotification(request);
+    }
 
+    @Override
+    public void removeFollow() {
 
     }
+
+
     @Override
     public void createNotificationUserView(UserView userView) {
-        String template = templateService.getTemplate(NotificationType.USER_VIEW);
+        Notification notification = notificationRepository.findUserViewNotificationByReferenceId(userView.getUserViewedId());
+        String template;
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("{userViewFullName}", userView.getUserViewFullName());
 
-        SaveAndSendNotificationRequest request = SaveAndSendNotificationRequest.builder()
-                .template(template)
-                .placeholders(placeholders)
-                .type(NotificationType.USER_VIEW)
-                .recipientId(userView.getUserViewedId())
-                .referenceId(userView.getUserViewId().toString())
-                .imgUrl(userView.getUserViewAvt())
-                .typeRedirect(NotificationTypeRedirect.PRIVATE_PROFILE)
-                .build();
-        saveAndSendNotification(request);
+        if (notification == null) {
+            // Handle first-time view
+            template = "<strong>{userViewFullName}</strong> đã xem hồ sơ của bạn.";
+            String content = populateTemplate(template, placeholders);
+            notification = Notification.builder()
+                    .recipientId(userView.getUserViewedId())
+                    .type(NotificationType.USER_VIEW)
+                    .referenceId(userView.getUserViewedId().toString())
+                    .content(content)
+                    .typeRedirect(NotificationTypeRedirect.PRIVATE_PROFILE)
+                    .isRead(false)
+                    .imageUrl(userView.getUserViewAvt())
+                    .isRemoved(false)
+                    .build();
+        } else {
+            // Handle subsequent views
+            template = "<strong>{userViewFullName}</strong> và <strong>{totalOtherViews}</strong> người khác đã xem hồ sơ của bạn.";
+            placeholders.put("{totalOtherViews}", String.valueOf(userView.getTotalOtherViews()));
+            String content = populateTemplate(template, placeholders);
+            notification.setContent(content);
+        }
 
-
+        notificationRepository.save(notification);
     }
+
 
 
     @Override
@@ -153,7 +172,7 @@ public class NotificationServiceImpl implements NotificationService {
         String template = templateService.getTemplate(NotificationType.ORDER_CREATED_SHIPPER);
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("shipmentId", shipmentCreated.getShipmentId().toString());
-        List<ShipperDTO> shipperDTOS = userRelationService.getTokenDeviceShipper();
+        List<ShipperDTO> shipperDTOS = authService.getTokenDeviceShipper();
         shipperDTOS.forEach(shipperDTO -> {
 
             SaveAndSendNotificationRequest request = SaveAndSendNotificationRequest.builder()
@@ -337,11 +356,11 @@ public class NotificationServiceImpl implements NotificationService {
         String template = templateService.getTemplate(NotificationType.POST_CREATED);
         Map<String, String> placeholders = new HashMap<>();
 
-        UserDTO userCreatedPost = userRelationService.getUserInfo(postApproved.getPosterId());
+        UserDTO userCreatedPost = authService.getUserInfo(postApproved.getPosterId());
         placeholders.put("followedUserFullName",userCreatedPost.getFullName() );
         placeholders.put("contentSnippet", postApproved.getContentSnippet());
 
-        List<UserDTO> followersDTO = userRelationService.getFollowersOfUser(postApproved.getPosterId());
+        List<UserDTO> followersDTO = authService.getFollowersOfUser(postApproved.getPosterId());
         followersDTO.forEach(followerDTO -> {
             SaveAndSendNotificationRequest request= SaveAndSendNotificationRequest.builder()
                     .template(template)
@@ -362,7 +381,7 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = notificationRepository.findLikeCreatedNotificationByPostId(likeCreated.getPostId());
 
         Map<String, String> placeholders = new HashMap<>();
-        UserDTO liker = userRelationService.getUserInfo(likeCreated.getLikerId());
+        UserDTO liker = authService.getUserInfo(likeCreated.getLikerId());
         placeholders.put("likerFullName", liker.getFullName());
         String postSnippet = likeCreated.getContentSnippet();
         placeholders.put("postSnippet", postSnippet);
@@ -403,7 +422,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
         notificationRepository.save(notification);
 
-        String tokenDevice = userRelationService.getTokenDeviceByUserId(notification.getRecipientId());
+        String tokenDevice = authService.getTokenDeviceByUserId(notification.getRecipientId());
         firebaseService.sendNotification(notification , tokenDevice);
 
     }
@@ -416,7 +435,7 @@ public class NotificationServiceImpl implements NotificationService {
         // Notification for other poster
         Notification notification = notificationRepository.findCommentCreatedNotificationByPostId(commentCreated.getPostId());
         Map<String, String> placeholders = new HashMap<>();
-        UserDTO commenter = userRelationService.getUserInfo(commentCreated.getCommenterId());
+        UserDTO commenter = authService.getUserInfo(commentCreated.getCommenterId());
         placeholders.put("commenterFullName", commenter.getFullName());
 
         String commentSnippet = commentCreated.getCommentSnippet();
@@ -460,7 +479,7 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setRead(false);
         }
         notificationRepository.save(notification);
-        String tokenDevice = userRelationService.getTokenDeviceByUserId(notification.getRecipientId());
+        String tokenDevice = authService.getTokenDeviceByUserId(notification.getRecipientId());
         firebaseService.sendNotification(notification, tokenDevice);
 
         //////////////////////////////////////////////////
@@ -497,7 +516,7 @@ public class NotificationServiceImpl implements NotificationService {
             otherCommenterNotification.setRead(false);
             notificationRepository.save(otherCommenterNotification);
 
-            String tokenDeviceOther = userRelationService.getTokenDeviceByUserId(otherCommenterNotification.getRecipientId());
+            String tokenDeviceOther = authService.getTokenDeviceByUserId(otherCommenterNotification.getRecipientId());
             try {
                 firebaseService.sendNotification(otherCommenterNotification, tokenDeviceOther);
             } catch (JsonProcessingException e) {
@@ -524,7 +543,7 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = notificationRepository.findLikeCreatedNotificationByPostId(unLiked.getPostId());
 
         Map<String, String> placeholders = new HashMap<>();
-        UserDTO liker = userRelationService.getUserInfo(unLiked.getLatestLikerId());
+        UserDTO liker = authService.getUserInfo(unLiked.getLatestLikerId());
         placeholders.put("likerFullName", liker.getFullName());
         String postSnippet = unLiked.getContentSnippet();
         placeholders.put("postSnippet", postSnippet);
@@ -551,7 +570,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void commentRemoved(CommentRemoved commentRemoved) {
         Notification notification = notificationRepository.findCommentCreatedNotificationByPostId(commentRemoved.getPostId());
         Map<String, String> placeholders = new HashMap<>();
-        UserDTO lastestCommenter = userRelationService.getUserInfo(commentRemoved.getLastCommenterId());
+        UserDTO lastestCommenter = authService.getUserInfo(commentRemoved.getLastCommenterId());
         placeholders.put("commenterFullName", lastestCommenter.getFullName());
 
         String commentSnippet = commentRemoved.getLastCommentSnippet();
@@ -629,7 +648,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .build();
         notificationRepository.save(notification);
 
-        String tokenDevice = userRelationService.getTokenDeviceByUserId(notification.getRecipientId());
+        String tokenDevice = authService.getTokenDeviceByUserId(notification.getRecipientId());
         firebaseService.sendNotification(notification, tokenDevice);
     }
 
