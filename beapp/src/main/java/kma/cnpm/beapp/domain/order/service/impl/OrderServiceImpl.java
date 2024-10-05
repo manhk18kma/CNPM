@@ -193,7 +193,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.ORDER_NOT_EXISTED));
         User user = userService.findUserById(authService.getAuthenticationName());
-        if (!user.getId().equals(shipmentService.getShipmentById(order.getShipmentId()).getShipperId()))
+        if (!user.getId().equals(order.getBuyerId()))
             throw new AppException(UNAUTHORIZED);
         if (!order.getStatus().equals(OrderStatus.READY_FOR_DELIVERY))
             throw new AppException(ORDER_CANNOT_BE_CANCELLED);
