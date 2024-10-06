@@ -111,6 +111,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
         PostResponse postResponse = postMapper.map(post);
+        postResponse.setUserName(userService.findUserById(String.valueOf(post.getUserId())).getFullName());
         postResponse.setLiked(likeService.liked(post.getId()));
         postResponse.setCommentTotal(commentService.countComments(post.getId()));
         postResponse.setLikeTotal(likeService.countLikes(post.getId()));
@@ -123,6 +124,7 @@ public class PostServiceImpl implements PostService {
     public PostResponse getPostByProductId(Integer productId) {
         Post post = postRepository.findByProductId(productId);
         PostResponse postResponse = postMapper.map(post);
+        postResponse.setUserName(userService.findUserById(String.valueOf(post.getUserId())).getFullName());
         postResponse.setLiked(likeService.liked(post.getId()));
         postResponse.setCommentTotal(commentService.countComments(post.getId()));
         postResponse.setLikeTotal(likeService.countLikes(post.getId()));
@@ -137,6 +139,7 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setUserName(userService.findUserById(String.valueOf(postResponse.getUserId())).getFullName());
                     postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
@@ -154,6 +157,7 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setUserName(userService.findUserById(String.valueOf(postResponse.getUserId())).getFullName());
                     postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
@@ -171,6 +175,7 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setUserName(userService.findUserById(String.valueOf(postResponse.getUserId())).getFullName());
                     postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
@@ -193,6 +198,7 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setUserName(userService.findUserById(String.valueOf(postResponse.getUserId())).getFullName());
                     postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
