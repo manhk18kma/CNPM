@@ -55,11 +55,11 @@ public class PostServiceImpl implements PostService {
         if (postRequest.getProductRequest() != null)
             post.setProductId(productService.save(postRequest.getProductRequest()).getId());
         postRepository.save(post);
-//        notificationService.postCreated(PostCreated.builder()
-//                .postId(Long.valueOf(post.getId()))
-//                .postUrlImg(null)
-//                .contentSnippet(post.getContent())
-//                .posterId(post.getUserId()).build());
+        notificationService.postCreated(PostCreated.builder()
+                .postId(Long.valueOf(post.getId()))
+                .postUrlImg(null)
+                .contentSnippet(post.getContent())
+                .posterId(post.getUserId()).build());
     }
 
     @Override
