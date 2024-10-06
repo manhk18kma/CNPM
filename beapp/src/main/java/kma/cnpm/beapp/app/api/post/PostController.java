@@ -53,6 +53,14 @@ public class PostController {
                 LocalDateTime.now());
     }
 
+    @PatchMapping("/approve/{id}")
+    public ResponseData<String> approvePost(@PathVariable Integer id) {
+        postService.approvePost(id);
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Duyệt bài đăng thành công",
+                LocalDateTime.now());
+    }
+
     @GetMapping("/{id}")
     public ResponseData<PostResponse> getPostsById(@PathVariable Integer id) {
         return new ResponseData<>(HttpStatus.OK.value(),
