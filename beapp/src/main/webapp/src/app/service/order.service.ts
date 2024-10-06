@@ -23,6 +23,12 @@ export class OrderService {
   getOrderUsersByStatus(orderStatus: any):Observable<any>{
     return this.http.get(`${this.baseURL}/status/${orderStatus}`);
   }
+  getOrderBuyer(orderStatus: any):Observable<any>{
+    return this.http.get(`${this.baseURL}/buyer/status/${orderStatus}`);
+  }
+  getOrderByID(id:any):Observable<any>{
+    return this.http.get(`${this.baseURL}/${id}`);
+  }
   acceptOrder(id: any):Observable<any>{
     return this.http.patch(`${this.baseURL}/accept/${id}`,id);
   }

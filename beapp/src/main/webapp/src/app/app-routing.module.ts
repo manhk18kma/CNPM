@@ -29,9 +29,10 @@ import {TokenService} from "./service/token/token.service";
 import {PendingComponent} from "./profile/pending/pending.component";
 import {DeliveringComponent} from "./profile/delivering/delivering.component";
 import {SuccessComponent} from "./profile/success/success.component";
-import {AccessDenyComponent} from "./access-deny/access-deny.component";
 import {CancelDeliveryComponent} from "./profile/cancel-delivery/cancel-delivery.component";
 import {AddressComponent} from "./address/address.component";
+import {WaitingComponent} from "./order/waiting/waiting.component";
+import {DetailOrderComponent} from "./detail-order/detail-order.component";
 
 const routes: Routes = []
 
@@ -48,7 +49,6 @@ function getRoutesBasedOnRole(tokenService: TokenService) {
       ], canActivate: [AuthGuard]
     },
     {path: 'active/:token', component: ActiveComponent},
-    {path: 'access-denied', component: AccessDenyComponent},
   ];
   const roleBasedRoutes: { [key: string]: Routes } = {
     'ROLE_ADMIN': [
@@ -64,6 +64,7 @@ function getRoutesBasedOnRole(tokenService: TokenService) {
           {path: 'cancel', component: CancelDeliveryComponent},
         ], canActivate: [AuthGuard]
       },
+      {path: 'detail-order/:id', component: DetailOrderComponent, canActivate: [AuthGuard]},
     ],
     'ROLE_USER': [
       {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -89,7 +90,8 @@ function getRoutesBasedOnRole(tokenService: TokenService) {
           {path: 'delivery', component: DeliveryComponent},
           {path: 'complete', component: CompleteComponent},
           {path: 'cancel', component: CancelComponent},
-          {path: '', redirectTo: 'delivery', pathMatch: 'full'}
+          {path: 'waiting', component: WaitingComponent},
+          {path: '', redirectTo: 'waiting', pathMatch: 'full'}
         ], canActivate: [AuthGuard]
       },
       {path: 'bank/:id', component: BankComponent, canActivate: [AuthGuard]},

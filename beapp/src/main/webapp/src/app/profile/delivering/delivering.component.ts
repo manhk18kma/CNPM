@@ -3,6 +3,7 @@ import {OrderService} from "../../service/order.service";
 import {ProductService} from "../../service/product.service";
 import {UserService} from "../../service/user.service";
 import {MessageService} from "primeng/api";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-delivering',
@@ -21,7 +22,8 @@ export class DeliveringComponent {
   constructor(private orderService: OrderService,
               private productService: ProductService,
               private userService: UserService,
-              private messageService: MessageService) {
+              private messageService: MessageService,
+              private router: Router) {
   }
   ngOnInit(): void {
     this.page = 1
@@ -46,8 +48,16 @@ export class DeliveringComponent {
   completeOrder(id: any){
     this.orderService.completeOrder(id).subscribe(res => {
       this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: res.message });
+      setTimeout(()=>{
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([this.router.url]);
+      },500)
     },error => {
       this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
     })
+  }
+  navigateDetailOrder(id:any){
+    this.router.navigate([`detail-order/${id}`])
   }
 }

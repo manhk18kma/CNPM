@@ -7,7 +7,7 @@
     <div class="col-xl-8">
       <div class="card border shadow-none" style="position: relative;background-color: rgba(231,231,231,0.54)" *ngFor="let data of dataShow">
         <div class="card-body" >
-        <p class="decor-text-1" style="position: absolute;top: 0;right: 0;padding: 5px; background-color: #0fc45a;color: white">Hoàn thành</p>
+          <p class="decor-text-1" style="position: absolute;top: 0;right: 0;padding: 5px; background-color: #e7ba26;color: white">Chờ xác nhận</p>
           <div class="d-flex align-items-start border-bottom pb-3 ">
             <div class="flex-grow-1 align-self-center overflow-hidden">
               <div>
@@ -27,8 +27,8 @@
                   <div>
                     <p class="decor-text mt-2" style="text-align: center; font-weight: bold">Thông tin đơn vị vận chuyển</p>
                     <hr class="faded-line">
-                    <p *ngIf="data.shipment.shipperId != null" style="font-size: 14px;" class="mb-1 mt-1 decor-text-1">Địa chỉ: <span class="fw-medium">{{data.shipment.address}}</span></p>
-                    <p *ngIf="data.shipment.shipperId != null" style="font-size: 14px;" class="mb-1 mt-1 decor-text-1">Mã người vận chuyển: <span class="fw-medium">{{data.shipment.shipperId}}</span></p>
+                    <p *ngIf="data.shipment.shipperId == null" style="font-size: 15px;text-align: center" class="mb-1 mt-1 decor-text text-warning"><span class="fw-medium">Đang chờ đơn vị vận chuyển xác nhận</span></p>
+
                   </div>
                 </div>
               </div>
@@ -38,10 +38,10 @@
         </div>
       </div>
       <div class="decor-text" style="text-align: center;margin-top: 50px" *ngIf="dataShow.length == 0">
-        Chưa có đơn nào hoàn thành
+        Chưa có đơn nào đang chờ xác nhận
       </div>
+      <!-- end card -->
     </div>
   </div>
 
 </div>
-z

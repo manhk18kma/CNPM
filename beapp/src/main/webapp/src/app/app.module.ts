@@ -44,12 +44,12 @@ import { LikedComponent } from './profile/liked/liked.component';
 import { ResponseTransactionComponent } from './response-transaction/response-transaction.component';
 import { DetailPostComponent } from './detail-post/detail-post.component';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
-import { OrderShipperComponent } from './order-shipper/order-shipper.component';
 import { PendingComponent } from './profile/pending/pending.component';
 import { DeliveringComponent } from './profile/delivering/delivering.component';
 import { SuccessComponent } from './profile/success/success.component';
-import { AccessDenyComponent } from './access-deny/access-deny.component';
 import { CancelDeliveryComponent } from './profile/cancel-delivery/cancel-delivery.component';
+import { WaitingComponent } from './order/waiting/waiting.component';
+import { DetailOrderComponent } from './detail-order/detail-order.component';
 
 @NgModule({
   declarations: [
@@ -79,12 +79,12 @@ import { CancelDeliveryComponent } from './profile/cancel-delivery/cancel-delive
     LikedComponent,
     ResponseTransactionComponent,
     DetailPostComponent,
-    OrderShipperComponent,
     PendingComponent,
     DeliveringComponent,
     SuccessComponent,
-    AccessDenyComponent,
-    CancelDeliveryComponent
+    CancelDeliveryComponent,
+    WaitingComponent,
+    DetailOrderComponent
   ],
   imports: [
     BrowserModule,

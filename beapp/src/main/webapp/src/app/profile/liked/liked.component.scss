@@ -466,15 +466,7 @@ select.form-control:not([size]):not([multiple]) {
   border-radius: 6px
 }
 
-.timeline1 .timeline-body:before {
-  content: '';
-  display: block;
-  position: absolute;
-  border: 10px solid transparent;
-  border-right-color: #fff;
-  left: -20px;
-  top: 20px
-}
+
 
 .timeline1 .timeline-body>div+div {
   margin-top: 15px
@@ -548,15 +540,7 @@ select.form-control:not([size]):not([multiple]) {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
-.timeline .timeline-body:before {
-  content: '';
-  display: block;
-  position: absolute;
-  border: 10px solid transparent;
-  border-right-color: #fff;
-  left: -20px;
-  top: 20px
-}
+
 
 .timeline .timeline-body>div+div {
   margin-top: 15px
