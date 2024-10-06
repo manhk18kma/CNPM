@@ -10,6 +10,7 @@ import {catchError, of, tap} from "rxjs";
 import {LikeService} from "../../service/like.service";
 import {MessageService} from "primeng/api";
 import {UserService} from "../../service/user.service";
+import {TokenService} from "../../service/token/token.service";
 
 @Component({
   selector: 'app-posts',
@@ -42,7 +43,8 @@ export class PostsComponent implements OnInit {
               private cmtService: CommentsService,
               private likeService: LikeService,
               private messageService: MessageService,
-              public userService: UserService
+              public userService: UserService,
+              public tokenService: TokenService
   ) {
   }
 
