@@ -5,7 +5,10 @@ import kma.cnpm.beapp.domain.common.dto.ShipmentRequest;
 import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
-import kma.cnpm.beapp.domain.common.notificationDto.*;
+import kma.cnpm.beapp.domain.common.notificationDto.OrderAcceptedShip;
+import kma.cnpm.beapp.domain.common.notificationDto.OrderCancelled;
+import kma.cnpm.beapp.domain.common.notificationDto.OrderCompleted;
+import kma.cnpm.beapp.domain.common.notificationDto.OrderCreated;
 import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.order.dto.request.OrderRequest;
 import kma.cnpm.beapp.domain.order.dto.response.CartItemResponse;
@@ -19,7 +22,6 @@ import kma.cnpm.beapp.domain.order.service.CartService;
 import kma.cnpm.beapp.domain.order.service.OrderService;
 import kma.cnpm.beapp.domain.payment.entity.Account;
 import kma.cnpm.beapp.domain.payment.service.AccountService;
-import kma.cnpm.beapp.domain.product.entity.Product;
 import kma.cnpm.beapp.domain.product.service.ProductService;
 import kma.cnpm.beapp.domain.shipment.service.ShipmentService;
 import kma.cnpm.beapp.domain.user.entity.User;
@@ -193,7 +195,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.ORDER_NOT_EXISTED));
         User user = userService.findUserById(authService.getAuthenticationName());
-        if (!user.getId().equals(shipmentService.getShipmentById(order.getShipmentId()).getShipperId()))
+        if (!user.getId().equals(order.getBuyerId()))
             throw new AppException(UNAUTHORIZED);
         if (!order.getStatus().equals(OrderStatus.READY_FOR_DELIVERY))
             throw new AppException(ORDER_CANNOT_BE_CANCELLED);
@@ -214,6 +216,33 @@ public class OrderServiceImpl implements OrderService {
                 .build());
         return order.getId();
     }
+
+    @Override
+    public String deleteOrderByShipper(String id) {
+        // role shipper
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new AppException(AppErrorCode.ORDER_NOT_EXISTED));
+        User user = userService.findUserById(authService.getAuthenticationName());
+        if (!user.getId().equals(shipmentService.getShipmentById(order.getShipmentId()).getShipperId()))
+            throw new AppException(UNAUTHORIZED);
+        if (!order.getStatus().equals(OrderStatus.IN_TRANSIT))
+            throw new AppException(ORDER_CANNOT_BE_CANCELLED);
+        for (OrderItem orderItem : order.getOrderItems()) {
+            // logic trừ số lượng product
+            productService.reduceProductQuantity(orderItem.getProductId(), orderItem.getQuantity(), true);
+        }
+        // hoan tien
+        accountService.payOrder(order.getTotalAmount(), true);
+        // chinh sua status shipment
+        order.setStatus(OrderStatus.CANCELED);
+        notificationService.orderCancelled(OrderCancelled.builder()
+                .totalAmount(order.getTotalAmount())
+                .orderId(order.getId())
+                .orderImg(null)
+                .BuyerId(order.getBuyerId())
+                .sellerId(productService.getProductById(order.getOrderItems().get(0).getProductId()).getSellerId())
+                .build());
+        return order.getId();    }
 
     @Override
     public OrderResponse getOrderById(String id) {

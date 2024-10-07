@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="container">
   <div style="font-size: 13px"  id="tab2" class="tab-pane active">
     <div class="decor-text" style="font-size: 20px; text-align: center; margin:30px 0;font-weight: bold">
@@ -17,6 +18,7 @@
       <tbody>
       <tr style="cursor: pointer" *ngFor="let i of dataShow;let j = index"
           [class.row-selected]="this.selectedRows.indexOf(i) !== -1"
+          (dblclick)="navigateDetailOrder(i.id)"
           class="decor-text-1"
           (click)="selectRow(i, $event, syslogs)">
         <td>{{cutAndJoinString(i.id)}}</td>

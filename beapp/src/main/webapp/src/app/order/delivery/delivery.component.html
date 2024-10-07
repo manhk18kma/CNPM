@@ -5,31 +5,32 @@
 <div class="container position-absolute" style="margin-top: 100px;width: 80%;right: 0">
   <div class="row">
     <div class="col-xl-8">
-      <div class="card border shadow-none">
-        <div class="card-body">
-
-          <div class="d-flex align-items-start border-bottom pb-3">
-            <div class="me-4">
-              <img src="https://www.bootdey.com/image/380x380/008B8B/000000" alt="" class="avatar-lg rounded">
-            </div>
+      <div class="card border shadow-none" style="position: relative;background-color: rgba(231,231,231,0.54)" *ngFor="let data of dataShow">
+        <div class="card-body" >
+          <p class="decor-text-1" style="position: absolute;top: 0;right: 0;padding: 5px; background-color: #458f7c;color: white">Đang giao</p>
+          <div class="d-flex align-items-start border-bottom pb-3 ">
             <div class="flex-grow-1 align-self-center overflow-hidden">
               <div>
-                <h5 class="text-truncate font-size-18 text-cart"><a href="#" class="text-dark">Bàn phím</a></h5>
-                <p class="mb-0 mt-1 decor-text-0">Mô tả : <span class="fw-medium">Ngoại hình đẹp</span></p>
+                <p class="decor-text mt-2" style="text-align: center; font-weight: bold">Thông tin sản phẩm</p>
+                <hr class="faded-line">
+                <p style="font-size: 14px;margin-bottom: 5px" class="mb-1 mt-1 decor-text-1">Tên mặt hàng : <span class="fw-medium">{{(data.orderItem[0].productName).toUpperCase()}}</span></p>
+                <p style="font-size: 14px;margin-bottom: 5px" class="mb-1 mt-1 decor-text-1">Thời gian đặt : <span class="fw-medium">{{data.orderedDate | date: 'dd/MM/yyyy'}}</span></p>
+                <p style="font-size: 14px;margin-bottom: 5px" class="mb-1 mt-1 decor-text-1">Số lượng : <span class="fw-medium">{{data.orderItem[0].quantity}}</span></p>
+                <p style="font-size: 14px;margin-bottom: 5px" class="mb-1 mt-1 decor-text-1">Số tiền đã tạm ứng : <span class="fw-medium">{{userService.formatMoneyVND(data.orderItem[0].productPrice * data.orderItem[0].quantity)}}</span></p>
               </div>
             </div>
-
           </div>
-
           <div>
             <div class="row">
-              <div class="col-md-12 d-flex justify-content-between">
-                <div class="mt-3">
-                  <p class="text-muted mb-2 decor-text">Giá</p>
-                  <h5 class="mb-0 mt-2 decor-text-1" style="font-size: 17px">200.000 đồng</h5>
-                </div>
-                <div class="mt-3">
-                  <h5 class="mb-0 mt-2 decor-text-1 text-warning" style="font-size: 17px">Đang giao</h5>
+              <div class="col-md-12">
+                <div class="flex-grow-1 align-self-center overflow-hidden">
+                  <div>
+                    <p class="decor-text mt-2" style="text-align: center; font-weight: bold">Thông tin đơn vị vận chuyển</p>
+                    <hr class="faded-line">
+                    <p *ngIf="data.shipment.shipperId != null" style="font-size: 14px;" class="mb-1 mt-1 decor-text-1">Địa chỉ: <span class="fw-medium">{{data.shipment.address}}</span></p>
+                    <p *ngIf="data.shipment.shipperId != null" style="font-size: 14px;" class="mb-1 mt-1 decor-text-1">Mã người vận chuyển: <span class="fw-medium">{{data.shipment.shipperId}}</span></p>
+                    <p *ngIf="data.shipment.shipperId != null" style="font-size: 14px;" class="mb-1 mt-1 decor-text-1">Ngày nhận hàng dự kiến: <span class="fw-medium">{{data.shipment.estimatedDeliveryDate | date: 'dd/MM/yyyy '}}</span></p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -37,7 +38,9 @@
 
         </div>
       </div>
-      <!-- end card -->
+      <div class="decor-text" style="text-align: center;margin-top: 50px" *ngIf="dataShow.length == 0">
+        Chưa có đơn nào đang vận chuyển
+      </div>
     </div>
   </div>
 

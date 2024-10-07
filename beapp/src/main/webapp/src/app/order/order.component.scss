@@ -168,3 +168,38 @@ ul.online-users {
 .text-white {
   color: #fff;
 }
+.navbar-nav {
+  position: fixed;
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 15px;
+  transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  color: #7c5e5e;
+  transform: scale(1.05);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.navbar.transparent .navbar-brand,
+.navbar.transparent .nav-link {
+  color: #000000;
+}
+.nav-item{
+  display: flex;
+}

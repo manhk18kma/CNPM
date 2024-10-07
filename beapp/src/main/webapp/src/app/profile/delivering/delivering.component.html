@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="container">
   <div style="font-size: 13px"  id="tab2" class="tab-pane active">
     <div class="decor-text" style="font-size: 20px; text-align: center; margin:30px 0;font-weight: bold">
@@ -18,6 +19,7 @@
       <tr style="cursor: pointer" *ngFor="let i of dataShow;let j = index"
           [class.row-selected]="this.selectedRows.indexOf(i) !== -1"
           class="decor-text-1"
+          (dblclick)="navigateDetailOrder(i.id)"
           (click)="selectRow(i, $event, syslogs)">
         <td>{{cutAndJoinString(i.id)}}</td>
         <td>{{i.endDate  | date: 'dd/MM/yyyy '}}</td>
@@ -25,7 +27,7 @@
         <td>{{i.orderItem[0].quantity}}</td>
         <td>{{i.shipment.address}}</td>
         <td>
-          <button (click)="completeOrder(i.id)" class="btn rounded-0" style="font-size: 9px;background-color: #93e0db; padding:4px">Xác nhận hoàn thành</button>
+          <button (click)="completeOrder(i.id)" class="btn rounded-0" style="font-size: 9px;background-color: #e7cf41; padding:4px">Xác nhận đã giao</button>
         </td>
       </tr>
       </tbody>

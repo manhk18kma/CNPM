@@ -1,26 +1,29 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-<div class="container" style="position: absolute; margin-top: 80px">
+<div class="container" style="position: absolute; margin-top: 80px;">
   <div class="row">
     <div class="col-md-4 static decor-text-1" style="font-size: 15px">
-      <ul class="nav-news-feed" style="cursor: pointer">
+      <ul class="navbar-nav" style="cursor: pointer">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="waiting" routerLinkActive="active">
+            <i class="bi bi-hourglass-split" style="color: #78cade;padding-right: 5px"></i>Chờ xác nhận
+          </a>
+        </li>
+
         <li class="nav-item">
           <a class="nav-link" routerLink="delivery" routerLinkActive="active">
-            <i style="color: #e59a4d" class="bi bi-truck"></i>
-            <div>Vận chuyển</div>
+            <i style="color: #e59a4d;padding-right: 5px" class="bi bi-truck"></i>Đang giao
           </a>
 
         </li>
         <li  class="nav-item">
           <a class="nav-link" routerLink="complete" routerLinkActive="active">
-            <i class="bi bi-check2 text-success"></i>
-            <div>Hoàn thành</div>
+            <i class="bi bi-check2 text-success" style="padding-right: 5px"></i>Hoàn thành
           </a>
 
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="cancel" routerLinkActive="active">
-            <i class="bi bi-x-lg text-danger"></i>
-            <div>Đơn hủy</div>
+            <i class="bi bi-x-lg text-danger" style="padding-right: 5px"></i>Đã hủy
           </a>
 
         </li>

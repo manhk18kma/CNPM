@@ -203,7 +203,6 @@ public class ProductServiceImpl implements ProductService {
 //    Refactor this method
     @Override
     public int countSoldProductOfUser(Long userId) {
-        return 10;
-//        return productRepository.countSoldProductOfUser(userId);
+        return productRepository.countProductBySellerId(userId);
     }
 }

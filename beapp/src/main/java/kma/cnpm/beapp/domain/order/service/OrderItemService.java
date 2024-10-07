@@ -1,5 +1,6 @@
 package kma.cnpm.beapp.domain.order.service;
 
+import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
 import kma.cnpm.beapp.domain.order.dto.request.OrderItemRequest;
 import kma.cnpm.beapp.domain.order.dto.response.OrderItemResponse;
 
@@ -12,5 +13,6 @@ public interface OrderItemService {
 
     OrderItemResponse getOrderItemById(Long id);
     List<OrderItemResponse> getOrderItemsByProductId(Integer productId);
+    List<OrderItemResponse> getOrderItemsByOrderStatusAndUser(OrderStatus orderStatus);
 
 }

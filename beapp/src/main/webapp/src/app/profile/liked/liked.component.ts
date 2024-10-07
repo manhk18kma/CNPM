@@ -9,6 +9,8 @@ import {CommentsService} from "../../service/comments.service";
 import {LikeService} from "../../service/like.service";
 import {MessageService} from "primeng/api";
 import {catchError, of, tap} from "rxjs";
+import {UserService} from "../../service/user.service";
+import {TokenService} from "../../service/token/token.service";
 
 @Component({
   selector: 'app-liked',
@@ -40,7 +42,9 @@ export class LikedComponent {
               private sanitizer: DomSanitizer,
               private cmtService: CommentsService,
               private likeService: LikeService,
-              private messageService: MessageService
+              private messageService: MessageService,
+              public userService: UserService,
+              public tokenService: TokenService
   ) {
   }
 
@@ -130,5 +134,8 @@ export class LikedComponent {
         this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.message});
       })
     }
+  }
+  navigatePayment(id: any){
+    this.router.navigate([`payment/${id}`],id);
   }
 }
