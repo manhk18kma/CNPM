@@ -416,8 +416,8 @@ public class AuthService implements CommandLineRunner {
     }
 
 
-    public List<ShipperDTO> getTokenDeviceShipper() {
-        return userRepository.getTokenDeviceShipper().stream()
+    public List<ShipperDTO> getTokenDeviceByRoleName(String roleName) {
+        return userRepository.getTokenDeviceShipper(roleName).stream()
                 .map(user -> {
                     return ShipperDTO.builder()
                             .tokenDevice(user.getTokenDevice())
@@ -425,6 +425,7 @@ public class AuthService implements CommandLineRunner {
                             .build();
                 }).collect(Collectors.toList());
     }
+
 
     public UserDTO getUserInfo(Long id){
         User user = userRepository.findUserById((id))

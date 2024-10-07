@@ -172,7 +172,7 @@ public class NotificationServiceImpl implements NotificationService {
         String template = templateService.getTemplate(NotificationType.ORDER_CREATED_SHIPPER);
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("shipmentId", shipmentCreated.getShipmentId().toString());
-        List<ShipperDTO> shipperDTOS = authService.getTokenDeviceShipper();
+        List<ShipperDTO> shipperDTOS = authService.getTokenDeviceByRoleName("SHIPPER");
         shipperDTOS.forEach(shipperDTO -> {
 
             SaveAndSendNotificationRequest request = SaveAndSendNotificationRequest.builder()
@@ -347,13 +347,33 @@ public class NotificationServiceImpl implements NotificationService {
     //Post domain
     @Override
     public void postCreated(PostCreated postCreated) {
+        String template = templateService.getTemplate(NotificationType.POST_CREATED);
+        Map<String, String> placeholders = new HashMap<>();
 
+        UserDTO userCreatedPost = authService.getUserInfo(postCreated.getPosterId());
+        placeholders.put("followedUserFullName",userCreatedPost.getFullName() );
+        placeholders.put("contentSnippet", postCreated.getContentSnippet());
+
+        List<ShipperDTO> adminDTOS = authService.getTokenDeviceByRoleName("ADMIN");
+        adminDTOS.forEach(adminDTO -> {
+            SaveAndSendNotificationRequest request= SaveAndSendNotificationRequest.builder()
+                    .template(template)
+                    .placeholders(placeholders)
+                    .type(NotificationType.POST_CREATED)
+                    .recipientId(adminDTO.getId())
+                    .referenceId(postCreated.getPostId().toString())
+                    .imgUrl(postCreated.getPostUrlImg())
+                    .typeRedirect(NotificationTypeRedirect.POST_MODERATION)
+                    .build();
+            saveAndSendNotification(request);
+
+        });
 
     }
 
     @Override
     public void postApproved(PostApproved postApproved) {
-        String template = templateService.getTemplate(NotificationType.POST_CREATED);
+        String template = templateService.getTemplate(NotificationType.POST_APPROVE);
         Map<String, String> placeholders = new HashMap<>();
 
         UserDTO userCreatedPost = authService.getUserInfo(postApproved.getPosterId());
@@ -365,7 +385,7 @@ public class NotificationServiceImpl implements NotificationService {
             SaveAndSendNotificationRequest request= SaveAndSendNotificationRequest.builder()
                     .template(template)
                     .placeholders(placeholders)
-                    .type(NotificationType.POST_CREATED)
+                    .type(NotificationType.POST_APPROVE)
                     .recipientId(followerDTO.getUserId())
                     .referenceId(postApproved.getPostId().toString())
                     .imgUrl(postApproved.getPostUrlImg())

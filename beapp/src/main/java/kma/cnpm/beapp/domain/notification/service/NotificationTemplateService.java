@@ -73,7 +73,11 @@ public class NotificationTemplateService {
                         "Cảm ơn bạn đã sử dụng dịch vụ.");
 
         //Follower post somethign new
+        //for admin
         templates.put(NotificationType.POST_CREATED,
+                "<strong>{followedUserFullName}</strong> vừa đăng một bài viết mới: \"<strong>{contentSnippet}</strong>...\". Hãy kiểm duyệt nội dung!");
+        //for follower
+        templates.put(NotificationType.POST_APPROVE,
                 "<strong>{followedUserFullName}</strong> vừa đăng một bài viết mới: \"<strong>{contentSnippet}</strong>...\". Đừng bỏ lỡ cơ hội, xem ngay!");
 
 

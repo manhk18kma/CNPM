@@ -67,8 +67,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u " +
             "FROM User u " +
             "INNER JOIN UserHasRole uhr ON u.id = uhr.user.id " +
-            "WHERE uhr.role.roleName = 'SHIPPER'")
-    List<User> getTokenDeviceShipper();
+            "WHERE uhr.role.roleName = :roleName")
+    List<User> getTokenDeviceShipper(@Param("roleName") String roleName);
+
 
 
 

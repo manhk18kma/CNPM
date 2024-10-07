@@ -173,7 +173,7 @@ public class UserRelationService {
     }
 
     public List<ShipperDTO> getTokenDeviceShipper() {
-        return userRepository.getTokenDeviceShipper().stream()
+        return userRepository.getTokenDeviceShipper("SHIPPER").stream()
                 .map(user -> {
                     return ShipperDTO.builder()
                             .tokenDevice(user.getTokenDevice())
