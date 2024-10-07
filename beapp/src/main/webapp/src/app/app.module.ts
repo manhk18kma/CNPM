@@ -50,6 +50,8 @@ import { SuccessComponent } from './profile/success/success.component';
 import { CancelDeliveryComponent } from './profile/cancel-delivery/cancel-delivery.component';
 import { WaitingComponent } from './order/waiting/waiting.component';
 import { DetailOrderComponent } from './detail-order/detail-order.component';
+import { ApproveWithdrawComponent } from './profile/approve-withdraw/approve-withdraw.component';
+import { ApprovePostComponent } from './profile/approve-post/approve-post.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +86,9 @@ import { DetailOrderComponent } from './detail-order/detail-order.component';
     SuccessComponent,
     CancelDeliveryComponent,
     WaitingComponent,
-    DetailOrderComponent
+    DetailOrderComponent,
+    ApproveWithdrawComponent,
+    ApprovePostComponent
   ],
   imports: [
     BrowserModule,

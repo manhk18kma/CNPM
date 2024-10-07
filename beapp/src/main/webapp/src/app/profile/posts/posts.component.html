@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 <div *ngIf="selectedPost" class="modal-overlay" (click)="closeModal()"></div>
-<div class="profile-content decor-text-1">
+<div *ngIf="this.currentIDUser == this.id" class="profile-content decor-text-1">
   <div class="tab-content p-0">
     <div class="tab-pane fade active show" id="profile-post1">
       <div *ngIf="!openPost" (click)="openPost = true" class="container cube decor-text-1">

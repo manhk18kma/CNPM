@@ -11,6 +11,9 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrls: ['./infor.component.scss']
 })
 export class InforComponent implements OnInit {
+  currentRole: any;
+  currentIDUser:any;
+  idUser:any
   constructor(public authService: AuthService,
               private userService: UserService,
               private tokenService: TokenService,
@@ -21,12 +24,21 @@ export class InforComponent implements OnInit {
   userDetail: any;
 
   ngOnInit(): void {
-    // let id = this.route.parent?.snapshot.paramMap.get('id')!;
+    this.currentIDUser = this.tokenService.getIDUserFromToken();
+    this.currentRole = this.tokenService.getRoleUserFromToken();
+    this.idUser = this.route.parent?.snapshot.paramMap.get('id')!;
     let gender = ''
     // @ts-ignore
-    this.userDetail = JSON.parse(sessionStorage.getItem('userProfile'));
+    this.userService.getPublicProfile(parseInt(this.idUser)).subscribe(res => {
+      // @ts-ignore
+      this.userDetail = {...this.userDetail, ...res.data};
+    });
+    if (this.currentRole != 'ROLE_SHIPPER' && this.currentRole != 'ROLE_ADMIN' && this.currentIDUser == this.idUser) {
+      this.userService.getPrivateProfile().subscribe(res1 => {
+        this.userDetail = {...this.userDetail, ...res1.data};
+      })
+    }
     this.userDetail.gender = this.userService.getGender(this.userDetail.gender,gender);
-    console.log(this.userDetail)
   }
   navigateBank(id: any){
     this.router.navigate([`bank/${id}`],id)
