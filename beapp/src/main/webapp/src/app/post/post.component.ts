@@ -221,4 +221,7 @@ export class PostComponent {
   navigatePayment(id: any){
     this.router.navigate([`payment/${id}`],id);
   }
+  viewProfile(id: any){
+      this.router.navigate([`profile/${id}`])
+  }
 }

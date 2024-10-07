@@ -93,11 +93,11 @@
       <ul class="timeline">
         <li *ngFor="let post of posts" style="background-color: rgba(231,231,231,0.54)">
           <div *ngIf="selectedPost != post" class="timeline-body">
-            <div class="timeline-header">
+            <div (dblclick)="viewProfile(post.userId)" class="timeline-header">
                       <span class="userimage"><img
                         src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
                         alt=""></span>
-              <span class="username"><a>{{post.product.sellerName}}</a> <small></small></span>
+              <span class="username"><a>{{post.userName}}</a> <small></small></span>
               <div class="pull-right text-muted">
                 <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
                 <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>

@@ -33,6 +33,8 @@ import {CancelDeliveryComponent} from "./profile/cancel-delivery/cancel-delivery
 import {AddressComponent} from "./address/address.component";
 import {WaitingComponent} from "./order/waiting/waiting.component";
 import {DetailOrderComponent} from "./detail-order/detail-order.component";
+import {ApproveWithdrawComponent} from "./profile/approve-withdraw/approve-withdraw.component";
+import {ApprovePostComponent} from "./profile/approve-post/approve-post.component";
 
 const routes: Routes = []
 
@@ -52,6 +54,14 @@ function getRoutesBasedOnRole(tokenService: TokenService) {
   ];
   const roleBasedRoutes: { [key: string]: Routes } = {
     'ROLE_ADMIN': [
+      {
+        path: 'profile/:id',
+        component: ProfileComponent,
+        children: [
+          {path: 'list-withdraws', component: ApproveWithdrawComponent},
+          {path: 'list-posts', component: ApprovePostComponent},
+        ], canActivate: [AuthGuard]
+      },
     ],
     'ROLE_SHIPPER': [
       {

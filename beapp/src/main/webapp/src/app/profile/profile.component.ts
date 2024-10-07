@@ -14,7 +14,7 @@ export class ProfileComponent implements OnInit{
   idUser: any;
   userDetail: any;
   currentRole: any;
-
+  currentIDUser:any;
   constructor(public authService: AuthService,
               private userService: UserService,
               private tokenService: TokenService,
@@ -29,18 +29,16 @@ export class ProfileComponent implements OnInit{
   }
 
   ngOnInit(): void {
-
+    this.currentIDUser = this.tokenService.getIDUserFromToken();
     this.currentRole = this.tokenService.getRoleUserFromToken();
     this.idUser = this.route.snapshot.paramMap.get('id');
     this.userService.getPublicProfile(parseInt(this.idUser)).subscribe(res => {
       // @ts-ignore
       this.userDetail = {...this.userDetail, ...res.data};
-      this.saveSession();
     });
-    if (this.currentRole != 'ROLE_SHIPPER') {
+    if (this.currentRole != 'ROLE_SHIPPER' &&this.currentRole != 'ROLE_ADMIN' && this.currentIDUser == this.idUser) {
       this.userService.getPrivateProfile().subscribe(res1 => {
         this.userDetail = {...this.userDetail, ...res1.data};
-        this.saveSession();
       })
       setTimeout(() => {
         this.router.navigate(['infor'], {relativeTo: this.route});
@@ -49,11 +47,6 @@ export class ProfileComponent implements OnInit{
 
   }
 
-
-  saveSession() {
-    sessionStorage.setItem('userProfile', JSON.stringify(this.userDetail));
-
-  }
 
   // ngOnDestroy(): void {
   //   sessionStorage.removeItem('userProfile');

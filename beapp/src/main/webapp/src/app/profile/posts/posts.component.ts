@@ -32,7 +32,9 @@ export class PostsComponent implements OnInit {
   selectedPost: any = null;
   newComment: any = {}
   comments: any;
-
+  currentRole: any;
+  currentIDUser:any;
+  idUser:any
   constructor(public authService: AuthService,
               private categoryService: CategoryService,
               private postService: PostService,
@@ -50,6 +52,8 @@ export class PostsComponent implements OnInit {
 
   ngOnInit(): void {
     this.post.product = null;
+    this.currentIDUser = this.tokenService.getIDUserFromToken();
+    this.currentRole = this.tokenService.getRoleUserFromToken();
     this.id = this.route.parent?.snapshot.paramMap.get('id');
     // @ts-ignore
     this.userDetail = JSON.parse(sessionStorage.getItem('userProfile'));

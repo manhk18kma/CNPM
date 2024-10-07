@@ -5,7 +5,7 @@
       <img width="60px"  src="https://github.com/NgDuyKhanhs/image/blob/main/Remove-bg.ai_1726026879198.png?raw=true"/>
     </a>
 
-    <ul class="navbar-nav d-flex justify-content-center" *ngIf="!isMobile && this.currentRole != 'ROLE_SHIPPER'">
+    <ul class="navbar-nav d-flex justify-content-center" *ngIf="!isMobile && this.currentRole != 'ROLE_SHIPPER' && this.currentRole != 'ROLE_ADMIN'">
       <li class="nav-item decor-text">
         <a class="nav-link" routerLink="home" routerLinkActive="active">Trang chủ</a>
       </li>
