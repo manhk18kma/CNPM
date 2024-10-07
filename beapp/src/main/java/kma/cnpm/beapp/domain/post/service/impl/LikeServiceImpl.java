@@ -56,14 +56,14 @@ public class LikeServiceImpl implements LikeService {
         like.setPost(post);
         like.setUserId(user.getId());
         likeRepository.save(like);
-//        notificationService.likeCreated(LikeCreated.builder()
-//                .postId(Long.valueOf(like.getPost().getId()))
-//                .countLikes(countLikes(postId))
-//                .contentSnippet(post.getContent())
-//                .postUrlImg(null)
-//                .posterId(post.getUserId())
-//                .likerId(user.getId())
-//                .build());
+        notificationService.likeCreated(LikeCreated.builder()
+                .postId(Long.valueOf(like.getPost().getId()))
+                .countLikes(countLikes(postId))
+                .contentSnippet(post.getContent())
+                .postUrlImg(null)
+                .posterId(post.getUserId())
+                .likerId(user.getId())
+                .build());
     }
 
     @Override
@@ -77,8 +77,8 @@ public class LikeServiceImpl implements LikeService {
         likeRepository.existsByPostAndUserId(post, user.getId());
         Like like = likeRepository.findByPostAndUserId(post, user.getId());
         likeRepository.delete(like);
-//        notificationService.unLiked(UnLiked.builder()
-//                .postId(Long.valueOf(post.getId())).build());
+        notificationService.unLiked(UnLiked.builder()
+                .postId(Long.valueOf(post.getId())).build());
     }
 
     @Override

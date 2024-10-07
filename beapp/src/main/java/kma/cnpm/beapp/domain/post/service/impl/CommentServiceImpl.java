@@ -53,13 +53,13 @@ public class CommentServiceImpl implements CommentService {
         comment.setUserId(user.getId());
         comment.setPost(post);
         commentRepository.save(comment);
-//        notificationService.commentCreated(CommentCreated.builder()
-//                .commenterId(user.getId())
-//                .commentSnippet(comment.getContent())
-//                .otherCommentersId(null)
-//                .posterId(post.getUserId())
-//                .postId(comment.getId())
-//                .build());
+        notificationService.commentCreated(CommentCreated.builder()
+                .commenterId(user.getId())
+                .commentSnippet(comment.getContent())
+                .otherCommentersId(null)
+                .posterId(post.getUserId())
+                .postId(comment.getId())
+                .build());
     }
 
     @Override
@@ -70,13 +70,13 @@ public class CommentServiceImpl implements CommentService {
         if (!user.getId().equals(comment.getUserId()))
             throw new AppException(UNAUTHORIZED);
         commentRepository.deleteById(id);
-//        notificationService.commentRemoved(CommentRemoved.builder()
-//                .lastCommenterId(user.getId())
-//                .lastCommentSnippet(comment.getContent())
-//                .posterId(comment.getPost().getUserId())
-//                .postUrlImg(null)
-//                .otherCommentersId(null)
-//                .build());
+        notificationService.commentRemoved(CommentRemoved.builder()
+                .lastCommenterId(user.getId())
+                .lastCommentSnippet(comment.getContent())
+                .posterId(comment.getPost().getUserId())
+                .postUrlImg(null)
+                .otherCommentersId(null)
+                .build());
     }
 
     @Override

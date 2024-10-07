@@ -88,8 +88,8 @@ public class PostServiceImpl implements PostService {
             throw new AppException(UNAUTHORIZED);
         productService.deleteById(post.getProductId());
         postRepository.deleteById(id);
-//        notificationService.postRemoved(PostRemoved.builder()
-//                .postId(Long.valueOf(post.getId())).build());
+        notificationService.postRemoved(PostRemoved.builder()
+                .postId(Long.valueOf(post.getId())).build());
     }
 
     @Override
@@ -99,11 +99,11 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
         post.setIsApproved(true);
         postRepository.save(post);
-//        notificationService.postApproved(PostApproved.builder()
-//                .postId(Long.valueOf(post.getId()))
-//                .postUrlImg(null)
-//                .contentSnippet(post.getContent())
-//                .posterId(post.getUserId()).build());
+        notificationService.postApproved(PostApproved.builder()
+                .postId(Long.valueOf(post.getId()))
+                .postUrlImg(null)
+                .contentSnippet(post.getContent())
+                .posterId(post.getUserId()).build());
     }
 
     @Override
@@ -153,7 +153,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResponse> getPostsByUserId(Long userId) {
-        List<Post> posts = postRepository.findByUserId(userId);
+        List<Post> posts = postRepository.findByUserIdOrderByCreatedAtDesc(userId);
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
@@ -171,7 +171,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResponse> getPostsByStatus(String status) {
-        List<Post> posts = postRepository.findByStatus(status);
+        List<Post> posts = postRepository.findByStatusOrderByCreatedAtDesc(status);
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
@@ -194,7 +194,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResponse> getPostsByApproved(Boolean isApproved) {
-        List<Post> posts = postRepository.findByIsApprovedOrderByUpdatedAt(isApproved);
+        List<Post> posts = postRepository.findByIsApprovedOrderByCreatedAtDesc(isApproved);
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {

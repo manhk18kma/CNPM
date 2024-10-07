@@ -5,7 +5,9 @@ import jakarta.validation.Valid;
 import kma.cnpm.beapp.domain.common.dto.ResponseData;
 import kma.cnpm.beapp.domain.common.enumType.OrderStatus;
 import kma.cnpm.beapp.domain.order.dto.request.OrderRequest;
+import kma.cnpm.beapp.domain.order.dto.response.OrderItemResponse;
 import kma.cnpm.beapp.domain.order.dto.response.OrderResponse;
+import kma.cnpm.beapp.domain.order.service.OrderItemService;
 import kma.cnpm.beapp.domain.order.service.OrderService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ import java.util.List;
 public class OrderController {
 
     OrderService orderService;
+    OrderItemService orderItemService;
 
     @PostMapping
     public ResponseData<String> createOrder(@RequestBody @Valid OrderRequest orderRequest) {
@@ -59,6 +62,14 @@ public class OrderController {
                 "Đơn hàng đã được hủy thành công",
                 LocalDateTime.now(),
                 orderService.deleteOrder(id));
+    }
+
+    @PatchMapping("/cancel/{id}")
+    public ResponseData<String> deleteOrderByShipper(@PathVariable String id) {
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Đơn hàng đã được hủy thành công",
+                LocalDateTime.now(),
+                orderService.deleteOrderByShipper(id));
     }
 
     @GetMapping("/{id}")
@@ -100,5 +111,14 @@ public class OrderController {
                 LocalDateTime.now(),
                 orderService.getOrderByBuyerIdAndStatus(orderStatus));
     }
+
+    @GetMapping("/items/buyer/status/delivered")
+    public ResponseData<List<OrderItemResponse>> getOrderItemsByBuyerAndStatus() {
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Tất cả mặt hàng của người dùng đã được hiển thị theo trạng thái thành công",
+                LocalDateTime.now(),
+                orderItemService.getOrderItemsByOrderStatusAndUser(OrderStatus.DELIVERED));
+    }
+
 
 }
