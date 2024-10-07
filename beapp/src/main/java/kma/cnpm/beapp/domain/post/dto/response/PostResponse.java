@@ -20,6 +20,8 @@ public class PostResponse {
     private String status;
     private Boolean isApproved;
     private Long userId;
+    private String userName;
+    private Boolean liked;
     private Integer commentTotal;
     private Integer likeTotal;
     private Date createdAt;

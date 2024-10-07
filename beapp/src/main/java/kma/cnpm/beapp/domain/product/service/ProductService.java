@@ -11,6 +11,7 @@ public interface ProductService {
     ProductResponse save(ProductRequest productRequest);
     ProductResponse update(Integer id, ProductRequest productRequest);
     ProductResponse uploadFile(UploadFileRequest uploadFileRequest);
+    ProductResponse reduceProductQuantity(Integer id, Integer quantity, Boolean rollback);
     void deleteById(Integer id);
 
     ProductResponse getProductById(Integer id);

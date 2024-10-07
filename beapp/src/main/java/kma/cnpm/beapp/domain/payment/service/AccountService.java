@@ -3,8 +3,11 @@ package kma.cnpm.beapp.domain.payment.service;
 import kma.cnpm.beapp.domain.common.dto.BalanceDTO;
 import kma.cnpm.beapp.domain.common.dto.BankDTO;
 import kma.cnpm.beapp.domain.common.dto.PageResponse;
+import kma.cnpm.beapp.domain.common.enumType.NotificationType;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.BalanceChange;
+import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.payment.dto.request.AddBankRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.AccountResponse;
 import kma.cnpm.beapp.domain.payment.dto.response.BankResponse;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,10 +39,16 @@ public class AccountService {
     final AuthService authService;
     final BankRepository bankRepository;
     final AccountHasBankRepository accountHasBankRepository;
+    final NotificationService notificationService;
 
     public Account getAccount(){
         String userId =  authService.getAuthenticationName();
         return accountRepository.findAccountByUserId(Long.valueOf(userId))
+                .orElseThrow(() -> new AppException(AppErrorCode.ACCOUNT_NOT_EXIST));
+    }
+
+    public Account getAccountByUserId(Long userId){
+        return accountRepository.findAccountByUserId(userId)
                 .orElseThrow(() -> new AppException(AppErrorCode.ACCOUNT_NOT_EXIST));
     }
 
@@ -94,7 +104,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void updateBalance(BigDecimal amount, Account account, boolean plusOrMinus) {
+    public void updateBalance(BigDecimal amount, Account account, boolean plusOrMinus , Long transactionOrWithdrawalId , NotificationType notificationType) {
         if (plusOrMinus) {
             BigDecimal newBalance = account.getBalance().add(amount);
             account.setBalance(newBalance);
@@ -106,8 +116,16 @@ public class AccountService {
             account.setBalance(newBalance);
         }
         accountRepository.save(account);
+        BalanceChange balanceChange = BalanceChange.builder()
+                .userId(account.getUserId())
+                .amount(amount)
+                .balance(account.getBalance())
+                .notificationType(notificationType)
+                .plusOrMinus(plusOrMinus)
+                .transactionId(transactionOrWithdrawalId)
+                .build();
+        notificationService.balanceChange(balanceChange);
     }
-
 
     public List<BankDTO> getBanksOfUser(Long userId){
         List<AccountHasBank> accountHasBanks = accountHasBankRepository.getBankOfUser(userId);
@@ -150,5 +168,21 @@ public class AccountService {
                 .items(responses)
                 .build();
     }
+
+    public void payOrder(BigDecimal amount, Boolean rollback) {
+        Account account = getAccount();
+        BigDecimal newBalance = new BigDecimal(BigInteger.ZERO);
+        if (!rollback) {
+            newBalance = account.getBalance().subtract(amount);
+            if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+                throw new AppException(AppErrorCode.BALANCE_NOT_ENOUGH);
+            }
+        } else {
+            newBalance = account.getBalance().add(amount);
+        }
+        account.setBalance(newBalance);
+        accountRepository.save(account);
+    }
+
 }
 

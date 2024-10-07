@@ -1,10 +1,11 @@
 package kma.cnpm.beapp.domain.order.dto.response;
 
-import kma.cnpm.beapp.domain.common.dto.ProductResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -13,7 +14,14 @@ import lombok.NoArgsConstructor;
 public class OrderItemResponse {
 
     private Long id;
+
     private Integer quantity;
-    private ProductResponse productResponse;
+
+    private Integer productId;
+
+    private String productName;
+
+    private BigDecimal productPrice;
+
 
 }

@@ -1,19 +1,27 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {MediaService} from "../../service/media.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-photos',
   templateUrl: './photos.component.html',
   styleUrls: ['./photos.component.scss']
 })
-export class PhotosComponent {
-  photos = [
-    { url: 'https://www.mountaingoatsoftware.com/uploads/blog/2016-09-06-what-is-a-product.png', title: 'Hình ảnh 1' },
-    { url: 'https://www.mountaingoatsoftware.com/uploads/blog/2016-09-06-what-is-a-product.png', title: 'Hình ảnh 2' },
-    { url: 'https://www.mountaingoatsoftware.com/uploads/blog/2016-09-06-what-is-a-product.png', title: 'Hình ảnh 3' },
-    { url: 'https://www.mountaingoatsoftware.com/uploads/blog/2016-09-06-what-is-a-product.png', title: 'Hình ảnh 4' },
-    { url: 'https://www.mountaingoatsoftware.com/uploads/blog/2016-09-06-what-is-a-product.png', title: 'Hình ảnh 5' },
-    { url: 'https://www.mountaingoatsoftware.com/uploads/blog/2016-09-06-what-is-a-product.png', title: 'Hình ảnh 6' },
-    { url: 'https://www.mountaingoatsoftware.com/uploads/blog/2016-09-06-what-is-a-product.png', title: 'Hình ảnh 7' },
-    { url: 'https://www.mountaingoatsoftware.com/uploads/blog/2016-09-06-what-is-a-product.png', title: 'Hình ảnh 8' }
-  ];
+export class PhotosComponent implements OnInit{
+  photos: any[] = [];
+  private id: any;
+  constructor(private mediaService: MediaService,
+              private route: ActivatedRoute,
+              private router: Router) {
+  }
+
+  ngOnInit(): void {
+    this.id = this.route.parent?.snapshot.paramMap.get('id');
+    this.mediaService.getMediaBySeller(this.id).subscribe(res => {
+      this.photos = res.data
+    })
+  }
+  navigateDetailPost(id: any){
+    this.router.navigate([`post/${id}`],id)
+  }
 }

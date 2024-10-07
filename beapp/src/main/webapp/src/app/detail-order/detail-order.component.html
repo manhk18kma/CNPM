@@ -1,0 +1,55 @@
+<p-toast></p-toast>
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+<div class="container" *ngIf="post.userId != tokenService.getIDUserFromToken()">
+  <!-- product -->
+  <div class="product-content product-wrap clearfix product-deatil">
+    <div class="row">
+      <div class="col-md-4 col-sm-12 col-xs-12">
+        <div class="slider-container">
+          <div class="slider">
+            <button (click)="prevImage(product?.medias)">&#10094;</button>
+            <img src="{{product?.medias[currentIndex].url}}" class="slide-image">
+            <button (click)="nextImage(product?.medias)">&#10095;</button>
+          </div>
+
+          <!-- Hiển thị các ảnh thu nhỏ (nếu muốn) -->
+          <div class="thumbnail-container">
+            <img *ngFor="let image of product?.medias; let i = index"
+                 src="{{image.url}}"
+                 [class.active]="i === currentIndex"
+                 (click)="goToImage(i)"
+                 class="thumbnail-image">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-md-offset-1 col-sm-12 col-xs-12 decor-text-1" style="margin-left: 70px">
+        <h2 class="name decor-text" style="font-size: 20px; font-weight: bold;margin-bottom: 5px">
+          {{product?.name}}
+        </h2>
+        <p>
+          Mô tả: {{product?.description}}
+        </p>
+        <p>
+          Số lượng đặt: {{orderItem?.quantity}}
+        </p>
+        <p>
+          Loại sản phẩm: {{product?.categoryName}}
+        </p>
+        <hr />
+        <h3 class="price-container">
+          Số tiền cần thanh toán: {{userService.formatMoneyVND(product?.price * this.orderItem?.quantity)}}
+        </h3>
+        <hr />
+        <div class="d-flex justify-content-between decor-text">
+            <a class="btn btn-success rounded-0" style="width: 100%;margin-right: 10px" (click)="acceptOrder(id)" *ngIf="this.shipment?.shipperId == null">Xác nhận đơn hàng</a>
+            <a class="btn btn-warning rounded-0" style="width: 100%" (click)="cancelOrder(id)" *ngIf="this.shipment?.shipperId == null && this.data.status == 'READY_FOR_DELIVERY'">Hủy đơn hàng</a>
+            <a class="btn btn-success rounded-0" style="width: 100%" (click)="completeOrder(id)" *ngIf="this.data.status == 'IN_TRANSIT'">Xác nhận đã giao</a>
+            <p style="width: 100%;color: red;text-align: center" *ngIf="this.data.status == 'CANCELED'">Đơn hàng đã bị hủy</p>
+            <p style="width: 100%;color: #0fc45a;text-align: center" *ngIf="this.data.status == 'DELIVERED'">Đơn hàng đã hoàn thành</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

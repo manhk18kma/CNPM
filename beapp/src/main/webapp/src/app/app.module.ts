@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {NgIf} from "@angular/common";
+import {NgIf, NgOptimizedImage} from "@angular/common";
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {BrowserAnimationsModule, provideAnimations} from "@angular/platform-browser/animations";
 import {provideToastr, ToastrModule} from "ngx-toastr";
@@ -31,6 +31,27 @@ import { DeliveryComponent } from './order/delivery/delivery.component';
 import { CompleteComponent } from './order/complete/complete.component';
 import { CancelComponent } from './order/cancel/cancel.component';
 import {NgxSpinnerModule} from "ngx-spinner";
+import { BankComponent } from './bank/bank.component';
+import { AddressComponent } from './address/address.component';
+import { RechargeComponent } from './recharge/recharge.component';
+import { WithdrawComponent } from './withdraw/withdraw.component';
+import { AddComponent } from './add/add.component';
+import {MessageService} from "primeng/api";
+import {ToastModule} from "primeng/toast";
+import {MessageModule} from "primeng/message";
+import {MessagesModule} from "primeng/messages";
+import { LikedComponent } from './profile/liked/liked.component';
+import { ResponseTransactionComponent } from './response-transaction/response-transaction.component';
+import { DetailPostComponent } from './detail-post/detail-post.component';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+import { PendingComponent } from './profile/pending/pending.component';
+import { DeliveringComponent } from './profile/delivering/delivering.component';
+import { SuccessComponent } from './profile/success/success.component';
+import { CancelDeliveryComponent } from './profile/cancel-delivery/cancel-delivery.component';
+import { WaitingComponent } from './order/waiting/waiting.component';
+import { DetailOrderComponent } from './detail-order/detail-order.component';
+import { ApproveWithdrawComponent } from './profile/approve-withdraw/approve-withdraw.component';
+import { ApprovePostComponent } from './profile/approve-post/approve-post.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +72,23 @@ import {NgxSpinnerModule} from "ngx-spinner";
     DetailmessageComponent,
     DeliveryComponent,
     CompleteComponent,
-    CancelComponent
+    CancelComponent,
+    BankComponent,
+    AddressComponent,
+    RechargeComponent,
+    WithdrawComponent,
+    AddComponent,
+    LikedComponent,
+    ResponseTransactionComponent,
+    DetailPostComponent,
+    PendingComponent,
+    DeliveringComponent,
+    SuccessComponent,
+    CancelDeliveryComponent,
+    WaitingComponent,
+    DetailOrderComponent,
+    ApproveWithdrawComponent,
+    ApprovePostComponent
   ],
   imports: [
     BrowserModule,
@@ -64,9 +101,15 @@ import {NgxSpinnerModule} from "ngx-spinner";
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     NgbModule,
-    NgxSpinnerModule.forRoot({ type: 'ball-clip-rotate' })
+    NgxSpinnerModule.forRoot({type: 'ball-clip-rotate'}),
+    ToastModule,
+    MessageModule,
+    MessagesModule,
+    RecaptchaModule,
+    RecaptchaFormsModule,
+    NgOptimizedImage
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard, provideAnimations(), // required animations providers
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard, provideAnimations(),MessageService, // required animations providers
     provideToastr(),
   ],
   bootstrap: [AppComponent]

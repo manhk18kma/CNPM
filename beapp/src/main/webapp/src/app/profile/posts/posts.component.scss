@@ -466,15 +466,6 @@ select.form-control:not([size]):not([multiple]) {
   border-radius: 6px
 }
 
-.timeline1 .timeline-body:before {
-  content: '';
-  display: block;
-  position: absolute;
-  border: 10px solid transparent;
-  border-right-color: #fff;
-  left: -20px;
-  top: 20px
-}
 
 .timeline1 .timeline-body>div+div {
   margin-top: 15px
@@ -548,15 +539,7 @@ select.form-control:not([size]):not([multiple]) {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
-.timeline .timeline-body:before {
-  content: '';
-  display: block;
-  position: absolute;
-  border: 10px solid transparent;
-  border-right-color: #fff;
-  left: -20px;
-  top: 20px
-}
+
 
 .timeline .timeline-body>div+div {
   margin-top: 15px
@@ -719,34 +702,10 @@ select.form-control:not([size]):not([multiple]) {
   object-fit: cover; /* Giữ ảnh không bị méo, che đầy phần tử */
   border-radius: 8px; /* Bo tròn góc ảnh */
 }
-.auto-resize-textarea {
-  width: 100%; /* Full width */
-  min-height: 50px; /* Chiều cao tối thiểu */
-  resize: none; /* Ngăn chặn người dùng thay đổi kích thước thủ công */
-  display: flex;
-  padding: 0px !important;
-  margin: 0px !important;
-  text-align: left;
-  font-size: 13px; /* Kích thước chữ */
-  border: none;
-  outline: none;
-}
+
 button:disabled {
   background-color: #cccccc; /* Màu nút khi bị vô hiệu hóa */
   cursor: no-drop; /* Đổi con trỏ khi hover vào nút bị vô hiệu hóa */
-}
-.profile-cover__info .nav {
-  margin-right: 28px;
-  padding: 15px 0 10px 170px;
-  color: #999;
-  font-size: 12px;
-  line-height: 26px;
-  font-weight: 300;
-  text-align: center;
-  text-transform: uppercase;
-  -ms-flex-pack: end;
-  -webkit-box-pack: end;
-  justify-content: flex-end;
 }
 
 .profile-cover__info .nav li {

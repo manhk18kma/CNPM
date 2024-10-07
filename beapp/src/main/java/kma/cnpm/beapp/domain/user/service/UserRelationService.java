@@ -1,8 +1,13 @@
 package kma.cnpm.beapp.domain.user.service;
 
+import kma.cnpm.beapp.domain.common.dto.UserDTO;
 import kma.cnpm.beapp.domain.common.enumType.FollowType;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.CreateFollow;
+import kma.cnpm.beapp.domain.common.notificationDto.RemoveFollow;
+import kma.cnpm.beapp.domain.common.notificationDto.ShipperDTO;
+import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.user.dto.response.FollowResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.CreateFollowRequest;
@@ -30,6 +35,7 @@ public class UserRelationService {
     private final UserViewRepository userViewRepository;
     private final AuthService authService;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
 
     @Transactional
@@ -43,6 +49,16 @@ public class UserRelationService {
 
         Follow follow = buildFollow(user, targetUser);
         followRepository.save(follow);
+
+        notificationService.createNotificationFollow(
+                CreateFollow.builder()
+                        .followerId(user.getId())
+                        .followedId(targetUser.getId())
+                        .followerFullName(user.getFullName())
+                        .followerAvt(user.getAvt())
+                        .build()
+        );
+
         return UserResponse.builder()
                 .userId(userId)
                 .userTargetId(targetUser.getId())
@@ -55,6 +71,10 @@ public class UserRelationService {
         Follow follow = findFollowById(idFollow);
         validateOwnership(follow, userId);
         followRepository.delete(follow);
+        notificationService.removeFollow(RemoveFollow.builder()
+                        .followedId(follow.getFollowed().getId())
+                        .followerId(userId)
+                .build());
         return UserResponse.builder()
                 .userId(userId)
                 .userTargetId(follow.getFollowed().getId())
@@ -77,6 +97,12 @@ public class UserRelationService {
             existingUserView.setViewCount(existingUserView.getViewCount() + 1);
             userViewRepository.save(existingUserView);
         }
+        notificationService.createNotificationUserView(kma.cnpm.beapp.domain.common.notificationDto.UserView.builder()
+                        .userViewedId(userTarget.getId())
+                        .userViewId(userViewer.getId())
+                        .userViewAvt(userViewer.getAvt())
+                        .totalOtherViews(userViewRepository.countOtherView(userTarget.getId() , userViewer.getId()))
+                        .userViewFullName(userViewer.getFullName()).build());
     }
 
     public List<FollowResponse> getFollows(Long userId, String type) {
@@ -147,6 +173,37 @@ public class UserRelationService {
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
     }
 
+    public String getTokenDeviceByUserId(Long userId){
+        return userRepository.getTokenDeviceByUserId(userId);
+    }
+
+    public List<ShipperDTO> getTokenDeviceShipper() {
+        return userRepository.getTokenDeviceShipper("SHIPPER").stream()
+                .map(user -> {
+                    return ShipperDTO.builder()
+                            .tokenDevice(user.getTokenDevice())
+                            .id(user.getId())
+                            .build();
+                }).collect(Collectors.toList());
+    }
+    public UserDTO getUserInfo(Long id){
+        User user = userRepository.findUserById((id))
+                .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
+        return UserDTO.builder()
+                .userId(user.getId())
+                .fullName(user.getFullName())
+                .build();
+    }
 
 
+    public List<UserDTO> getFollowersOfUser(Long userId) {
+        List<User> followers = followRepository.getUserFollowersOfUser(userId);
+        return followers.stream()
+                .map(user->{
+                    return UserDTO.builder()
+                            .userId(user.getId())
+                            .tokenDevice(user.getTokenDevice())
+                            .build();
+                }).collect(Collectors.toList());
+    }
 }

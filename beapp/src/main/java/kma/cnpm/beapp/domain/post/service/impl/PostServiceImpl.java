@@ -2,6 +2,10 @@ package kma.cnpm.beapp.domain.post.service.impl;
 
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.PostApproved;
+import kma.cnpm.beapp.domain.common.notificationDto.PostCreated;
+import kma.cnpm.beapp.domain.common.notificationDto.PostRemoved;
+import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.post.dto.request.PostRequest;
 import kma.cnpm.beapp.domain.post.dto.response.PostResponse;
 import kma.cnpm.beapp.domain.post.entity.Post;
@@ -39,6 +43,7 @@ public class PostServiceImpl implements PostService {
     ProductService productService;
     AuthService authService;
     UserService userService;
+    NotificationService notificationService;
 
     @Override
     public void createPost(PostRequest postRequest) {
@@ -49,8 +54,12 @@ public class PostServiceImpl implements PostService {
         post.setIsApproved(false);
         if (postRequest.getProductRequest() != null)
             post.setProductId(productService.save(postRequest.getProductRequest()).getId());
-
         postRepository.save(post);
+        notificationService.postCreated(PostCreated.builder()
+                .postId(Long.valueOf(post.getId()))
+                .postUrlImg(null)
+                .contentSnippet(post.getContent())
+                .posterId(post.getUserId()).build());
     }
 
     @Override
@@ -79,6 +88,22 @@ public class PostServiceImpl implements PostService {
             throw new AppException(UNAUTHORIZED);
         productService.deleteById(post.getProductId());
         postRepository.deleteById(id);
+        notificationService.postRemoved(PostRemoved.builder()
+                .postId(Long.valueOf(post.getId())).build());
+    }
+
+    @Override
+    public void approvePost(Integer id) {
+        // role admin
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
+        post.setIsApproved(true);
+        postRepository.save(post);
+        notificationService.postApproved(PostApproved.builder()
+                .postId(Long.valueOf(post.getId()))
+                .postUrlImg(null)
+                .contentSnippet(post.getContent())
+                .posterId(post.getUserId()).build());
     }
 
     @Override
@@ -86,6 +111,8 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
         PostResponse postResponse = postMapper.map(post);
+        postResponse.setUserName(userService.findUserById(String.valueOf(post.getUserId())).getFullName());
+        postResponse.setLiked(likeService.liked(post.getId()));
         postResponse.setCommentTotal(commentService.countComments(post.getId()));
         postResponse.setLikeTotal(likeService.countLikes(post.getId()));
         if (post.getProductId() != null)
@@ -97,6 +124,8 @@ public class PostServiceImpl implements PostService {
     public PostResponse getPostByProductId(Integer productId) {
         Post post = postRepository.findByProductId(productId);
         PostResponse postResponse = postMapper.map(post);
+        postResponse.setUserName(userService.findUserById(String.valueOf(post.getUserId())).getFullName());
+        postResponse.setLiked(likeService.liked(post.getId()));
         postResponse.setCommentTotal(commentService.countComments(post.getId()));
         postResponse.setLikeTotal(likeService.countLikes(post.getId()));
         if (post.getProductId() != null)
@@ -110,6 +139,8 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setUserName(userService.findUserById(String.valueOf(postResponse.getUserId())).getFullName());
+                    postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
@@ -122,10 +153,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResponse> getPostsByUserId(Long userId) {
-        List<Post> posts = postRepository.findByUserId(userId);
+        List<Post> posts = postRepository.findByUserIdOrderByCreatedAtDesc(userId);
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setUserName(userService.findUserById(String.valueOf(postResponse.getUserId())).getFullName());
+                    postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
@@ -138,10 +171,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResponse> getPostsByStatus(String status) {
-        List<Post> posts = postRepository.findByStatus(status);
+        List<Post> posts = postRepository.findByStatusOrderByCreatedAtDesc(status);
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setUserName(userService.findUserById(String.valueOf(postResponse.getUserId())).getFullName());
+                    postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {
@@ -159,10 +194,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResponse> getPostsByApproved(Boolean isApproved) {
-        List<Post> posts = postRepository.findByIsApprovedOrderByUpdatedAt(isApproved);
+        List<Post> posts = postRepository.findByIsApprovedOrderByCreatedAtDesc(isApproved);
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setUserName(userService.findUserById(String.valueOf(postResponse.getUserId())).getFullName());
+                    postResponse.setLiked(likeService.liked(postResponse.getId()));
                     postResponse.setLikeTotal(likeService.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
                     if (postResponse.getProductResponse().getId() != null) {

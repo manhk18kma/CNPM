@@ -63,6 +63,18 @@ public class AddressService {
 
     }
 
+    // getAddressesByUser
+
+    public String getAddressById(Long id) {
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new AppException(AppErrorCode.ADDRESS_NOT_EXISTED));
+        Province province = address.getProvince();
+        District district = address.getDistrict();
+        Ward ward = address.getWard();
+        String addressDetail = address.getAddressDetail();
+        return addressDetail + ", " + ward.getName() + ", " + district.getName() + ", " + province.getName();
+    }
+
     public PageResponse<List<PDWResponse>> getAllProvinces(){
         List<PDWResponse> provinces = provinceRepository.getAllProvinces();
         return PageResponse.<List<PDWResponse>>builder()

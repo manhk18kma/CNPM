@@ -8,15 +8,17 @@ import java.util.List;
 
 public interface OrderService {
 
+    String createOrderByCart(OrderRequest orderRequest);
     String createOrder(OrderRequest orderRequest);
-    String updateOrder(Long id, OrderRequest orderRequest);
-    void deleteOrder(Long id);
+    String acceptShipment(String id);
+    String completeOrder(String id);
+    String deleteOrder(String id);
+    String deleteOrderByShipper(String id);
 
-    OrderResponse getOrderById(Long id);
+    OrderResponse getOrderById(String id);
     List<OrderResponse> getAllOrders();
     List<OrderResponse> getOrderByBuyerId();
     List<OrderResponse> getOrderByStatus(OrderStatus orderStatus);
-
-
+    List<OrderResponse> getOrderByBuyerIdAndStatus(OrderStatus orderStatus);
 
 }

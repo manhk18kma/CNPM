@@ -22,9 +22,10 @@ export class AuthService {
     return this.http.post<User>(`${this.baseURL}/login`, user);
   }
   errorToLogout() {
-    this.cookieService.delete('accessToken');
-    this.router.navigate(['/login'])
+    this.cookieService.delete('accessToken', '/');
     sessionStorage.removeItem('userProfile');
+    this.router.navigate(['/login'])
+
   }
   logOut(user: User) {
     return this.http.post<User>(`${this.baseURL}/logout`, user);

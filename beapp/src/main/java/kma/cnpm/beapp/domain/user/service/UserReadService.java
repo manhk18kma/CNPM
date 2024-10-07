@@ -69,7 +69,6 @@ public class UserReadService {
 
     private void handleUserViewProfile(User userTarget) {
         String authName = authService.authNameCanBeNull();
-
         Long userViewId = null;
         try {
             if (authName != null) {
@@ -95,7 +94,15 @@ public class UserReadService {
     public UserDetailResponse getProfileById(Long id) {
 
         User user = getUserById(id);
-        handleUserViewProfile(user);
+        String authName = authService.authNameCanBeNull();
+        Boolean isFollower = null;
+        Boolean isFollowing = null;
+        if(authName!=null){
+            isFollowing = followRepository.isFollowingOfUser(Long.valueOf(authName) , id);
+            isFollower = followRepository.isFollowerOfUser(Long.valueOf(authName) , id);
+            handleUserViewProfile(user);
+        }
+
 
         UserDetailResponse response = UserDetailResponse.builder()
                 .fullName(user.getFullName())
@@ -104,6 +111,8 @@ public class UserReadService {
                 .phone(user.getPhone())
                 .avatar(user.getAvt())
                 .userId(user.getId())
+                .isFollower(isFollower)
+                .isFollowing(isFollowing)
                 .build();
 
 

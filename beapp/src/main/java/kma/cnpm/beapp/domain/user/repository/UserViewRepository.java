@@ -18,5 +18,8 @@ public interface UserViewRepository extends JpaRepository<UserView , Long> {
     @Query("SELECT uv FROM UserView uv WHERE uv.viewed.id = :userTarget ORDER BY uv.updatedAt DESC")
     List<UserView> findUserViewByUserTargetId(@Param("userTarget") Long userTarget);
 
+    @Query("SELECT COUNT(uv) FROM UserView uv WHERE uv.viewed.id = :id AND uv.viewer.id != :id1")
+    int countOtherView(@Param("id") Long id, @Param("id1") Long id1);
+
 
 }

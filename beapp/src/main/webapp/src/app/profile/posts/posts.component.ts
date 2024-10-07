@@ -4,10 +4,13 @@ import {CategoryService} from "../../service/category.service";
 import {PostService} from "../../service/post.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from "ngx-spinner";
-import {ToastrService} from "ngx-toastr";
 import {DomSanitizer} from "@angular/platform-browser";
 import {CommentsService} from "../../service/comments.service";
 import {catchError, of, tap} from "rxjs";
+import {LikeService} from "../../service/like.service";
+import {MessageService} from "primeng/api";
+import {UserService} from "../../service/user.service";
+import {TokenService} from "../../service/token/token.service";
 
 @Component({
   selector: 'app-posts',
@@ -28,31 +31,41 @@ export class PostsComponent implements OnInit {
   imagePreviewUrls: any = [];
   selectedPost: any = null;
   newComment: any = {}
-  comments : any;
+  comments: any;
+  currentRole: any;
+  currentIDUser:any;
+  idUser:any
   constructor(public authService: AuthService,
               private categoryService: CategoryService,
               private postService: PostService,
               private route: ActivatedRoute,
               private spinner: NgxSpinnerService,
-              private toast: ToastrService,
               private router: Router,
               private sanitizer: DomSanitizer,
-              private cmtService: CommentsService
-              ) {
+              private cmtService: CommentsService,
+              private likeService: LikeService,
+              private messageService: MessageService,
+              public userService: UserService,
+              public tokenService: TokenService
+  ) {
   }
 
   ngOnInit(): void {
     this.post.product = null;
+    this.currentIDUser = this.tokenService.getIDUserFromToken();
+    this.currentRole = this.tokenService.getRoleUserFromToken();
     this.id = this.route.parent?.snapshot.paramMap.get('id');
     // @ts-ignore
     this.userDetail = JSON.parse(sessionStorage.getItem('userProfile'));
     this.getPostsByUserID(this.id)
   }
+
   openCommentModal(post: any) {
     this.newComment.content = ''
     this.selectedPost = post;
     this.getCommentsByPost(post.id);
   }
+
   get lockScroll() {
     return {
       'overflow-y': this.selectedPost ? 'hidden' : 'auto',
@@ -60,44 +73,48 @@ export class PostsComponent implements OnInit {
       'width': '100%'
     };
   }
-  getCommentsByPost(id: any){
+
+  getCommentsByPost(id: any) {
     this.cmtService.getCommentsByPostID(id).pipe(
       tap(res => {
         this.comments = res.data;
       }),
       catchError(error => {
-        this.toast.error(error.message);
         return of([]);
       })
     ).subscribe();
   }
+
   addComment(post: any) {
     if (this.newComment.content.trim() == '') {
       this.selectedPost = null
-      this.toast.warning('Chưa nhập nội dung bình luận')
+      this.messageService.add({severity: 'warn', summary: 'Thao tác', detail: 'Chưa nhập nội dung bình luận'});
     } else {
       this.newComment.postId = post.id;
       this.spinner.show()
-      setTimeout(()=>{
+      setTimeout(() => {
         this.cmtService.sendComment(this.newComment).pipe(
           tap(res => {
             this.spinner.hide()
             this.selectedPost = null
-            this.toast.success(res.message);
+            this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
+            post.commentTotal += 1;
           }),
           catchError(error => {
-            this.toast.error(error.message);
+            this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.message});
             return of(null);
           })
         ).subscribe();
-      },1000)
+      }, 1000)
     }
 
 
   }
+
   closeModal() {
     this.selectedPost = null;
   }
+
   addProd() {
     this.categories = {};
     this.addProduct = true;
@@ -126,11 +143,9 @@ export class PostsComponent implements OnInit {
     if (files.length > 0) {
       this.images = []; // Clear previous file selection
       // this.imagePreviewUrls = []; // Clear previous previews
-
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         this.imageFiles.push(file); // Add to the array of selected files
-
         // Generate a URL to display the image preview
         const objectURL = URL.createObjectURL(file);
         this.imagePreviewUrls.push(this.sanitizer.bypassSecurityTrustUrl(objectURL) as string);
@@ -154,33 +169,34 @@ export class PostsComponent implements OnInit {
     this.product.categoryId = event.target.value;
   }
 
-  upPost() {
+  async upPost() {
     if (this.addProduct == true) {
       if (this.imageFiles.length > 0) {
         this.product.imageBase64 = [];
         this.images = [];
-        const promises = this.imageFiles.map(file => this.convertToBase64(file));
-        Promise.all(promises).then((base64Array) => {
-          this.images = base64Array;
-          this.product.imageBase64 = this.images;
-        });
+        for (let file of this.imageFiles) {
+          try {
+            const base64String = await this.convertToBase64(file);
+            this.images.push(base64String);
+          } catch (error) {
+            this.messageService.add({severity: 'error', summary: 'Error', detail: 'Failed to convert image to Base64'});
+            return; // Stop the process if any image conversion fails
+          }
+        }
+        this.product.imageBase64 = this.images;
       }
       this.post.product = this.product;
     }
-    this.spinner.show();
-    setTimeout(() => {
-      this.postService.post(this.post).subscribe(res => {
-        this.toast.success(res.message, '', {timeOut: 1000})
+    this.spinner.show()
+    this.postService.post(this.post).subscribe(res => {
+      setTimeout(() => {
+        this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
         this.spinner.hide()
-      }, error => {
-        this.toast.error(error.message);
-        this.spinner.hide()
-      })
-      this.router.navigate(['/']).then(() => {
-        this.router.navigate([`/profile/${this.id}/posts`])
-      })
-    }, 1000)
-
+        this.openPost = false;
+      }, 500)
+    }, error => {
+      this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.message});
+    })
   }
 
   getPostsByUserID(id: any) {
@@ -189,5 +205,26 @@ export class PostsComponent implements OnInit {
     })
   }
 
-
+  toggleLike(id: any, post: any) {
+    if (!post.liked) {
+      this.likeService.like(id).subscribe(res => {
+        this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
+        post.liked = true;
+        post.likeTotal += 1
+      }, error => {
+        this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.message});
+      })
+    } else {
+      this.likeService.undoLike(id).subscribe(res => {
+        this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
+        post.liked = false;
+        post.likeTotal -= 1
+      }, error => {
+        this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.message});
+      })
+    }
+  }
+  navigatePayment(id: any){
+    this.router.navigate([`payment/${id}`],id);
+  }
 }

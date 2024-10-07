@@ -63,6 +63,14 @@ public class ProductController {
         );
     }
 
+    @GetMapping("/{id}")
+    public ResponseData<ProductResponse> getProductById(@PathVariable Integer id) {
+        return new ResponseData<>(HttpStatus.OK.value(),
+                "Sản phẩm hiển thị theo ID thành công",
+                LocalDateTime.now(),
+                productService.getProductById(id));
+    }
+
     @GetMapping("/name/{name}")
     public ResponseData<List<ProductResponse>> getProductsByName(@PathVariable String name) {
         return new ResponseData<>(HttpStatus.OK.value(),

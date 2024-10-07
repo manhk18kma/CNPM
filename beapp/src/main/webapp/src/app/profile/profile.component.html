@@ -1,4 +1,5 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
 <div class="container" style="background: white">
   <div class="row">
     <div class="col-md-12">
@@ -6,36 +7,43 @@
         <!-- begin profile -->
         <div class="profile">
           <div class="profile-header">
+            <div class="row profile-header-content d-flex align-content-center align-items-center">
+              <div class="col-md-12 col-sm-12 mb-3">
+                <div class="profile-header-img" style="margin-right: 20px">
+                  <img
+                    src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
+                    alt="">
+                </div>
+                <div class="profile-header-info decor-text-1 m-lg-4 " style="margin-left: 20px">
+                  <h4 class="m-t-0 m-b-1">{{userDetail?.fullName}}</h4>
+                  <p class=" text-secondary" *ngIf="currentRole == 'ROLE_USER'">Người dùng</p>
+                  <p class=" text-secondary" *ngIf="currentRole == 'ROLE_SHIPPER'">Người giao hàng</p>
+                  <p class=" text-secondary" *ngIf="currentRole == 'ROLE_ADMIN'">Quản trị viên</p>
+                <div class="d-flex position-relative">
+                  <button style="cursor: pointer" *ngIf="currentIDUser != idUser" class="btn btn-info rounded-0">Theo dõi</button>
+                  <button style="cursor: pointer" *ngIf="currentIDUser != idUser" class="btn btn-success rounded-0">Đang theo dõi</button>
+                  <button class="Btn decor-text-1 position-absolute" style="right: 20px;top:0;cursor: pointer" (click)="authService.errorToLogout()">
 
-            <div class="profile-header-content d-flex align-content-center align-items-center" style="background: white">
-              <div class="profile-header-img">
-                <img
-                  src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
-                  alt="">
+                    <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
+
+                    <div class="text">Đăng xuất</div>
+                  </button>
+                </div>
+                </div>
               </div>
-
-              <div class="profile-header-info decor-text-1 m-lg-4" style="margin-left: 20px">
-                <h4 class="m-t-0 m-b-1">{{userDetail?.fullName}}</h4>
-                <p class=" text-secondary">Người dùng</p>
-                <button class="Btn decor-text-1" (click)="authService.errorToLogout()">
-
-                  <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
-
-                  <div class="text">Đăng xuất</div>
-                </button>
-              </div>
-              <div class="profile-cover__info decor-text-0">
-                <ul class="nav">
-                  <li><strong>{{userDetail?.totalPosts}}</strong>Tổng bài viết</li>
-                  <li><strong>{{userDetail?.totalSoldProducts}}</strong>Tổng sản phẩm đã bán</li>
-                  <li><strong>{{userDetail?.totalFollowers}}</strong>Người theo dõi</li>
-                  <li><strong>{{userDetail?.totalFollowers}}</strong>Đang theo dõi</li>
-                </ul>
+              <div class="col-md-12 col-sm-12" *ngIf="currentRole !== 'ROLE_SHIPPER' && currentRole !== 'ROLE_ADMIN'" style="width:100%">
+                <div class="profile-cover__info decor-text-0">
+                  <ul class="row nav d-flex justify-content-center align-items-center">
+                    <li class="col-md-3 col-sm-3"><strong>{{userDetail?.totalPosts}}</strong>Tổng bài viết</li>
+                    <li class="col-md-3 col-sm-3"><strong>{{userDetail?.totalSoldProducts}}</strong>Tổng sản phẩm đã bán</li>
+                    <li class="col-md-3 col-sm-3"><strong>{{userDetail?.totalFollowers}}</strong>Người theo dõi</li>
+                    <li class="col-md-3 col-sm-3"><strong>{{userDetail?.totalFollowers}}</strong>Đang theo dõi</li>
+                  </ul>
+                </div>
               </div>
             </div>
-            <ul class="profile-header-tab nav nav-tabs  decor-text" style="cursor: pointer">
-              <ngx-spinner type="ball-scale-multiple"></ngx-spinner>
-              <li class="nav-item">
+            <ul class="profile-header-tab nav nav-tabs decor-text" *ngIf="currentRole != 'ROLE_SHIPPER' && this.currentRole != 'ROLE_ADMIN'" style="cursor: pointer">
+              <li *ngIf="this.currentIDUser == this.idUser" class="nav-item">
                 <a routerLink="infor" routerLinkActive="active" class="nav-link_">
                   Thông tin cá nhân
                 </a></li>
@@ -48,9 +56,44 @@
                 <a routerLink="photos" routerLinkActive="active" class="nav-link_">
                   Hình Ảnh/Video
                 </a></li>
-              <li class="nav-item">
+              <li *ngIf="this.currentIDUser == this.idUser" class="nav-item">
+                <a routerLink="liked" routerLinkActive="active" class="nav-link_">
+                  Yêu thích
+                </a></li>
+              <li *ngIf="this.currentIDUser == this.idUser" class="nav-item">
                 <a routerLink="activity" routerLinkActive="active" class="nav-link_">
                   Hoạt động
+                </a></li>
+            </ul>
+<!--            SHIPPER-->
+            <ul class="profile-header-tab nav nav-tabs decor-text" *ngIf="currentRole == 'ROLE_SHIPPER'" style="cursor: pointer">
+              <li class="nav-item">
+                <a routerLink="pending" routerLinkActive="active" class="nav-link_">
+                  Đơn chưa nhận
+                </a></li>
+              <li class="nav-item">
+                <a routerLink="delivering" routerLinkActive="active" class="nav-link_">
+                  Đơn đang giao
+                </a></li>
+              <li class="nav-item">
+                <a routerLink="success" routerLinkActive="active" class="nav-link_">
+                  Đơn đã giao
+                </a></li>
+              <li class="nav-item">
+                <a routerLink="cancel" routerLinkActive="active" class="nav-link_">
+                  Đơn đã hủy
+                </a></li>
+            </ul>
+
+            <!--            ADMIN-->
+            <ul class="profile-header-tab nav nav-tabs decor-text" *ngIf="currentRole == 'ROLE_ADMIN'" style="cursor: pointer">
+              <li class="nav-item">
+                <a routerLink="list-withdraws" routerLinkActive="active" class="nav-link_">
+                  Yêu cầu rút tiền
+                </a></li>
+              <li class="nav-item">
+                <a routerLink="list-posts" routerLinkActive="active" class="nav-link_">
+                  Yêu cầu đăng bài
                 </a></li>
             </ul>
           </div>

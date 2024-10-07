@@ -13,8 +13,12 @@ import kma.cnpm.beapp.domain.user.dto.response.TokenResponse;
 import kma.cnpm.beapp.domain.user.dto.response.UserResponse;
 import kma.cnpm.beapp.domain.user.dto.resquest.*;
 import kma.cnpm.beapp.domain.user.entity.ActiveResetToken;
+import kma.cnpm.beapp.domain.user.entity.Role;
 import kma.cnpm.beapp.domain.user.entity.User;
+import kma.cnpm.beapp.domain.user.entity.UserHasRole;
 import kma.cnpm.beapp.domain.user.repository.ActiveResetTokenRepository;
+import kma.cnpm.beapp.domain.user.repository.RoleRepository;
+import kma.cnpm.beapp.domain.user.repository.UserHasRoleRepository;
 import kma.cnpm.beapp.domain.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -55,13 +59,15 @@ public class UserService {
     final PasswordEncoder passwordEncoder;
     final ImageService imageService;
     final AccountService accountService;
+    final RoleRepository roleRepository;
+    final UserHasRoleRepository userHasRoleRepository;
 
 //    Register new user
     @Transactional
     public UserResponse saveUser(CreateUserRequest request) {
-//        if (!submitCaptcha(request.getCaptchaToken())){
-//            throw  new AppException(AppErrorCode.CAPTCHA_INVALID);
-//        }
+        if (!submitCaptcha(request.getCaptchaToken())){
+            throw  new AppException(AppErrorCode.CAPTCHA_INVALID);
+        }
         String email = request.getEmail();
         if (!request.getPassword().equals(request.getConfirmPassword())){
             throw  new AppException(AppErrorCode.PASSWORDS_NOT_MATCH);
@@ -82,6 +88,7 @@ public class UserService {
 
 
         User user = new User();
+
         BeanUtils.copyProperties(request, user);
         user.setStatus(UserStatus.INACTIVE);
         user.setAvt(urlDefaultAvt);
@@ -90,10 +97,14 @@ public class UserService {
         String encodedPassword = encodePassword(user.getPassword(), salt);
         user.setSalt(salt);
         user.setPassword(encodedPassword);
-
         User savedUser = userRepository.save(user);
 
-
+        Role roleUser = roleRepository.findByRoleName("USER");
+        UserHasRole userHasRole = UserHasRole.builder()
+                .user(savedUser)
+                .role(roleUser)
+                .build();
+        userHasRoleRepository.save(userHasRole);
 
 //        Send active link
         String activeToken = authService.generateToken(savedUser, TokenType.ACTIVE_TOKEN);
@@ -275,6 +286,7 @@ private boolean isExpireTime(LocalDateTime createdAt) {
                 .orElseThrow(() -> new AppException(AppErrorCode.USER_NOT_EXISTED));
         return UserDTO.builder()
                 .userId(user.getId())
+                .fullName(user.getFullName())
                 .build();
     }
 

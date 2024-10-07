@@ -39,6 +39,15 @@
                     <label for="password" class="form-label">Mật khẩu xác nhận</label>
                   </div>
                 </div>
+                <div class="col-12 decor-text-1">
+                  <div class="form-floating mb-2">
+                    <re-captcha
+                      [(ngModel)]="user.captchaToken"
+                      siteKey="6LfSCS8qAAAAAK8-G5UNElCtksrCCvAK10Vh-SWb"
+                      (resolved)="onCaptchaResolved($event)">
+                    </re-captcha>
+                  </div>
+                </div>
                 <div class="col-12 m-0 decor-text-1 text-blue">
                   <div class="row justify-content-between">
                     <div class="col-6">

@@ -1,0 +1,113 @@
+<p-toast></p-toast>
+<section class="section about-section gray-bg" style="height: 100vh" id="about">
+  <div class="container d-flex justify-content-between ">
+    <div class="row align-items-center" style="width: 100%">
+      <div class="col-lg-6">
+        <div class="about-avatar">
+          <img width="300px" style="border-radius: 50%" src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" title="" alt="">
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="about-text go-to">
+          <h3 class="dark-color decor-text">Thông tin ngân hàng</h3>
+          <div class="row about-list">
+            <div class="col-md-12 decor-text-1">
+              <div *ngIf="user.bankResponses.length == 0" (click)="navigateAddBank()" class="media text-warning" style="font-size: 20px;cursor: pointer">
+                <i class="bi bi-link-45deg"></i>
+                Bạn chưa liên kết ngân hàng
+              </div>
+              <div class="container bootstrap snippets bootdey">
+                <div class="row">
+                  <div class="col-lg-12 decor-text-1" style="font-size: 20px;margin: 10px 0;font-weight: bold">
+                    Số dư : {{user.balance}} Đ
+                  </div>
+                  <div class="col-lg-12" *ngIf="user.bankResponses.length != 0">
+                    <div class="main-box no-header clearfix">
+                      <div class="main-box-body clearfix">
+                        <div class="table-responsive">
+                          <table class="table user-list">
+                            <thead>
+                            <tr>
+                              <th><span>Mã</span></th>
+                              <th><span>Tên</span></th>
+                              <th class="text-center"><span>Trạng thái</span></th>
+                              <th>&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let bank of user.bankResponses" (contextmenu)="onRightClick($event, bank)">
+                              <td>
+                                <span class="user-subhead">{{bank.bankCode}}</span>
+                              </td>
+                              <td>{{bank.bankName}}</td>
+                              <td class="text-center">
+                                <span class="label label-default text-success">Đã liên kết</span>
+                              </td>
+
+                              <td style="width: 20%;">
+                                <a href="#" class="table-link text-warning">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                </a>
+                                <a href="#" class="table-link text-info">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                </a>
+                                <a href="#" class="table-link danger">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                </a>
+                              </td>
+                              <!-- Custom Context Menu -->
+                              <div *ngIf="showContextMenu" [style.top.px]="contextMenuPosition.y" [style.left.px]="contextMenuPosition.x" class="custom-context-menu">
+                                <ul>
+                                  <li (click)="deleteBank(bank.accountHasBankId)">Gỡ liên kết</li>
+                                </ul>
+                              </div>
+                            </tr>
+
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="counter decor-text-1">
+      <div class="row">
+        <div class="col-6 col-lg-4 col-md-4">
+          <div class="count-data text-center" style="cursor:pointer" (click)="navigateRerchage()">
+            <i class="bi bi-arrow-up"></i>
+            <p class="m-0px font-w-600">Nạp tiền</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-4 col-md-4">
+          <div class="count-data text-center" style="cursor:pointer" (click)="navigateWithraw()">
+            <i class="bi bi-arrow-down"></i>
+            <p class="m-0px font-w-600">Rút tiền</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-4 col-md-4">
+          <div class="count-data text-center">
+            <i class="bi bi-arrow-down-up"></i>
+            <p class="m-0px font-w-600">Chuyển tiền</p>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+

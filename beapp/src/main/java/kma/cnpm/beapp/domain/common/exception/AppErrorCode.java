@@ -43,13 +43,21 @@ public enum AppErrorCode {
     WITHDRAWAL_CANCELLED_ERROR(26, "Yêu cầu rút tiền đã bị HỦY", HttpStatus.BAD_REQUEST),
 
     PRODUCT_NOT_EXISTED(3001, "Sản phẩm không tồn tại", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_IN_STOCK(3002, "Sản phẩm đã hết", HttpStatus.BAD_REQUEST),
+
     POST_NOT_EXISTED(4001, "Bài viết không tồn tại", HttpStatus.BAD_REQUEST),
+    LIKE_EXISTED(4003, "Bài viết đã được thích", HttpStatus.BAD_REQUEST),
     COMMENT_NOT_EXISTED(4002, "Bình luận không tồn tại", HttpStatus.BAD_REQUEST),
 
     ORDER_NOT_EXISTED(5001, "Đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),
     ORDER_ITEM_NOT_EXISTED(5002, "Vật phẩm của đơn hàng không tồn tại", HttpStatus.BAD_REQUEST),
     CART_ITEM_NOT_EXISTED(5003, "Vật phẩm của giỏ hàng không tồn tại", HttpStatus.BAD_REQUEST),
+    ORDER_CANNOT_BE_CANCELLED(5004, "Đơn hàng không thể bị hủy", HttpStatus.BAD_REQUEST),
+    ORDER_CANNOT_BE_ACCEPT(5005, "Đơn hàng không thể được nhận giao", HttpStatus.BAD_REQUEST),
+    ORDER_CANNOT_BE_COMPLETE(5006, "Đơn hàng không thể hoàn thành", HttpStatus.BAD_REQUEST),
 
+
+    SHIPMENT_NOT_EXISTED(5005, "Đơn giao hàng không tồn tại", HttpStatus.BAD_REQUEST),
 
     FAILD_UPLOAD_CLOUD(13, "Lỗi khi tải lên đám mây", HttpStatus.BAD_REQUEST),
     INVALID_PARAM(27, "Tham số không hợp lệ", HttpStatus.BAD_REQUEST);

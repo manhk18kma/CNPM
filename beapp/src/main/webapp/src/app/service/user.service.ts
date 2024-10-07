@@ -48,4 +48,10 @@ export class UserService {
     }
     return data;
   }
+  addAddress(addAddressRequest:any): Observable<any>{
+    return this.http.post(`${this.baseURL}/addresses`, addAddressRequest);
+  }
+  formatMoneyVND(amount: any): string {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  }
 }

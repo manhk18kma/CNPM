@@ -1,5 +1,6 @@
 package kma.cnpm.beapp.domain.user.repository;
 
+import kma.cnpm.beapp.domain.common.notificationDto.ShipperDTO;
 import kma.cnpm.beapp.domain.user.entity.Permission;
 import kma.cnpm.beapp.domain.user.entity.Role;
 import kma.cnpm.beapp.domain.user.entity.User;
@@ -39,7 +40,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<Permission> getPermissionByRoleId(@Param("id") Long id);
 
 
-
     @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findByEmailActivateOrInactive(String email);
 
@@ -59,6 +59,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE lower(u.fullName) LIKE lower(concat('%', :fullName, '%')) AND u.status = 'ACTIVE'")
     List<User> searchByFullName(@Param("fullName") String fullName);
+
+    @Query("SELECT u.tokenDevice FROM User u " +
+            "WHERE  u.id = :userId AND u.status = 'ACTIVE'")
+    String getTokenDeviceByUserId(Long userId);
+
+    @Query("SELECT u " +
+            "FROM User u " +
+            "INNER JOIN UserHasRole uhr ON u.id = uhr.user.id " +
+            "WHERE uhr.role.roleName = :roleName")
+    List<User> getTokenDeviceShipper(@Param("roleName") String roleName);
+
+
 
 
 }

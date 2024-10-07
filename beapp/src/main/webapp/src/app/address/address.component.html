@@ -1,0 +1,96 @@
+<p-toast></p-toast>
+<div *ngIf="!linkedAddress" class="location-selector " style="position: relative;padding: 100px 0">
+  <p class="decor-text" style="font-size: 20px; font-weight: bold;margin 0;margin-left: 5px">Địa chỉ chi tiết</p>
+  <hr class="faded-line">
+  <div class="input-container decor-text-1">
+    <input placeholder="Địa chỉ chi tiết" class="input-field" type="text" name="accountNumber" [(ngModel)]="addAddressRequest.addressDetail">
+    <label for="input-field" class="input-label">Địa chỉ chi tiết</label>
+    <span class="input-highlight"></span>
+  </div>
+
+  <!-- Chọn tỉnh -->
+  <label for="province">Tỉnh/Thành phố:</label>
+  <select id="province" [(ngModel)]="selectedProvinceId" (change)="onProvinceChange()">
+    <option value="" disabled selected>Chọn Tỉnh/Thành phố</option>
+    <option *ngFor="let province of provinces" [value]="province.id">
+      {{ province.name }}
+    </option>
+  </select>
+
+  <!-- Chọn huyện -->
+  <label for="district">Quận/Huyện:</label>
+  <select id="district" [(ngModel)]="selectedDistrictId" (change)="onDistrictChange()" [disabled]="!selectedProvinceId">
+    <option value="" disabled selected>Chọn Quận/Huyện</option>
+    <option *ngFor="let district of districts" [value]="district.id">
+      {{ district.name }}
+    </option>
+  </select>
+
+  <!-- Chọn xã -->
+  <label for="ward">Phường/Xã:</label>
+  <select id="ward" [(ngModel)]="selectedWardId" [disabled]="!selectedDistrictId">
+    <option value="" disabled selected>Chọn Phường/Xã</option>
+    <option *ngFor="let ward of wards" [value]="ward.id">
+      {{ ward.name }}
+    </option>
+  </select>
+  <div style="width:100%">
+    <button (click)="addAddress()" class="btn btn-success rounded-0 mt-3" style="float: right">Thêm địa chỉ</button>
+  </div>
+</div>
+
+<div *ngIf="linkedAddress" class="container w-100" style="position: relative;padding: 100px 0">
+  <div class="main-box no-header clearfix">
+    <div class="main-box-body clearfix">
+      <div class="table-responsive">
+        <table class="table user-list">
+          <thead>
+          <tr>
+            <th><span>Địa chỉ</span></th>
+            <th class="text-center"><span>Trạng thái</span></th>
+            <th>&nbsp;</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of address" (contextmenu)="onRightClick($event, item)">
+            <td>
+              <span class="user-subhead">{{item.address}}</span>
+            </td>
+            <td class="text-center">
+              <span class="label label-default text-success">Đã liên kết</span>
+            </td>
+
+            <td style="width: 20%;">
+              <a href="#" class="table-link text-warning">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                            </span>
+              </a>
+              <a href="#" class="table-link text-info">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+              </a>
+              <a href="#" class="table-link danger">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                            </span>
+              </a>
+            </td>
+            <!-- Custom Context Menu -->
+            <div *ngIf="showContextMenu" [style.top.px]="contextMenuPosition.y" [style.left.px]="contextMenuPosition.x" class="custom-context-menu">
+              <ul>
+                <li (click)="deleteAddress(item.addressId)">Gỡ liên kết</li>
+              </ul>
+            </div>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
