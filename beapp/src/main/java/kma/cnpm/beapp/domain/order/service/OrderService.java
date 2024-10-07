@@ -13,6 +13,7 @@ public interface OrderService {
     String acceptShipment(String id);
     String completeOrder(String id);
     String deleteOrder(String id);
+    String deleteOrderByShipper(String id);
 
     OrderResponse getOrderById(String id);
     List<OrderResponse> getAllOrders();

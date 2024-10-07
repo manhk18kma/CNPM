@@ -11,9 +11,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     Post findByProductId(Integer productId);
     List<Post> findByContentContaining(String title);
-    List<Post> findByUserId(Long userId);
-    List<Post> findByStatus(String status);
-    List<Post> findByIsApprovedOrderByUpdatedAt(Boolean isApproved);
+    List<Post> findByUserIdOrderByCreatedAtDesc(Long userId);
+    List<Post> findByStatusOrderByCreatedAtDesc(String status);
+    List<Post> findByIsApprovedOrderByCreatedAtDesc(Boolean isApproved);
 
     @Query("SELECT COUNT(p.id) FROM Post p WHERE p.userId = :userId")
     int countPostOfUser(@Param("userId") long userId);

@@ -433,96 +433,96 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void commentCreated(CommentCreated commentCreated) {
         // Notification for other poster
-        Notification notification = notificationRepository.findCommentCreatedNotificationByPostId(commentCreated.getPostId());
-        Map<String, String> placeholders = new HashMap<>();
-        UserDTO commenter = authService.getUserInfo(commentCreated.getCommenterId());
-        placeholders.put("commenterFullName", commenter.getFullName());
-
-        String commentSnippet = commentCreated.getCommentSnippet();
-        placeholders.put("commentSnippet", commentSnippet);
+//        Notification notification = notificationRepository.findCommentCreatedNotificationByPostId(commentCreated.getPostId());
+//        Map<String, String> placeholders = new HashMap<>();
+//        UserDTO commenter = authService.getUserInfo(commentCreated.getCommenterId());
+//        placeholders.put("commenterFullName", commenter.getFullName());
+//
+//        String commentSnippet = commentCreated.getCommentSnippet();
+//        placeholders.put("commentSnippet", commentSnippet);
 
         String template;
-        int totalOtherCommenters = commentCreated.getOtherCommentersId().size();
+//        int totalOtherCommenters = commentCreated.getOtherCommentersId().size();
+//
+//        // Check if posterId is in otherCommentersId list and adjust totalOtherCommenters count
+//        if (commentCreated.getOtherCommentersId().contains(commentCreated.getPosterId())) {
+//            totalOtherCommenters = totalOtherCommenters - 1;
+//        }
 
-        // Check if posterId is in otherCommentersId list and adjust totalOtherCommenters count
-        if (commentCreated.getOtherCommentersId().contains(commentCreated.getPosterId())) {
-            totalOtherCommenters = totalOtherCommenters - 1;
-        }
+//        if (notification == null) {
+//            // If this is the first comment notification
+//            template = "<strong>{commenterFullName}</strong> đã bình luận về bài viết của bạn: \"{commentSnippet}\".";
+//            String content = populateTemplate(template, placeholders);
+//            notification = Notification.builder()
+//                    .recipientId(commentCreated.getPosterId())
+//                    .type(NotificationType.COMMENT_CREATED)
+//                    .referenceId(commentCreated.getPostId().toString())
+//                    .content(content)
+//                    .typeRedirect(NotificationTypeRedirect.POST)
+//                    .isRead(false)
+//                    .imageUrl(commentCreated.getPostUrlImg())
+//                    .isRemoved(false)
+//                    .build();
+//
+//        } else {
+//            // If notification already exists
+//            notification.setRemoved(false);
+//            if (totalOtherCommenters == 0) {
+//                template = "<strong>{commenterFullName}</strong> đã bình luận về bài viết của bạn: \"{commentSnippet}\".";
+//            } else {
+//                placeholders.put("totalComments", String.valueOf(totalOtherCommenters));
+//                template = "<strong>{commenterFullName}</strong> và <strong>{totalOtherCommenters}</strong> người khác đã bình luận về bài viết của bạn: \"{commentSnippet}\".";
+//            }
 
-        if (notification == null) {
-            // If this is the first comment notification
-            template = "<strong>{commenterFullName}</strong> đã bình luận về bài viết của bạn: \"{commentSnippet}\".";
-            String content = populateTemplate(template, placeholders);
-            notification = Notification.builder()
-                    .recipientId(commentCreated.getPosterId())
-                    .type(NotificationType.COMMENT_CREATED)
-                    .referenceId(commentCreated.getPostId().toString())
-                    .content(content)
-                    .typeRedirect(NotificationTypeRedirect.POST)
-                    .isRead(false)
-                    .imageUrl(commentCreated.getPostUrlImg())
-                    .isRemoved(false)
-                    .build();
-
-        } else {
-            // If notification already exists
-            notification.setRemoved(false);
-            if (totalOtherCommenters == 0) {
-                template = "<strong>{commenterFullName}</strong> đã bình luận về bài viết của bạn: \"{commentSnippet}\".";
-            } else {
-                placeholders.put("totalComments", String.valueOf(totalOtherCommenters));
-                template = "<strong>{commenterFullName}</strong> và <strong>{totalOtherCommenters}</strong> người khác đã bình luận về bài viết của bạn: \"{commentSnippet}\".";
-            }
-
-            String content = populateTemplate(template, placeholders);
-            notification.setContent(content);
-            notification.setRead(false);
-        }
-        notificationRepository.save(notification);
-        String tokenDevice = authService.getTokenDeviceByUserId(notification.getRecipientId());
-        firebaseService.sendNotification(notification, tokenDevice);
+//            String content = populateTemplate(template, placeholders);
+//            notification.setContent(content);
+//            notification.setRead(false);
+//        }
+//        notificationRepository.save(notification);
+//        String tokenDevice = authService.getTokenDeviceByUserId(notification.getRecipientId());
+//        firebaseService.sendNotification(notification, tokenDevice);
 
         //////////////////////////////////////////////////
         // Notification for other commenters
-        totalOtherCommenters = commentCreated.getOtherCommentersId().size(); // Ensure this is accurate
+//        totalOtherCommenters = commentCreated.getOtherCommentersId().size(); // Ensure this is accurate
+//
+//        for (Long id : commentCreated.getOtherCommentersId()) {
+//            if (id.equals(commentCreated.getPosterId())) {
+//                continue;
+//            }
+//
+//            Notification otherCommenterNotification = notificationRepository
+//                    .findCommentCreatedForOtherCommentsByRecipientIdAndPostId(id, commentCreated.getPostId())
+//                    .orElseGet(() -> Notification.builder()
+//                            .recipientId(id)
+//                            .referenceId(commentCreated.getPostId().toString())
+//                            .type(NotificationType.OTHER_COMMENTER)
+//                            .typeRedirect(NotificationTypeRedirect.POST)
+//                            .isRead(false)
+//                            .isRemoved(false)
+//                            .imageUrl(commentCreated.getPostUrlImg())
+//                            .build());
+//
+//            String templateForOther;
+//            if (totalOtherCommenters == 1) {
+//                templateForOther = "<strong>{commenterFullName}</strong> đã bình luận về bài viết mà bạn đã bình luận: \"{commentSnippet}\".";
+//            } else {
+//                placeholders.put("totalOtherCommenters", String.valueOf(totalOtherCommenters - 1));
+//                templateForOther = "<strong>{commenterFullName}</strong> và <strong>{totalOtherCommenters}</strong> người khác đã bình luận về bài viết mà bạn đã bình luận: \"{commentSnippet}\".";
+//            }
 
-        for (Long id : commentCreated.getOtherCommentersId()) {
-            if (id.equals(commentCreated.getPosterId())) {
-                continue;
-            }
-
-            Notification otherCommenterNotification = notificationRepository
-                    .findCommentCreatedForOtherCommentsByRecipientIdAndPostId(id, commentCreated.getPostId())
-                    .orElseGet(() -> Notification.builder()
-                            .recipientId(id)
-                            .referenceId(commentCreated.getPostId().toString())
-                            .type(NotificationType.OTHER_COMMENTER)
-                            .typeRedirect(NotificationTypeRedirect.POST)
-                            .isRead(false)
-                            .isRemoved(false)
-                            .imageUrl(commentCreated.getPostUrlImg())
-                            .build());
-
-            String templateForOther;
-            if (totalOtherCommenters == 1) {
-                templateForOther = "<strong>{commenterFullName}</strong> đã bình luận về bài viết mà bạn đã bình luận: \"{commentSnippet}\".";
-            } else {
-                placeholders.put("totalOtherCommenters", String.valueOf(totalOtherCommenters - 1));
-                templateForOther = "<strong>{commenterFullName}</strong> và <strong>{totalOtherCommenters}</strong> người khác đã bình luận về bài viết mà bạn đã bình luận: \"{commentSnippet}\".";
-            }
-
-            String content = populateTemplate(templateForOther, placeholders);
-            otherCommenterNotification.setContent(content);
-            otherCommenterNotification.setRead(false);
-            notificationRepository.save(otherCommenterNotification);
-
-            String tokenDeviceOther = authService.getTokenDeviceByUserId(otherCommenterNotification.getRecipientId());
-            try {
-                firebaseService.sendNotification(otherCommenterNotification, tokenDeviceOther);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        }
+//            String content = populateTemplate(templateForOther, placeholders);
+//            otherCommenterNotification.setContent(content);
+//            otherCommenterNotification.setRead(false);
+//            notificationRepository.save(otherCommenterNotification);
+//
+//            String tokenDeviceOther = authService.getTokenDeviceByUserId(otherCommenterNotification.getRecipientId());
+//            try {
+//                firebaseService.sendNotification(otherCommenterNotification, tokenDeviceOther);
+//            } catch (JsonProcessingException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
 
 
     }
