@@ -15,7 +15,7 @@ public class FirebaseConfig {
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
         // Load Firebase Admin SDK credentials from JSON file in resources
-        ClassPathResource serviceAccountFile = new ClassPathResource("notification-d53ec-firebase-adminsdk-p6dkb-7e6f3d6148.json");
+        ClassPathResource serviceAccountFile = new ClassPathResource("notification-d53ec-firebase-adminsdk-p6dkb-38301c16a3.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccountFile.getInputStream()))

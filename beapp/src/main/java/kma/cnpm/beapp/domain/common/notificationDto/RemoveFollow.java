@@ -5,10 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class OrderCompleted {
-    String orderId;
-    Long sellerId;
-    Long buyerId;
-    String orderImg;
-
+public class RemoveFollow {
+    Long followerId;
+    Long followedId;
 }

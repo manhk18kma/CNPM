@@ -1,13 +1,18 @@
 package kma.cnpm.beapp.domain.notification.service;
 import jakarta.persistence.PostRemove;
+import kma.cnpm.beapp.domain.common.dto.PageResponse;
 import kma.cnpm.beapp.domain.common.notificationDto.*;
+import kma.cnpm.beapp.domain.notification.dto.response.CountNotificationResponse;
+import kma.cnpm.beapp.domain.notification.dto.response.NotificationResponse;
+
+import java.util.List;
 
 
 public interface NotificationService {
     //USER DOMAIN
     void createNotificationFollow(CreateFollow createFollow);
 
-    void removeFollow();
+    void removeFollow(RemoveFollow removeFollow);
 
     void createNotificationUserView(UserView userView);
 
@@ -38,4 +43,8 @@ public interface NotificationService {
     void postRemoved(PostRemoved postRemoved); //call this method after remove post
     void unLiked(UnLiked unLiked);//call this method after unlike post
     void commentRemoved(CommentRemoved commentRemoved); //call this method after remove comment
+
+    CountNotificationResponse countNotification();
+
+    PageResponse<List<NotificationResponse>> getNotifications();
 }

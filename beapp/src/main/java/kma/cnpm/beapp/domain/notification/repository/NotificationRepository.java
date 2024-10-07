@@ -1,6 +1,8 @@
 package kma.cnpm.beapp.domain.notification.repository;
 
 import kma.cnpm.beapp.domain.notification.entity.Notification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +29,17 @@ public interface NotificationRepository extends JpaRepository<Notification , Lon
     @Query("SELECT n FROM Notification n WHERE n.referenceId = :recipientId and n.type = 'USER_VIEW'")
     Notification findUserViewNotificationByReferenceId(@Param("recipientId") Long recipientId);
 
+    @Modifying
+    @Query("UPDATE Notification n SET n.isRemoved = true WHERE n.referenceId = :followerId AND n.recipientId = :followedId AND n.type = 'FOLLOW'")
+    void removeNotificationFollow(@Param("followerId") Long followerId, @Param("followedId") Long followedId);
+
+    @Query("SELECT COUNT(n) FROM Notification n WHERE n.isRemoved = false AND n.recipientId = :userId AND n.isRead = false")
+    int countNotificationNotReadOfUser(Long userId);
+
+    @Query("SELECT n FROM Notification n WHERE n.isRemoved = false AND n.recipientId = :userId")
+    Page<Notification> findAllNotificationOfUser(@Param("userId") Long userId, Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Notification n SET n.isRead = true WHERE n.recipientId = :userId AND n.isRead = false AND n.isRemoved = false ")
+    void markAllNotificationsAsReadByReceptionId(@Param("userId") Long userId);
 }

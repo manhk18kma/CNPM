@@ -5,6 +5,7 @@ import kma.cnpm.beapp.domain.common.enumType.FollowType;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
 import kma.cnpm.beapp.domain.common.notificationDto.CreateFollow;
+import kma.cnpm.beapp.domain.common.notificationDto.RemoveFollow;
 import kma.cnpm.beapp.domain.common.notificationDto.ShipperDTO;
 import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.user.dto.response.FollowResponse;
@@ -70,6 +71,10 @@ public class UserRelationService {
         Follow follow = findFollowById(idFollow);
         validateOwnership(follow, userId);
         followRepository.delete(follow);
+        notificationService.removeFollow(RemoveFollow.builder()
+                        .followedId(follow.getFollowed().getId())
+                        .followerId(userId)
+                .build());
         return UserResponse.builder()
                 .userId(userId)
                 .userTargetId(follow.getFollowed().getId())

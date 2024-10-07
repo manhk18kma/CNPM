@@ -1,10 +1,13 @@
 package kma.cnpm.beapp.domain.notification.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import kma.cnpm.beapp.domain.common.dto.PageResponse;
 import kma.cnpm.beapp.domain.common.dto.UserDTO;
 import kma.cnpm.beapp.domain.common.enumType.NotificationType;
 import kma.cnpm.beapp.domain.common.enumType.NotificationTypeRedirect;
 import kma.cnpm.beapp.domain.common.notificationDto.*;
+import kma.cnpm.beapp.domain.notification.dto.response.CountNotificationResponse;
+import kma.cnpm.beapp.domain.notification.dto.response.NotificationResponse;
 import kma.cnpm.beapp.domain.notification.entity.Notification;
 import kma.cnpm.beapp.domain.notification.repository.NotificationRepository;
 import kma.cnpm.beapp.domain.user.service.AuthService;
@@ -14,6 +17,11 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.weaver.ast.Not;
 import org.checkerframework.checker.units.qual.A;
+import org.checkerframework.checker.units.qual.C;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +29,7 @@ import javax.crypto.Cipher;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,11 +62,16 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void removeFollow() {
+    public void removeFollow(RemoveFollow removeFollow) {
+        notificationRepository.removeNotificationFollow(
+                removeFollow.getFollowerId(),
+                removeFollow.getFollowedId()
+        );
 
     }
 
 
+    @SneakyThrows
     @Override
     public void createNotificationUserView(UserView userView) {
         Notification notification = notificationRepository.findUserViewNotificationByReferenceId(userView.getUserViewedId());
@@ -88,6 +102,8 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         notificationRepository.save(notification);
+        String tokenDevice = authService.getTokenDeviceByUserId(notification.getRecipientId());
+        firebaseService.sendNotification(notification, tokenDevice);
     }
 
 
@@ -117,7 +133,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .type(balanceChange.getNotificationType())
                 .recipientId(balanceChange.getUserId())
                 .referenceId(balanceChange.getTransactionId().toString())
-                .imgUrl(balanceChange.getBalanceChangeImg())
+                .imgUrl("https://tse4.mm.bing.net/th?id=OIP.H-6yoAnGasoOXhT2i8xpfwHaHa&pid=Api&P=0&h=220")
                 .typeRedirect(typeRedirect)
                 .build();
         saveAndSendNotification(request);
@@ -132,14 +148,13 @@ public class NotificationServiceImpl implements NotificationService {
         Map<String, String> placeholdersBuyer = new HashMap<>();
         placeholdersBuyer.put("orderId", orderCreated.getOrderId());
         placeholdersBuyer.put("totalAmount", orderCreated.getAmount().toString());
-
         SaveAndSendNotificationRequest requestBuyer = SaveAndSendNotificationRequest.builder()
                 .template(templateBuyer)
                 .placeholders(placeholdersBuyer)
                 .type(NotificationType.ORDER_CREATED_BUYER)
                 .recipientId(orderCreated.getBuyerId())
                 .referenceId(orderCreated.getOrderId())
-                .imgUrl(orderCreated.getOrderImg())
+                .imgUrl("https://tse3.mm.bing.net/th?id=OIP.sSzxS4BK0Bvaki8RA-CKOQHaE7&pid=Api&P=0&h=220")
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
 
@@ -157,7 +172,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .type(NotificationType.ORDER_CREATED_SELLER)
                 .recipientId(orderCreated.getSellerId())
                 .referenceId(orderCreated.getOrderId())
-                .imgUrl(orderCreated.getOrderImg())
+                .imgUrl("https://tse2.mm.bing.net/th?id=OIP.6KK2jB4X3F2IKoX9dYto_wHaH_&pid=Api&P=0&h=220")
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
 
@@ -171,7 +186,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void shipmentCreated(ShipmentCreated shipmentCreated) {
         String template = templateService.getTemplate(NotificationType.ORDER_CREATED_SHIPPER);
         Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("shipmentId", shipmentCreated.getShipmentId().toString());
+        placeholders.put("{shipmentId}", shipmentCreated.getShipmentId().toString());
         List<ShipperDTO> shipperDTOS = authService.getTokenDeviceByRoleName("SHIPPER");
         shipperDTOS.forEach(shipperDTO -> {
 
@@ -181,7 +196,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .type(NotificationType.ORDER_CREATED_SHIPPER)
                     .recipientId(shipperDTO.getId())
                     .referenceId(shipmentCreated.getShipmentId().toString())
-                    .imgUrl(shipmentCreated.getShipmentImg())
+                    .imgUrl("https://tse1.mm.bing.net/th?id=OIP.oXloO9wvnb1FbAMknfga2AHaHa&pid=Api&P=0&h=220")
                     .typeRedirect(NotificationTypeRedirect.SHIPMENT)
                     .build();
             saveAndSendNotification(request);
@@ -194,7 +209,7 @@ public class NotificationServiceImpl implements NotificationService {
         // Handle buyer notification
         String templateBuyer = templateService.getTemplate(NotificationType.SHIPPER_ACCEPTED_BUYER);
         Map<String, String> placeholdersBuyer = new HashMap<>();
-        placeholdersBuyer.put("orderId", orderAcceptedShip.getOrderId().toString());
+        placeholdersBuyer.put("{orderId}", orderAcceptedShip.getOrderId().toString());
 
         SaveAndSendNotificationRequest requestBuyer = SaveAndSendNotificationRequest.builder()
                 .template(templateBuyer)
@@ -202,7 +217,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .type(NotificationType.SHIPPER_ACCEPTED_BUYER)
                 .recipientId(orderAcceptedShip.getBuyerId())
                 .referenceId(orderAcceptedShip.getOrderId().toString())
-                .imgUrl(orderAcceptedShip.getOrderImg())
+                .imgUrl("https://tse1.mm.bing.net/th?id=OIP.oXloO9wvnb1FbAMknfga2AHaHa&pid=Api&P=0&h=220")
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
 
@@ -211,7 +226,7 @@ public class NotificationServiceImpl implements NotificationService {
         // Handle seller notification
         String templateSeller = templateService.getTemplate(NotificationType.SHIPPER_ACCEPTED_SELLER);
         Map<String, String> placeholdersSeller = new HashMap<>();
-        placeholdersSeller.put("orderId", orderAcceptedShip.getOrderId().toString());
+        placeholdersSeller.put("{orderId}", orderAcceptedShip.getOrderId().toString());
 
 
         SaveAndSendNotificationRequest requestSeller= SaveAndSendNotificationRequest.builder()
@@ -220,7 +235,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .type(NotificationType.SHIPPER_ACCEPTED_SELLER)
                 .recipientId(orderAcceptedShip.getSellerId())
                 .referenceId(orderAcceptedShip.getOrderId().toString())
-                .imgUrl(orderAcceptedShip.getOrderImg())
+                .imgUrl("https://tse1.mm.bing.net/th?id=OIP.oXloO9wvnb1FbAMknfga2AHaHa&pid=Api&P=0&h=220")
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
 
@@ -236,7 +251,7 @@ public class NotificationServiceImpl implements NotificationService {
         // Handle buyer notification
         String templateBuyer = templateService.getTemplate(NotificationType.ORDER_COMPLETE_BUYER);
         Map<String, String> placeholdersBuyer = new HashMap<>();
-        placeholdersBuyer.put("orderId", orderCompleted.getOrderId().toString());
+        placeholdersBuyer.put("{orderId}", orderCompleted.getOrderId().toString());
 
         SaveAndSendNotificationRequest requestBuyer= SaveAndSendNotificationRequest.builder()
                 .template(templateBuyer)
@@ -244,7 +259,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .type(NotificationType.ORDER_COMPLETE_BUYER)
                 .recipientId(orderCompleted.getBuyerId())
                 .referenceId(orderCompleted.getOrderId().toString())
-                .imgUrl(orderCompleted.getOrderImg())
+                .imgUrl("https://tse2.mm.bing.net/th?id=OIP.6KK2jB4X3F2IKoX9dYto_wHaH_&pid=Api&P=0&h=220")
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
 
@@ -252,7 +267,7 @@ public class NotificationServiceImpl implements NotificationService {
         // Handle seller notification
         String templateSeller = templateService.getTemplate(NotificationType.ORDER_COMPLETE_SELLER);
         Map<String, String> placeholdersSeller = new HashMap<>();
-        placeholdersSeller.put("orderId", orderCompleted.getOrderId().toString());
+        placeholdersSeller.put("{orderId}", orderCompleted.getOrderId().toString());
 
         SaveAndSendNotificationRequest requestSeller= SaveAndSendNotificationRequest.builder()
                 .template(templateSeller)
@@ -260,7 +275,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .type(NotificationType.ORDER_COMPLETE_SELLER)
                 .recipientId(orderCompleted.getSellerId())
                 .referenceId(orderCompleted.getOrderId().toString())
-                .imgUrl(orderCompleted.getOrderImg())
+                .imgUrl("https://tse2.mm.bing.net/th?id=OIP.6KK2jB4X3F2IKoX9dYto_wHaH_&pid=Api&P=0&h=220")
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
 
@@ -274,8 +289,8 @@ public class NotificationServiceImpl implements NotificationService {
         // Handle buyer notification
         String templateBuyer = templateService.getTemplate(NotificationType.ORDER_CANCELLED_BUYER);
         Map<String, String> placeholdersBuyer = new HashMap<>();
-        placeholdersBuyer.put("orderId", orderCancelled.getOrderId().toString());
-        placeholdersBuyer.put("totalAmount", orderCancelled.getTotalAmount().toString());
+        placeholdersBuyer.put("{orderId}", orderCancelled.getOrderId().toString());
+        placeholdersBuyer.put("{totalAmount}", orderCancelled.getTotalAmount().toString());
 
         SaveAndSendNotificationRequest requestBuyer= SaveAndSendNotificationRequest.builder()
                 .template(templateBuyer)
@@ -283,14 +298,14 @@ public class NotificationServiceImpl implements NotificationService {
                 .type(NotificationType.ORDER_CANCELLED_BUYER)
                 .recipientId(orderCancelled.getBuyerId())
                 .referenceId(orderCancelled.getOrderId().toString())
-                .imgUrl(orderCancelled.getOrderImg())
+                .imgUrl("https://tse4.mm.bing.net/th?id=OIP.VR043eyZ_wPh2d0yVpaA2gAAAA&pid=Api&P=0&h=220")
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
 
         // Handle seller notification
         String templateSeller = templateService.getTemplate(NotificationType.ORDER_CANCELLED_SELLER);
         Map<String, String> placeholdersSeller = new HashMap<>();
-        placeholdersSeller.put("orderId", orderCancelled.getOrderId().toString());
+        placeholdersSeller.put("{orderId}", orderCancelled.getOrderId().toString());
 
         SaveAndSendNotificationRequest requestSeller= SaveAndSendNotificationRequest.builder()
                 .template(templateSeller)
@@ -298,7 +313,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .type(NotificationType.ORDER_CANCELLED_SELLER)
                 .recipientId(orderCancelled.getSellerId())
                 .referenceId(orderCancelled.getOrderId().toString())
-                .imgUrl(orderCancelled.getOrderImg())
+                .imgUrl("https://tse4.mm.bing.net/th?id=OIP.VR043eyZ_wPh2d0yVpaA2gAAAA&pid=Api&P=0&h=220")
                 .typeRedirect(NotificationTypeRedirect.ORDER)
                 .build();
         saveAndSendNotification(requestBuyer);
@@ -347,103 +362,103 @@ public class NotificationServiceImpl implements NotificationService {
     //Post domain
     @Override
     public void postCreated(PostCreated postCreated) {
-        String template = templateService.getTemplate(NotificationType.POST_CREATED);
-        Map<String, String> placeholders = new HashMap<>();
-
-        UserDTO userCreatedPost = authService.getUserInfo(postCreated.getPosterId());
-        placeholders.put("followedUserFullName",userCreatedPost.getFullName() );
-        placeholders.put("contentSnippet", postCreated.getContentSnippet());
-
-        List<ShipperDTO> adminDTOS = authService.getTokenDeviceByRoleName("ADMIN");
-        adminDTOS.forEach(adminDTO -> {
-            SaveAndSendNotificationRequest request= SaveAndSendNotificationRequest.builder()
-                    .template(template)
-                    .placeholders(placeholders)
-                    .type(NotificationType.POST_CREATED)
-                    .recipientId(adminDTO.getId())
-                    .referenceId(postCreated.getPostId().toString())
-                    .imgUrl(postCreated.getPostUrlImg())
-                    .typeRedirect(NotificationTypeRedirect.POST_MODERATION)
-                    .build();
-            saveAndSendNotification(request);
-
-        });
+//        String template = templateService.getTemplate(NotificationType.POST_CREATED);
+//        Map<String, String> placeholders = new HashMap<>();
+//
+//        UserDTO userCreatedPost = authService.getUserInfo(postCreated.getPosterId());
+//        placeholders.put("followedUserFullName",userCreatedPost.getFullName() );
+//        placeholders.put("contentSnippet", postCreated.getContentSnippet());
+//
+//        List<ShipperDTO> adminDTOS = authService.getTokenDeviceByRoleName("ADMIN");
+//        adminDTOS.forEach(adminDTO -> {
+//            SaveAndSendNotificationRequest request= SaveAndSendNotificationRequest.builder()
+//                    .template(template)
+//                    .placeholders(placeholders)
+//                    .type(NotificationType.POST_CREATED)
+//                    .recipientId(adminDTO.getId())
+//                    .referenceId(postCreated.getPostId().toString())
+//                    .imgUrl(postCreated.getPostUrlImg())
+//                    .typeRedirect(NotificationTypeRedirect.POST_MODERATION)
+//                    .build();
+//            saveAndSendNotification(request);
+//
+//        });
 
     }
 
     @Override
     public void postApproved(PostApproved postApproved) {
-        String template = templateService.getTemplate(NotificationType.POST_APPROVE);
-        Map<String, String> placeholders = new HashMap<>();
-
-        UserDTO userCreatedPost = authService.getUserInfo(postApproved.getPosterId());
-        placeholders.put("followedUserFullName",userCreatedPost.getFullName() );
-        placeholders.put("contentSnippet", postApproved.getContentSnippet());
-
-        List<UserDTO> followersDTO = authService.getFollowersOfUser(postApproved.getPosterId());
-        followersDTO.forEach(followerDTO -> {
-            SaveAndSendNotificationRequest request= SaveAndSendNotificationRequest.builder()
-                    .template(template)
-                    .placeholders(placeholders)
-                    .type(NotificationType.POST_APPROVE)
-                    .recipientId(followerDTO.getUserId())
-                    .referenceId(postApproved.getPostId().toString())
-                    .imgUrl(postApproved.getPostUrlImg())
-                    .typeRedirect(NotificationTypeRedirect.POST)
-                    .build();
-            saveAndSendNotification(request);
-        });
+//        String template = templateService.getTemplate(NotificationType.POST_APPROVE);
+//        Map<String, String> placeholders = new HashMap<>();
+//
+//        UserDTO userCreatedPost = authService.getUserInfo(postApproved.getPosterId());
+//        placeholders.put("followedUserFullName",userCreatedPost.getFullName() );
+//        placeholders.put("contentSnippet", postApproved.getContentSnippet());
+//
+//        List<UserDTO> followersDTO = authService.getFollowersOfUser(postApproved.getPosterId());
+//        followersDTO.forEach(followerDTO -> {
+//            SaveAndSendNotificationRequest request= SaveAndSendNotificationRequest.builder()
+//                    .template(template)
+//                    .placeholders(placeholders)
+//                    .type(NotificationType.POST_APPROVE)
+//                    .recipientId(followerDTO.getUserId())
+//                    .referenceId(postApproved.getPostId().toString())
+//                    .imgUrl(postApproved.getPostUrlImg())
+//                    .typeRedirect(NotificationTypeRedirect.POST)
+//                    .build();
+//            saveAndSendNotification(request);
+//        });
     }
 
     @SneakyThrows
     @Override
     public void likeCreated(LikeCreated likeCreated) {
-        Notification notification = notificationRepository.findLikeCreatedNotificationByPostId(likeCreated.getPostId());
-
-        Map<String, String> placeholders = new HashMap<>();
-        UserDTO liker = authService.getUserInfo(likeCreated.getLikerId());
-        placeholders.put("likerFullName", liker.getFullName());
-        String postSnippet = likeCreated.getContentSnippet();
-        placeholders.put("postSnippet", postSnippet);
-
-        String template;
-
-        // Kiểm tra xem đã có thông báo Like trước đó chưa
-        if (notification == null) {
-            // Nếu là lượt thích đầu tiên
-            template = "<strong>{likerFullName}</strong> đã thích bài viết của bạn: \"{postSnippet}\".";
-            String content = populateTemplate(template, placeholders);
-            notification = Notification.builder()
-                    .recipientId(likeCreated.getPosterId())
-                    .type(NotificationType.LIKE_CREATED)
-                    .referenceId(likeCreated.getPostId().toString())
-                    .content(content)
-                    .typeRedirect(NotificationTypeRedirect.POST)
-                    .isRead(false)
-                    .imageUrl(likeCreated.getPostUrlImg())
-                    .isRemoved(false)
-                    .build();
-
-        } else {
-            // Nếu đã có thông báo rồi, cập nhật nội dung
-            int totalLikes = likeCreated.getCountLikes();
-            if (totalLikes == 1) {
-                notification.setRemoved(false);
-                template = "<strong>{likerFullName}</strong> đã thích bài viết của bạn: \"{postSnippet}\".";
-            } else {
-                // Nếu có nhiều hơn 1 lượt thích, hiển thị thông báo bao gồm số người khác
-                placeholders.put("totalLikes", String.valueOf(totalLikes - 1));
-                template = "<strong>{likerFullName}</strong> và <strong>{totalLikes}</strong> người khác đã thích bài viết của bạn: \"{postSnippet}\".";
-            }
-            String content = populateTemplate(template, placeholders);
-
-            notification.setContent(content);
-            notification.setRead(false);
-        }
-        notificationRepository.save(notification);
-
-        String tokenDevice = authService.getTokenDeviceByUserId(notification.getRecipientId());
-        firebaseService.sendNotification(notification , tokenDevice);
+//        Notification notification = notificationRepository.findLikeCreatedNotificationByPostId(likeCreated.getPostId());
+//
+//        Map<String, String> placeholders = new HashMap<>();
+//        UserDTO liker = authService.getUserInfo(likeCreated.getLikerId());
+//        placeholders.put("likerFullName", liker.getFullName());
+//        String postSnippet = likeCreated.getContentSnippet();
+//        placeholders.put("postSnippet", postSnippet);
+//
+//        String template;
+//
+//        // Kiểm tra xem đã có thông báo Like trước đó chưa
+//        if (notification == null) {
+//            // Nếu là lượt thích đầu tiên
+//            template = "<strong>{likerFullName}</strong> đã thích bài viết của bạn: \"{postSnippet}\".";
+//            String content = populateTemplate(template, placeholders);
+//            notification = Notification.builder()
+//                    .recipientId(likeCreated.getPosterId())
+//                    .type(NotificationType.LIKE_CREATED)
+//                    .referenceId(likeCreated.getPostId().toString())
+//                    .content(content)
+//                    .typeRedirect(NotificationTypeRedirect.POST)
+//                    .isRead(false)
+//                    .imageUrl(likeCreated.getPostUrlImg())
+//                    .isRemoved(false)
+//                    .build();
+//
+//        } else {
+//            // Nếu đã có thông báo rồi, cập nhật nội dung
+//            int totalLikes = likeCreated.getCountLikes();
+//            if (totalLikes == 1) {
+//                notification.setRemoved(false);
+//                template = "<strong>{likerFullName}</strong> đã thích bài viết của bạn: \"{postSnippet}\".";
+//            } else {
+//                // Nếu có nhiều hơn 1 lượt thích, hiển thị thông báo bao gồm số người khác
+//                placeholders.put("totalLikes", String.valueOf(totalLikes - 1));
+//                template = "<strong>{likerFullName}</strong> và <strong>{totalLikes}</strong> người khác đã thích bài viết của bạn: \"{postSnippet}\".";
+//            }
+//            String content = populateTemplate(template, placeholders);
+//
+//            notification.setContent(content);
+//            notification.setRead(false);
+//        }
+//        notificationRepository.save(notification);
+//
+//        String tokenDevice = authService.getTokenDeviceByUserId(notification.getRecipientId());
+//        firebaseService.sendNotification(notification , tokenDevice);
 
     }
 
@@ -555,99 +570,136 @@ public class NotificationServiceImpl implements NotificationService {
         //remove like notification
         //remove comment  notification
         //remove comment notification for other commenter
-        notificationRepository.markAllNotificationsAsRemovedByReferenceId(postRemoved.getPostId());
+//        notificationRepository.markAllNotificationsAsRemovedByReferenceId(postRemoved.getPostId());
     }
 
     @Override
     public void unLiked(UnLiked unLiked) {
-        Notification notification = notificationRepository.findLikeCreatedNotificationByPostId(unLiked.getPostId());
-
-        Map<String, String> placeholders = new HashMap<>();
-        UserDTO liker = authService.getUserInfo(unLiked.getLatestLikerId());
-        placeholders.put("likerFullName", liker.getFullName());
-        String postSnippet = unLiked.getContentSnippet();
-        placeholders.put("postSnippet", postSnippet);
-
-        int totalLikes = unLiked.getCountLikes();
-        String template = null;
-        if (totalLikes > 1) {
-            placeholders.put("totalLikes", String.valueOf(totalLikes - 1));
-            template = "<strong>{likerFullName}</strong> và <strong>{totalLikes}</strong> người khác đã thích bài viết của bạn: \"{postSnippet}\".";
-        } else if (totalLikes == 1) {
-            template = "<strong>{likerFullName}</strong> đã thích bài viết của bạn: \"{postSnippet}\".";
-        } else {
-            notification.setRemoved(true);
-            notificationRepository.save(notification);
-            return;
-        }
-
-        String content = populateTemplate(template, placeholders);
-        notification.setContent(content);
-        notificationRepository.save(notification);
+//        Notification notification = notificationRepository.findLikeCreatedNotificationByPostId(unLiked.getPostId());
+//
+//        Map<String, String> placeholders = new HashMap<>();
+//        UserDTO liker = authService.getUserInfo(unLiked.getLatestLikerId());
+//        placeholders.put("likerFullName", liker.getFullName());
+//        String postSnippet = unLiked.getContentSnippet();
+//        placeholders.put("postSnippet", postSnippet);
+//
+//        int totalLikes = unLiked.getCountLikes();
+//        String template = null;
+//        if (totalLikes > 1) {
+//            placeholders.put("totalLikes", String.valueOf(totalLikes - 1));
+//            template = "<strong>{likerFullName}</strong> và <strong>{totalLikes}</strong> người khác đã thích bài viết của bạn: \"{postSnippet}\".";
+//        } else if (totalLikes == 1) {
+//            template = "<strong>{likerFullName}</strong> đã thích bài viết của bạn: \"{postSnippet}\".";
+//        } else {
+//            notification.setRemoved(true);
+//            notificationRepository.save(notification);
+//            return;
+//        }
+//
+//        String content = populateTemplate(template, placeholders);
+//        notification.setContent(content);
+//        notificationRepository.save(notification);
     }
 
     @Override
     public void commentRemoved(CommentRemoved commentRemoved) {
-        Notification notification = notificationRepository.findCommentCreatedNotificationByPostId(commentRemoved.getPostId());
-        Map<String, String> placeholders = new HashMap<>();
-        UserDTO lastestCommenter = authService.getUserInfo(commentRemoved.getLastCommenterId());
-        placeholders.put("commenterFullName", lastestCommenter.getFullName());
+//        Notification notification = notificationRepository.findCommentCreatedNotificationByPostId(commentRemoved.getPostId());
+//        Map<String, String> placeholders = new HashMap<>();
+//        UserDTO lastestCommenter = authService.getUserInfo(commentRemoved.getLastCommenterId());
+//        placeholders.put("commenterFullName", lastestCommenter.getFullName());
+//
+//        String commentSnippet = commentRemoved.getLastCommentSnippet();
+//        placeholders.put("commentSnippet", commentSnippet);
+//
+//        String template = null;
+//        int totalOtherCommenters = commentRemoved.getOtherCommentersId().size();
+//
+//        if (commentRemoved.getOtherCommentersId().contains(commentRemoved.getPosterId())) {
+//            totalOtherCommenters -= 1;
+//        }
+//        if (totalOtherCommenters > 1) {
+//            placeholders.put("totalComments", String.valueOf(totalOtherCommenters));
+//            template = "<strong>{commenterFullName}</strong> và <strong>{totalOtherCommenters}</strong> người khác đã bình luận về bài viết của bạn: \"{commentSnippet}\".";
+//        } else if (totalOtherCommenters == 1) {
+//            template = "<strong>{commenterFullName}</strong> đã bình luận về bài viết của bạn: \"{commentSnippet}\".";
+//        } else {
+//            notification.setRemoved(true);
+//            notificationRepository.save(notification);
+//        }
+//
+//        if (template != null) {
+//            String content = populateTemplate(template, placeholders);
+//            notification.setContent(content);
+//            notificationRepository.save(notification);
+//        }
+//
+//        totalOtherCommenters = commentRemoved.getOtherCommentersId().size();
+//        for (Long id : commentRemoved.getOtherCommentersId()) {
+//            if (id.equals(commentRemoved.getPosterId())) {
+//                continue;
+//            }
+//
+//            // Fetch notification for other commenters, handle if not found
+//            Notification otherCommenterNotification = notificationRepository
+//                    .findCommentCreatedForOtherCommentsByRecipientIdAndPostId(id, commentRemoved.getPostId())
+//                    .orElse(null); // Handle notification not found
+//
+//            if (otherCommenterNotification != null) {
+//                String templateForOther;
+//                if (totalOtherCommenters == 1) {
+//                    templateForOther = "<strong>{commenterFullName}</strong> đã bình luận về bài viết mà bạn đã bình luận: \"{commentSnippet}\".";
+//                } else if (totalOtherCommenters > 1) {
+//                    placeholders.put("totalOtherCommenters", String.valueOf(totalOtherCommenters - 1));
+//                    templateForOther = "<strong>{commenterFullName}</strong> và <strong>{totalOtherCommenters}</strong> người khác đã bình luận về bài viết mà bạn đã bình luận: \"{commentSnippet}\".";
+//                } else {
+//                    otherCommenterNotification.setRemoved(true);
+//                    notificationRepository.save(otherCommenterNotification);
+//                    continue;
+//                }
+//
+//                String content1 = populateTemplate(templateForOther, placeholders);
+//                otherCommenterNotification.setContent(content1);
+//                otherCommenterNotification.setRead(false);
+//                notificationRepository.save(otherCommenterNotification);
+//            }
+//        }
+    }
 
-        String commentSnippet = commentRemoved.getLastCommentSnippet();
-        placeholders.put("commentSnippet", commentSnippet);
+    @Override
+    public CountNotificationResponse countNotification() {
+        Long userId = Long.valueOf(authService.getAuthenticationName());
+        int totalNotRead = notificationRepository.countNotificationNotReadOfUser(userId);
+        return CountNotificationResponse.builder()
+                .totalNotRead(totalNotRead)
+                .build();
+    }
 
-        String template = null;
-        int totalOtherCommenters = commentRemoved.getOtherCommentersId().size();
+    @Override
+    public PageResponse<List<NotificationResponse>> getNotifications() {
+        int pageNo = 0; // Bạn có thể thay đổi nếu cần
+        int pageSize = 100; // Kích thước trang tối đa
+        Long userId = Long.valueOf(authService.getAuthenticationName());
 
-        if (commentRemoved.getOtherCommentersId().contains(commentRemoved.getPosterId())) {
-            totalOtherCommenters -= 1;
-        }
-        if (totalOtherCommenters > 1) {
-            placeholders.put("totalComments", String.valueOf(totalOtherCommenters));
-            template = "<strong>{commenterFullName}</strong> và <strong>{totalOtherCommenters}</strong> người khác đã bình luận về bài viết của bạn: \"{commentSnippet}\".";
-        } else if (totalOtherCommenters == 1) {
-            template = "<strong>{commenterFullName}</strong> đã bình luận về bài viết của bạn: \"{commentSnippet}\".";
-        } else {
-            notification.setRemoved(true);
-            notificationRepository.save(notification);
-        }
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
 
-        if (template != null) {
-            String content = populateTemplate(template, placeholders);
-            notification.setContent(content);
-            notificationRepository.save(notification);
-        }
+        Page<Notification> notificationPage = notificationRepository.findAllNotificationOfUser(userId, pageable);
+        notificationRepository.markAllNotificationsAsReadByReceptionId(userId);
 
-        totalOtherCommenters = commentRemoved.getOtherCommentersId().size();
-        for (Long id : commentRemoved.getOtherCommentersId()) {
-            if (id.equals(commentRemoved.getPosterId())) {
-                continue;
-            }
+        List<NotificationResponse> notificationResponses = notificationPage.getContent().stream()
+                .map(notification -> {
+                    NotificationResponse response = new NotificationResponse();
+                    BeanUtils.copyProperties(notification, response);
+                    return response;
+                })
+                .collect(Collectors.toList());
 
-            // Fetch notification for other commenters, handle if not found
-            Notification otherCommenterNotification = notificationRepository
-                    .findCommentCreatedForOtherCommentsByRecipientIdAndPostId(id, commentRemoved.getPostId())
-                    .orElse(null); // Handle notification not found
-
-            if (otherCommenterNotification != null) {
-                String templateForOther;
-                if (totalOtherCommenters == 1) {
-                    templateForOther = "<strong>{commenterFullName}</strong> đã bình luận về bài viết mà bạn đã bình luận: \"{commentSnippet}\".";
-                } else if (totalOtherCommenters > 1) {
-                    placeholders.put("totalOtherCommenters", String.valueOf(totalOtherCommenters - 1));
-                    templateForOther = "<strong>{commenterFullName}</strong> và <strong>{totalOtherCommenters}</strong> người khác đã bình luận về bài viết mà bạn đã bình luận: \"{commentSnippet}\".";
-                } else {
-                    otherCommenterNotification.setRemoved(true);
-                    notificationRepository.save(otherCommenterNotification);
-                    continue;
-                }
-
-                String content1 = populateTemplate(templateForOther, placeholders);
-                otherCommenterNotification.setContent(content1);
-                otherCommenterNotification.setRead(false);
-                notificationRepository.save(otherCommenterNotification);
-            }
-        }
+        return PageResponse.<List<NotificationResponse>>builder()
+                .pageSize(notificationPage.getSize()) // Kích thước trang thực tế
+                .pageNo(notificationPage.getNumber()) // Số trang hiện tại
+                .totalPages(notificationPage.getTotalPages()) // Tổng số trang
+                .totalElements((int) notificationPage.getTotalElements()) // Tổng số phần tử
+                .items(notificationResponses) // Danh sách các thông báo
+                .build();
     }
 
 

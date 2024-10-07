@@ -184,7 +184,7 @@ public class OrderServiceImpl implements OrderService {
         notificationService.orderComplete(OrderCompleted.builder()
                 .orderId(order.getId())
                 .orderImg(null)
-                .BuyerId(order.getBuyerId())
+                .buyerId(order.getBuyerId())
                 .sellerId(productService.getProductById(order.getOrderItems().get(0).getProductId()).getSellerId())
                 .build());
         return order.getId();
