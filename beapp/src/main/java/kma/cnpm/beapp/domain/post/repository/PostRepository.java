@@ -13,7 +13,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findByContentContaining(String title);
     List<Post> findByUserIdAndIsApprovedOrderByCreatedAtDesc(Long userId, Boolean isApproved);
     List<Post> findByStatusOrderByCreatedAtDesc(String status);
-    List<Post> findByIsApprovedOrderByCreatedAtDesc(Boolean isApproved);
+    List<Post> findByIsApprovedAndStatusOrderByCreatedAtDesc(Boolean isApproved, String status);
 
     @Query("SELECT COUNT(p.id) FROM Post p WHERE p.userId = :userId")
     int countPostOfUser(@Param("userId") long userId);
