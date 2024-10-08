@@ -46,42 +46,22 @@
         </div>
       </div>
 
-      <div class="panel panel-default">
+      <div class="panel panel-default" *ngIf="currentIDUser == idUser">
         <div class="panel-heading">
           <h4 class="panel-title decor-text mt-4">Người vừa ghé trang</h4>
         </div>
         <div class="panel-body decor-text-1" >
           <div class="profile__comments">
-            <div class="profile-comments__item">
+            <div class="profile-comments__item" *ngFor="let item of userDetail.userViews">
               <div class="profile-comments__avatar">
-                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="...">
+                <img src="{{item.avatar}}" alt="...">
               </div>
               <div class="profile-comments__body">
                 <h5 style="font-size: 15px" class="profile-comments__sender">
-                  Mạnh A <small>2 giờ trước</small>
+                  {{item.fullName}} <small>{{item.viewTime | date: ' HH:mm:ss'}}</small>
                 </h5>
               </div>
 
-            </div>
-            <div class="profile-comments__item">
-              <div class="profile-comments__avatar">
-                <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="...">
-              </div>
-              <div class="profile-comments__body">
-                <h5 style="font-size: 15px" class="profile-comments__sender">
-                  Mạnh E <small>2 giờ trước</small>
-                </h5>
-              </div>
-            </div>
-            <div class="profile-comments__item">
-              <div class="profile-comments__avatar">
-                <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="...">
-              </div>
-              <div class="profile-comments__body">
-                <h5 style="font-size: 15px" class="profile-comments__sender">
-                  Em Hảo Trader <small>2 giờ trước</small>
-                </h5>
-              </div>
             </div>
           </div>
         </div>

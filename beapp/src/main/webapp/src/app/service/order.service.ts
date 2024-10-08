@@ -35,7 +35,10 @@ export class OrderService {
   completeOrder(id: any):Observable<any>{
     return this.http.patch(`${this.baseURL}/complete/${id}`,id);
   }
-  cancelOrder(id: any):Observable<any>{
+  cancelOrderForUser(id: any):Observable<any>{
     return this.http.patch(`${this.baseURL}/delete/${id}`,id);
+  }
+  cancelOrder(id: any):Observable<any>{
+    return this.http.patch(`${this.baseURL}/cancel/${id}`,id);
   }
 }

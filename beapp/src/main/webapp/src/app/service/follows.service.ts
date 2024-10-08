@@ -22,10 +22,11 @@ export class FollowsService {
     return this.http.post(`${this.baseURL}`, request);
   }
 
-  unFollow(postId: any): Observable<any> {
-    return this.http.delete(`${this.baseURL}/post/${postId}`);
+  unFollow(idFollow: any): Observable<any> {
+    return this.http.delete(`${this.baseURL}/${idFollow}`);
   }
   getLikedPosts(): Observable<any> {
     return this.http.get(`${this.baseURL}/post`);
   }
+
 }
