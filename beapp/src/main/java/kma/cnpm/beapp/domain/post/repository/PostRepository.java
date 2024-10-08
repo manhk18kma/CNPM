@@ -11,7 +11,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     Post findByProductId(Integer productId);
     List<Post> findByContentContaining(String title);
-    List<Post> findByUserIdOrderByCreatedAtDesc(Long userId);
+    List<Post> findByUserIdAndIsApprovedOrderByCreatedAtDesc(Long userId, Boolean isApproved);
     List<Post> findByStatusOrderByCreatedAtDesc(String status);
     List<Post> findByIsApprovedOrderByCreatedAtDesc(Boolean isApproved);
 
