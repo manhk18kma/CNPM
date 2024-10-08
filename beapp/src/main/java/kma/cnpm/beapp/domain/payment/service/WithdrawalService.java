@@ -6,6 +6,9 @@ import kma.cnpm.beapp.domain.common.enumType.WithdrawalSort;
 import kma.cnpm.beapp.domain.common.enumType.WithdrawalStatus;
 import kma.cnpm.beapp.domain.common.exception.AppErrorCode;
 import kma.cnpm.beapp.domain.common.exception.AppException;
+import kma.cnpm.beapp.domain.common.notificationDto.WithdrawalCreated;
+import kma.cnpm.beapp.domain.common.notificationDto.WithdrawalRejected;
+import kma.cnpm.beapp.domain.notification.service.NotificationService;
 import kma.cnpm.beapp.domain.payment.dto.request.CreateWithdrawalRequest;
 import kma.cnpm.beapp.domain.payment.dto.response.AccountResponse;
 import kma.cnpm.beapp.domain.payment.dto.response.WithdrawalResponse;
@@ -41,6 +44,7 @@ public class WithdrawalService {
     final AccountService accountService;
     final AuthService authService;
     final UserService userService;
+    final NotificationService notificationService;
 //small function
     void existsPendingWithdrawal(Long accountId){
         if(withdrawalRepository.existsPendingWithdrawal(accountId)){
@@ -81,6 +85,12 @@ public class WithdrawalService {
         account.addWithdrawals(withdrawal);
         accountHasBank.addWithdrawals(withdrawal);
         withdrawalRepository.save(withdrawal);
+
+        //send notification
+        notificationService.withdrawalCreated(WithdrawalCreated.builder()
+                        .withdrawalId(withdrawal.getId())
+                        .amount(request.getAmount())
+                .build());
         return AccountResponse.builder()
                 .accountId(account.getId())
                 .userId(account.getUserId())
@@ -118,7 +128,7 @@ public class WithdrawalService {
                 .withdrawalId(withdrawal.getId())
                 .build();
     }
-
+//user get of user
     public PageResponse<List<WithdrawalResponse>> getWithdrawalsOfUser( String status, String sortBy, int page, int size) {
         Long userId = Long.valueOf(authService.getAuthenticationName());
 
@@ -137,7 +147,10 @@ public class WithdrawalService {
 
         List<WithdrawalResponse> responses = withdrawalsPage.getContent().stream()
                 .map(withdrawal -> WithdrawalResponse.builder()
+                        .withdrawalId(withdrawal.getId())
                         .userId(userId)
+                        .fullName(authService.getUserInfo(withdrawal.getAccount().getUserId()).getFullName())
+
                         .accountId(withdrawal.getAccount().getId())
                         .amount(withdrawal.getAmount())
                         .status(withdrawal.getStatus())
@@ -163,4 +176,65 @@ public class WithdrawalService {
     }
 
 
+
+//admin get of all user
+    public PageResponse<List<WithdrawalResponse>> getWithdrawalsOfAllUsers(String status, String sortBy, int page, int size) {
+
+        WithdrawalStatus withdrawalStatus =  WithdrawalStatus.valueOf(status);
+        WithdrawalSort withdrawalSort =  WithdrawalSort.valueOf(sortBy);
+
+        String fieldSort = withdrawalSort.getField();
+        String orderBy = withdrawalSort.getDirection();
+
+        // Tạo đối tượng Pageable với sắp xếp và phân trang
+        Sort sort = Sort.by(Sort.Order.by(fieldSort).with(Sort.Direction.fromString(orderBy)));
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // Gọi repository để lấy dữ liệu
+        Page<Withdrawal> withdrawalsPage = withdrawalRepository.getWithdrawalsOfAllUsers(withdrawalStatus == WithdrawalStatus.DEFAULT ? null : withdrawalStatus, pageable);
+
+        List<WithdrawalResponse> responses = withdrawalsPage.getContent().stream()
+                .map(withdrawal -> WithdrawalResponse.builder()
+                        .withdrawalId(withdrawal.getId())
+                        .fullName(authService.getUserInfo(withdrawal.getAccount().getUserId()).getFullName())
+                        .userId(withdrawal.getAccount().getUserId())
+                        .accountId(withdrawal.getAccount().getId())
+                        .amount(withdrawal.getAmount())
+                        .status(withdrawal.getStatus())
+                        .accountNumber(withdrawal.getAccountHasBank().getAccountNumber())
+                        .bankName(withdrawal.getAccountHasBank().getBank().getBankName())
+                        .bankAvt(withdrawal.getAccountHasBank().getBank().getBankAvt())
+                        .bankCode(withdrawal.getAccountHasBank().getBank().getBankCode())
+                        .createdAt(withdrawal.getCreatedAt())
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+
+        return PageResponse.<List<WithdrawalResponse>>builder()
+                .pageSize(size)
+                .totalElements((int) withdrawalsPage.getTotalElements())
+                .totalPages(withdrawalsPage.getTotalPages())
+                .pageNo(page)
+                .items(responses)
+                .build();
+
+    }
+
+    public AccountResponse rejectWithdrawal(Long id) {
+        Withdrawal withdrawal = getPendingWithdrawal(id);
+        withdrawal.setStatus(WithdrawalStatus.REJECTED);
+        withdrawalRepository.save(withdrawal);
+        notificationService.withdrawalRejected(WithdrawalRejected.builder()
+                        .withdrawalId(withdrawal.getId())
+                        .userId(withdrawal.getAccount().getUserId())
+                        .amount(withdrawal.getAmount())
+
+                .build());
+        return AccountResponse.builder()
+//                .accountId(account.getId())
+//                .userId(account.getUserId())
+                .withdrawalId(withdrawal.getId())
+                .build();
+    }
 }

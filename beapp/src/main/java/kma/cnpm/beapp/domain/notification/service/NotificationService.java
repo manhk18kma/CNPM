@@ -20,6 +20,10 @@ public interface NotificationService {
 
     void balanceChange(BalanceChange balanceChange);
 
+    void withdrawalCreated(WithdrawalCreated withdrawalCreated);
+
+    void withdrawalRejected(WithdrawalRejected withdrawalRejected);
+
     //ORDER DOMAIN
     void orderCreated(OrderCreated oderCreated);
 

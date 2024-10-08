@@ -13,7 +13,11 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class AccountResponse implements Serializable {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+
     private Long userId;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+
     private Long accountId;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long withdrawalId;

@@ -122,7 +122,7 @@ public class NotificationServiceImpl implements NotificationService {
             placeholders.put("{transactionId}", balanceChange.getTransactionId().toString());
             typeRedirect = NotificationTypeRedirect.TRANSACTION;
         } else if (balanceChange.getNotificationType().equals(NotificationType.WITHDRAWAL_ACCEPTED)) {
-            typeRedirect = NotificationTypeRedirect.WITHDRAWAL;
+            typeRedirect = NotificationTypeRedirect.WITHDRAWAL_USER;
             placeholders.put("{withdrawalId}", balanceChange.getTransactionId().toString());
         }
 
@@ -138,6 +138,51 @@ public class NotificationServiceImpl implements NotificationService {
                 .build();
         saveAndSendNotification(request);
 
+    }
+
+    @Override
+    public void withdrawalCreated(WithdrawalCreated withdrawalCreated) {
+        String template = "Có một yêu cầu rút tiền mới được tạo {amount} VND. Vui lòng kiểm tra! Mã rút tiền {withdrawalId}";
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("{amount}", withdrawalCreated.getAmount().toString());
+        placeholders.put("{withdrawalId}", withdrawalCreated.getWithdrawalId().toString());
+
+        List<ShipperDTO> adminDTOS = authService.getTokenDeviceByRoleName("ADMIN");
+        adminDTOS.forEach(adminDTO -> {
+            SaveAndSendNotificationRequest request= SaveAndSendNotificationRequest.builder()
+                    .template(template)
+                    .placeholders(placeholders)
+                    .type(NotificationType.WITHDRAWAL_CREATED)
+                    .recipientId(adminDTO.getId())
+                    .referenceId(withdrawalCreated.getWithdrawalId().toString())
+                    .imgUrl("https://cdn4.iconfinder.com/data/icons/finance-and-payments-3-2/512/127-512.png")
+                    .typeRedirect(NotificationTypeRedirect.WITHDRAWAL_ADMIN)
+                    .build();
+            saveAndSendNotification(request);
+
+        });
+    }
+
+    @Override
+    public void withdrawalRejected(WithdrawalRejected withdrawalRejected) {
+
+        String template = "Yêu cầu rút tiền của bạn bị từ chối {amount} VND. Vui lòng kiểm tra lại! Mã rút tiền {withdrawalId}";
+
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("{amount}", withdrawalRejected.getAmount().toString());
+        placeholders.put("{withdrawalId}", withdrawalRejected.getWithdrawalId().toString());
+
+        SaveAndSendNotificationRequest request = SaveAndSendNotificationRequest.builder()
+                .template(template)
+                .placeholders(placeholders)
+                .type(NotificationType.WITHDRAWAL_REJECTED)
+                .recipientId(withdrawalRejected.getUserId())
+                .referenceId(withdrawalRejected.getWithdrawalId().toString())
+                .imgUrl("https://tse4.mm.bing.net/th?id=OIP.1lbmAcJsAbfXmeOGy7eKdwHaHa&pid=Api&P=0&h=220")  // Có thể sử dụng URL từ cấu hình
+                .typeRedirect(NotificationTypeRedirect.WITHDRAWAL_USER)
+                .build();
+
+            saveAndSendNotification(request);
     }
 
     ///ORDER

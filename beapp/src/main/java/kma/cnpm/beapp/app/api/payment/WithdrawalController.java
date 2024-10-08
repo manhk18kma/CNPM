@@ -56,14 +56,31 @@ public class WithdrawalController {
             description = "Cancel an existing withdrawal request. Call this API with BEARER TOKEN for authentication."
     )
     @DeleteMapping("/{id}")
-    public ResponseData<Void> cancelWithdrawal(
+    public ResponseData<?> cancelWithdrawal(
             @Parameter(description = "The unique identifier of the withdrawal request to be canceled", required = true)
             @PathVariable @NotNull Long id) {
-        withdrawalService.cancelWithdrawal(id);
+        AccountResponse response =  withdrawalService.cancelWithdrawal(id);
         return new ResponseData<>(
                 HttpStatus.OK.value(),
                 "Yêu cầu rút tiền đã được hủy thành công",
-                LocalDateTime.now()
+                LocalDateTime.now(),response
+        );
+    }
+
+    @Operation(
+            summary = "Reject Withdrawal",
+            description = "Reject an existing withdrawal request. This action can only be performed by an admin."
+    )
+    @DeleteMapping("/admin/{id}")
+    public ResponseData<?> rejectWithdrawal(
+            @Parameter(description = "The unique identifier of the withdrawal request to be rejected", required = true)
+            @PathVariable @NotNull Long id) {
+        AccountResponse response = withdrawalService.rejectWithdrawal(id);
+        return new ResponseData<>(
+                HttpStatus.OK.value(),
+                "Yêu cầu rút tiền đã bị từ chối thành công",
+                LocalDateTime.now(),
+                response
         );
     }
 
@@ -97,5 +114,24 @@ public class WithdrawalController {
                 "Danh sách yêu cầu rút tiền đã được lấy thành công",
                 LocalDateTime.now(),
                 response);
+    }
+
+
+    //for admin get list withdrawl of users
+    @GetMapping("/admin")
+    @Operation(
+            summary = "Get withdrawals of all users (Admin)",
+            description = "Returns a paginated list of all user withdrawals filtered by status and sorted by the specified field. This API is intended for admins."
+    )
+    public ResponseData<PageResponse<List<WithdrawalResponse>>> getWithdrawalsOfAllUsers(
+            @RequestParam(defaultValue = "DEFAULT") @EnumValue(name = "status", enumClass = WithdrawalStatus.class) String status,
+            @RequestParam(defaultValue = "CREATE_DESC") @EnumValue(name = "sortBy", enumClass = WithdrawalSort.class) String sortBy) {
+        PageResponse<List<WithdrawalResponse>> response = withdrawalService.getWithdrawalsOfAllUsers(status, sortBy, 0, 100);
+        return new ResponseData<>(
+                HttpStatus.OK.value(),
+                "Danh sách yêu cầu rút tiền đã được lấy thành công",
+                LocalDateTime.now(),
+                response
+        );
     }
 }

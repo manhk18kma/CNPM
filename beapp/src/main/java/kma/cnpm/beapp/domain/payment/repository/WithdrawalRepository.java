@@ -25,7 +25,6 @@ public interface WithdrawalRepository extends JpaRepository<Withdrawal, Long> {
     @Query("SELECT w FROM Withdrawal w WHERE w.account.userId = :userId AND (:status IS NULL OR w.status = :status)")
     Page<Withdrawal> getWithdrawalsOfUser(@Param("userId") Long userId, @Param("status") WithdrawalStatus status, Pageable pageable);
 
-
-
-
+    @Query("SELECT w FROM Withdrawal w WHERE (:withdrawalStatus IS NULL OR w.status = :withdrawalStatus)")
+    Page<Withdrawal> getWithdrawalsOfAllUsers(@Param("withdrawalStatus") WithdrawalStatus withdrawalStatus, Pageable pageable);
 }
