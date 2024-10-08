@@ -5,6 +5,8 @@ import {TokenService} from "../service/token/token.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgxSpinnerService} from 'ngx-spinner';
 import {Location} from "@angular/common";
+import {FollowsService} from "../service/follows.service";
+import {MessageService} from "primeng/api";
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -15,13 +17,16 @@ export class ProfileComponent implements OnInit{
   userDetail: any;
   currentRole: any;
   currentIDUser:any;
+  request: any = {};
   constructor(public authService: AuthService,
               private userService: UserService,
               private tokenService: TokenService,
               private route: ActivatedRoute,
               private router: Router,
               private spinner: NgxSpinnerService,
-              private location: Location) {
+              private location: Location,
+              private followService: FollowsService,
+              private messageService: MessageService) {
   }
 
   showSpinner() {
@@ -46,7 +51,19 @@ export class ProfileComponent implements OnInit{
     }
 
   }
-
+  follow(){
+    this.request.userIdTarget = this.idUser
+    this.followService.follow(this.request).subscribe(res =>{
+      this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
+      setTimeout(()=>{
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([this.router.url]);
+      },500)
+    },error => {
+      this.messageService.add({severity: 'error', summary: 'Thao tác', detail: 'Có lỗi'});
+    })
+  }
 
   // ngOnDestroy(): void {
   //   sessionStorage.removeItem('userProfile');
