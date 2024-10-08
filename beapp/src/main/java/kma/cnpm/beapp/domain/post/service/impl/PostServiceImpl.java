@@ -50,7 +50,7 @@ public class PostServiceImpl implements PostService {
         User user = userService.findUserById(authService.getAuthenticationName());
         Post post = postMapper.map(postRequest);
         post.setUserId(user.getId());
-        post.setStatus("INACTIVE");
+        post.setStatus("PENDING");
         post.setIsApproved(false);
         if (postRequest.getProductRequest() != null)
             post.setProductId(productService.save(postRequest.getProductRequest()).getId());
@@ -205,7 +205,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResponse> getPostsByApproved(Boolean isApproved) {
-        List<Post> posts = postRepository.findByIsApprovedOrderByCreatedAtDesc(isApproved);
+        List<Post> posts = postRepository.findByIsApprovedAndStatusOrderByCreatedAtDesc(isApproved, "PENDING");
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
