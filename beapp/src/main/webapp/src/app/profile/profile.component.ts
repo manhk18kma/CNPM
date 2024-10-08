@@ -28,11 +28,6 @@ export class ProfileComponent implements OnInit{
               private followService: FollowsService,
               private messageService: MessageService) {
   }
-
-  showSpinner() {
-    this.spinner.show();
-  }
-
   ngOnInit(): void {
     this.currentIDUser = this.tokenService.getIDUserFromToken();
     this.currentRole = this.tokenService.getRoleUserFromToken();
@@ -59,7 +54,19 @@ export class ProfileComponent implements OnInit{
         this.router.routeReuseStrategy.shouldReuseRoute = () => false;
         this.router.onSameUrlNavigation = 'reload';
         this.router.navigate([this.router.url]);
-      },500)
+      },700)
+    },error => {
+      this.messageService.add({severity: 'error', summary: 'Thao tác', detail: 'Có lỗi'});
+    })
+  }
+  unFollow(id:any){
+    this.followService.unFollow(id).subscribe(res =>{
+      this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
+      setTimeout(()=>{
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([this.router.url]);
+      },700)
     },error => {
       this.messageService.add({severity: 'error', summary: 'Thao tác', detail: 'Có lỗi'});
     })

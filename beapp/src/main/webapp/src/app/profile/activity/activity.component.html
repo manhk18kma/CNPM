@@ -1,25 +1,32 @@
+<p-toast></p-toast>
 <div class="container">
   <div style="font-size: 13px"  id="tab2" class="tab-pane active">
+    <div class="decor-text" style="font-size: 20px; text-align: center; margin:30px 0;font-weight: bold">
+      Danh sách yêu cầu rút tiền
+    </div>
     <table class="table">
       <thead>
       <tr class="decor-text-0">
-        <th scope="col">Người thực hiện</th>
-        <th scope="col">Thao tác</th>
-        <th scope="col">Thời gian</th>
-        <th scope="col">Địa chỉ</th>
+        <th scope="col">Hành động</th>
+        <th scope="col">Thời gian rút</th>
+        <th scope="col">Số tiền</th>
+        <th scope="col">Địa chỉ rút</th>
         <th scope="col">Trạng thái</th>
       </tr>
       </thead>
       <tbody>
       <tr style="cursor: pointer" *ngFor="let i of dataShow;let j = index"
           [class.row-selected]="this.selectedRows.indexOf(i) !== -1"
+          (dblclick)="navigateDetailOrder(i.id)"
           class="decor-text-1"
           (click)="selectRow(i, $event, syslogs)">
-        <td >Duy Khánh</td>
-        <td>Nạp tiền</td>
-        <td>7-9-2024</td>
-        <td>192.168.1.1</td>
-        <td class="text-success">Hoàn thành</td>
+        <td>Rút tiền</td>
+        <td>{{i.createdAt  | date: 'dd/MM/yyyy '}}</td>
+        <td>{{userService.formatMoneyVND(i.amount)}}</td>
+        <td>{{i.bankCode}} - {{i.accountNumber}}</td>
+        <td>
+          <button *ngIf="i.status == 'PENDING'" class="btn rounded-0" style="font-size: 9px;background-color: #d9b026; padding:4px;color:white">Đang xử lý</button>
+        </td>
       </tr>
       </tbody>
     </table>

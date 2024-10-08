@@ -2,6 +2,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css"
       integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous"/>
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<p-toast></p-toast>
 <div class="container position-absolute" style="margin-top: 100px;width: 80%;right: 0">
   <div class="row">
     <div class="col-xl-8">
@@ -28,7 +29,7 @@
                     <p class="decor-text mt-2" style="text-align: center; font-weight: bold">Thông tin đơn vị vận chuyển</p>
                     <hr class="faded-line">
                     <p *ngIf="data.shipment.shipperId == null" style="font-size: 15px;text-align: center" class="mb-1 mt-1 decor-text text-warning"><span class="fw-medium">Đang chờ đơn vị vận chuyển xác nhận</span></p>
-
+                    <button (click)="cancelOrder(data.id)" class="btn btn-success rounded-0 decor-text-1" style="float:right">Hủy đơn</button>
                   </div>
                 </div>
               </div>

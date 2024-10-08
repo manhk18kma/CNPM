@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {CookieService} from "ngx-cookie-service";
 import {TokenService} from "./token/token.service";
@@ -32,6 +32,20 @@ export class BankService {
   }
   withdraw(req: any): Observable<any> {
     return this.http.post(`${this.baseURL2}`, req);
+  }
+  getReqsWithDraw(status: any, sortBy: any): Observable<any> {
+    const params = new HttpParams()
+      .set('status', status || 'DEFAULT')
+      .set('sortBy', sortBy || 'CREATE_DESC');
+
+    return this.http.get(`${this.baseURL2}`, { params });
+  }
+
+  cancelWithDraw(id:any){
+    return this.http.delete(`${this.baseURL2}/${id}`);
+  }
+  approveWithDraw(id:any){
+    return this.http.put(`${this.baseURL2}/${id}`,id);
   }
   recharge(req: any): Observable<any> {
     return this.http.post(`${this.baseURL3}/vnpay`, req);

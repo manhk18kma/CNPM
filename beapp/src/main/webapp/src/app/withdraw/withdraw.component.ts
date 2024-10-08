@@ -50,9 +50,9 @@ export class WithdrawComponent implements OnInit {
       this.reqWithdraw.amount < this.user.balance) {
       this.reqWithdraw.accountHasBankId = this.bank.accountHasBankId;
       this.bankService.withdraw(this.reqWithdraw).subscribe(res => {
-        console.log(res)
+        this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
       }, error => {
-        this.messageService.add({severity: 'warn', summary: 'Thao tác', detail: 'Lỗi dữ liệu'});
+        this.messageService.add({severity: 'warn', summary: 'Thao tác', detail: error.error.message});
       })
     }
   }

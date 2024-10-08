@@ -90,10 +90,8 @@ export class CartComponent implements OnInit {
     this.orderItem.productId = this.product.id;
     this.orderItemRequests.orderItem.push(this.orderItem);
     if (this.orderItemRequests.addressId != null && this.orderItem.quantity != 0) {
-      this.spinner.show();
       this.orderService.createOrder(this.orderItemRequests).pipe(
         catchError(err => {
-          console.log(err)
           this.messageService.add({severity: 'error', summary: 'Thao tác', detail: err.error.message});
           return of(null);
         })
@@ -101,7 +99,6 @@ export class CartComponent implements OnInit {
         if (res) {
           this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
           setTimeout(()=>{
-            this.spinner.hide()
             this.router.navigate(['order/waiting'])
           },1000)
 

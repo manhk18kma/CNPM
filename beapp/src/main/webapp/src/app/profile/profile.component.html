@@ -1,5 +1,4 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
 <p-toast></p-toast>
 <div class="container" style="background: white">
   <div class="row">
@@ -14,8 +13,8 @@
                   <img
                     src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
                     alt="">
-                  <p class="decor-text" style="margin-left: 20px;color: #0fc45a;font-size: 12px;" *ngIf="currentIDUser != idUser  && userDetail?.isFollowing && !userDetail?.isFollower">Đang theo dõi</p>
-                  <p class="decor-text" style="margin-left: 20px;color: #0fc45a;font-size: 12px;" *ngIf="currentIDUser != idUser && userDetail?.isFollowing && userDetail?.isFollower">Bạn bè</p>
+                  <p class="decor-text" style="margin-left: 20px;color: #0fc45a;font-size: 12px;" *ngIf="currentIDUser != idUser  && userDetail?.idFollow && !userDetail?.isFollower">Đang theo dõi</p>
+                  <p class="decor-text" style="margin-left: 20px;color: #0fc45a;font-size: 12px;" *ngIf="currentIDUser != idUser && userDetail?.idFollow && userDetail?.isFollower">Bạn bè</p>
                 </div>
                 <div class="profile-header-info decor-text-1 m-lg-4 " style="margin-left: 20px">
                   <h4 class="m-t-0 m-b-1">{{userDetail?.fullName}}</h4>
@@ -23,9 +22,9 @@
                   <p class=" text-secondary" *ngIf="currentRole == 'ROLE_SHIPPER'">Người giao hàng</p>
                   <p class=" text-secondary" *ngIf="currentRole == 'ROLE_ADMIN'">Quản trị viên</p>
                 <div class="d-flex position-relative">
-                  <button style="cursor: pointer;margin:0 5px" *ngIf="currentIDUser != idUser  && !userDetail?.isFollowing && !userDetail?.isFollower" (click)="follow()" class="btn btn-info rounded-0">Theo dõi</button>
-                  <button style="cursor: pointer;margin:0 5px" *ngIf="currentIDUser != idUser  && !userDetail?.isFollowing && userDetail?.isFollower" class="btn btn-info rounded-0">Theo dõi lại</button>
-                  <button style="cursor: pointer;margin:0 5px" *ngIf="currentIDUser != idUser && userDetail?.isFollowing" class="btn btn-success rounded-0">Hủy theo dõi</button>
+                  <button style="cursor: pointer;margin:0 5px" *ngIf="currentIDUser != idUser  && !userDetail?.idFollow && !userDetail?.isFollower" (click)="follow()" class="btn btn-info rounded-0">Theo dõi</button>
+                  <button style="cursor: pointer;margin:0 5px" *ngIf="currentIDUser != idUser  && !userDetail?.idFollow && userDetail?.isFollower" (click)="follow()" class="btn btn-info rounded-0">Theo dõi lại</button>
+                  <button style="cursor: pointer;margin:0 5px" *ngIf="currentIDUser != idUser && userDetail?.idFollow" (click)="unFollow(userDetail.idFollow)" class="btn btn-success rounded-0">Hủy theo dõi</button>
                   <button class="Btn decor-text-1 position-absolute" style="right: 20px;top:0;cursor: pointer" (click)="authService.errorToLogout()">
 
                     <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
@@ -41,7 +40,7 @@
                     <li class="col-md-3 col-sm-3"><strong>{{userDetail?.totalPosts}}</strong>Tổng bài viết</li>
                     <li class="col-md-3 col-sm-3"><strong>{{userDetail?.totalSoldProducts}}</strong>Tổng sản phẩm đã bán</li>
                     <li class="col-md-3 col-sm-3"><strong>{{userDetail?.totalFollowers}}</strong>Người theo dõi</li>
-                    <li class="col-md-3 col-sm-3"><strong>{{userDetail?.totalFollowers}}</strong>Đang theo dõi</li>
+                    <li class="col-md-3 col-sm-3"><strong>{{userDetail?.totalFollowing}}</strong>Đang theo dõi</li>
                   </ul>
                 </div>
               </div>
@@ -82,10 +81,6 @@
               <li class="nav-item">
                 <a routerLink="success" routerLinkActive="active" class="nav-link_">
                   Đơn đã giao
-                </a></li>
-              <li class="nav-item">
-                <a routerLink="cancel" routerLinkActive="active" class="nav-link_">
-                  Đơn đã hủy
                 </a></li>
             </ul>
 

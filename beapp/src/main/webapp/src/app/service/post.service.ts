@@ -28,5 +28,15 @@ export class PostService {
   }
   getAllUploadedPosts(status: any): Observable<any> {
     return this.http.get(`${this.baseURL}/status/${status}`);
+
+  }
+  getPostApproved(approve: any): Observable<any> {
+    return this.http.get(`${this.baseURL}/approve/${approve}`);
+  }
+  approvePost(id:any): Observable<any>{
+    return this.http.patch(`${this.baseURL}/approve/${id}`,id);
+  }
+  deletePost(id:any): Observable<any>{
+    return this.http.delete(`${this.baseURL}/${id}`);
   }
 }
