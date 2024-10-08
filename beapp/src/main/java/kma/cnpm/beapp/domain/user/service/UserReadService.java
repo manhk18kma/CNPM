@@ -97,8 +97,10 @@ public class UserReadService {
         String authName = authService.authNameCanBeNull();
         Boolean isFollower = null;
         Boolean isFollowing = null;
+        Long idFollow = null;
         if(authName!=null){
-            isFollowing = followRepository.isFollowingOfUser(Long.valueOf(authName) , id);
+//            isFollowing = followRepository.isFollowingOfUser(Long.valueOf(authName) , id);
+            idFollow = followRepository.isFollowingOfUser(Long.valueOf(authName) , id);
             isFollower = followRepository.isFollowerOfUser(Long.valueOf(authName) , id);
             handleUserViewProfile(user);
         }
@@ -112,7 +114,8 @@ public class UserReadService {
                 .avatar(user.getAvt())
                 .userId(user.getId())
                 .isFollower(isFollower)
-                .isFollowing(isFollowing)
+                .idFollow(idFollow == null ? null : idFollow)
+                .idFollow(idFollow)
                 .build();
 
 

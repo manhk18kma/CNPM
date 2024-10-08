@@ -66,8 +66,10 @@ public interface FollowRepository extends JpaRepository<Follow , Long> {
             "(SELECT f.follower.id FROM Follow f WHERE f.followed.id = :userId)")
     List<User> getUserFollowersOfUser(@Param("userId") Long userId);
 
-    @Query("SELECT CASE WHEN COUNT(f) > 0 THEN TRUE ELSE FALSE END FROM Follow f WHERE f.follower.id = :userId AND f.followed.id = :idUserGet")
-    boolean isFollowingOfUser(@Param("userId") Long userId, @Param("idUserGet") Long idUserGet);
+//    @Query("SELECT CASE WHEN COUNT(f) > 0 THEN TRUE ELSE FALSE END FROM Follow f WHERE f.follower.id = :userId AND f.followed.id = :idUserGet")
+@Query("SELECT f.id from Follow f WHERE f.follower.id = :userId AND f.followed.id = :idUserGet")
+
+Long isFollowingOfUser(@Param("userId") Long userId, @Param("idUserGet") Long idUserGet);
 
     @Query("SELECT CASE WHEN COUNT(f) > 0 THEN TRUE ELSE FALSE END FROM Follow f WHERE f.followed.id = :userId AND f.follower.id = :idUserGet")
     boolean isFollowerOfUser(@Param("userId") Long userId, @Param("idUserGet") Long idUserGet);

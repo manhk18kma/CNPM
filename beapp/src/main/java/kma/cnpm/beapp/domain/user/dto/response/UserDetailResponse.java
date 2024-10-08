@@ -19,7 +19,8 @@ public class UserDetailResponse {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean isFollower;
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long idFollow; //if exists
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean isFollowing;
 
