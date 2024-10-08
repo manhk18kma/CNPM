@@ -65,9 +65,9 @@ public class UserService {
 //    Register new user
     @Transactional
     public UserResponse saveUser(CreateUserRequest request) {
-        if (!submitCaptcha(request.getCaptchaToken())){
-            throw  new AppException(AppErrorCode.CAPTCHA_INVALID);
-        }
+//        if (!submitCaptcha(request.getCaptchaToken())){
+//            throw  new AppException(AppErrorCode.CAPTCHA_INVALID);
+//        }
         String email = request.getEmail();
         if (!request.getPassword().equals(request.getConfirmPassword())){
             throw  new AppException(AppErrorCode.PASSWORDS_NOT_MATCH);

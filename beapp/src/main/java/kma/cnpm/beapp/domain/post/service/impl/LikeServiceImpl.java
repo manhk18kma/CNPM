@@ -72,9 +72,6 @@ public class LikeServiceImpl implements LikeService {
                 .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
 
         User user = userService.findUserById(authService.getAuthenticationName());
-        if (!user.getId().equals(post.getUserId()))
-            throw new AppException(UNAUTHORIZED);
-        likeRepository.existsByPostAndUserId(post, user.getId());
         Like like = likeRepository.findByPostAndUserId(post, user.getId());
         likeRepository.delete(like);
         notificationService.unLiked(UnLiked.builder()

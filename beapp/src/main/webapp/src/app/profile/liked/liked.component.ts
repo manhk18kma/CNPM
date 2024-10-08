@@ -51,8 +51,6 @@ export class LikedComponent {
   ngOnInit(): void {
     this.post.product = null;
     this.id = this.route.parent?.snapshot.paramMap.get('id');
-    // @ts-ignore
-    this.userDetail = JSON.parse(sessionStorage.getItem('userProfile'));
     this.getPostsByUserID(this.id)
   }
 
