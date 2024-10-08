@@ -118,8 +118,9 @@ public class WithdrawalService {
 
     @Transactional
     public AccountResponse approveWithdrawal(Long id) {
-        Account account = accountService.getAccount();
         Withdrawal withdrawal = getPendingWithdrawal(id);
+        Account account = withdrawal.getAccount();
+
         withdrawal.setStatus(WithdrawalStatus.APPROVED);
         accountService.updateBalance(withdrawal.getAmount() , account , false , id , NotificationType.WITHDRAWAL_ACCEPTED);
         return AccountResponse.builder()
