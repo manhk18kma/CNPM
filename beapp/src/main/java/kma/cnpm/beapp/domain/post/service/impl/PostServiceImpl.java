@@ -50,7 +50,7 @@ public class PostServiceImpl implements PostService {
         User user = userService.findUserById(authService.getAuthenticationName());
         Post post = postMapper.map(postRequest);
         post.setUserId(user.getId());
-        post.setStatus("ACTIVE");
+        post.setStatus("INACTIVE");
         post.setIsApproved(false);
         if (postRequest.getProductRequest() != null)
             post.setProductId(productService.save(postRequest.getProductRequest()).getId());
@@ -98,12 +98,23 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
         post.setIsApproved(true);
+        post.setStatus("ACTION");
         postRepository.save(post);
         notificationService.postApproved(PostApproved.builder()
                 .postId(Long.valueOf(post.getId()))
                 .postUrlImg(null)
                 .contentSnippet(post.getContent())
                 .posterId(post.getUserId()).build());
+    }
+
+    @Override
+    public void unApprovePost(Integer id) {
+        // role admin
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new AppException(AppErrorCode.POST_NOT_EXISTED));
+        post.setIsApproved(false);
+        post.setStatus("INACTION");
+        postRepository.save(post);
     }
 
     @Override
@@ -153,7 +164,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResponse> getPostsByUserId(Long userId) {
-        List<Post> posts = postRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        List<Post> posts = postRepository.findByUserIdAndIsApprovedOrderByCreatedAtDesc(userId, true);
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
