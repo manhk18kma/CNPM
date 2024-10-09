@@ -34,13 +34,18 @@ export class SignupComponent {
   register() {
       this.userService.registerUser(this.user).pipe(
         catchError(error => {
-          return of({error: 'Có lỗi xảy ra'});
+          return of(this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.error.message}));
         })
       ).subscribe(res => {
           this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
+          setTimeout(() => {
+            this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+            this.router.onSameUrlNavigation = 'reload';
+            this.router.navigate([this.router.url]);
+          }, 700);
         },
         error => {
-          this.messageService.add({severity: 'error', summary: 'Thao tác', detail: 'Có lỗi xảy ra'});
+          this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.error.message});
         });
   }
 }
