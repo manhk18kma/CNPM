@@ -7,27 +7,28 @@
     <table class="table">
       <thead>
       <tr class="decor-text-0">
-        <th scope="col">Mã đơn</th>
-        <th scope="col">Thời gian đặt</th>
-        <th scope="col">Sản phẩm</th>
-        <th scope="col">Số lượng</th>
-        <th scope="col">Địa chỉ giao</th>
-        <th scope="col">Thao tác</th>
+        <th scope="col">Người dùng</th>
+        <th scope="col">Hành động</th>
+        <th scope="col">Thời gian thực hiện</th>
+        <th scope="col">Số tiền</th>
+        <th scope="col">Địa chỉ rút</th>
+        <th scope="col">Trạng thái</th>
       </tr>
       </thead>
       <tbody>
       <tr style="cursor: pointer" *ngFor="let i of dataShow;let j = index"
           [class.row-selected]="this.selectedRows.indexOf(i) !== -1"
-          (dblclick)="navigateDetailOrder(i.id)"
           class="decor-text-1"
           (click)="selectRow(i, $event, syslogs)">
-        <td>{{cutAndJoinString(i.id)}}</td>
-        <td>{{i.endDate  | date: 'dd/MM/yyyy '}}</td>
-        <td>{{i.orderItem[0].productName}}</td>
-        <td>{{i.orderItem[0].quantity}}</td>
-        <td>{{i.shipment.address}}</td>
+        <td>{{i.fullName}}</td>
+        <td>Rút tiền</td>
+        <td>{{i.createdAt  | date: 'dd/MM/yyyy '}}</td>
+        <td>{{userService.formatMoneyVND(i.amount)}}</td>
+        <td>{{i.bankCode}} - {{i.accountNumber}}</td>
         <td>
-          <button (click)="acceptOrder(i.id)" class="btn rounded-0" style="font-size: 9px;background-color: #93e0db; padding:4px">Nhận đơn</button>
+          <button (click)="approve(i.withdrawalId)" *ngIf="i.status == 'PENDING'" class="btn rounded-0 m-2" style="font-size: 9px;background-color: #119f24; padding:4px;color:white">Duyệt</button>
+          <button (click)="reject(i.withdrawalId)" *ngIf="i.status == 'PENDING'" class="btn rounded-0" style="font-size: 9px;background-color: #da1a1a; padding:4px;color:white">Từ chối</button>
+          <p style="color:red" *ngIf="i.status == 'REJECTED'" >Đã từ chối</p>
         </td>
       </tr>
       </tbody>

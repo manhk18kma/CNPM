@@ -125,7 +125,7 @@ export class ApprovePostComponent {
     })
   }
   decline(id: any){
-    this.postService.deletePost(id).subscribe(res => {
+    this.postService.unApprovePost(id).subscribe(res => {
       this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: res.message });
       setTimeout(()=>{
         this.router.routeReuseStrategy.shouldReuseRoute = () => false;

@@ -40,11 +40,17 @@ export class BankService {
 
     return this.http.get(`${this.baseURL2}`, { params });
   }
+  getReqsWithDrawAllUser(status: any, sortBy: any): Observable<any> {
+    const params = new HttpParams()
+      .set('status', status || 'DEFAULT')
+      .set('sortBy', sortBy || 'CREATE_DESC');
 
-  cancelWithDraw(id:any){
-    return this.http.delete(`${this.baseURL2}/${id}`);
+    return this.http.get(`${this.baseURL2}/admin`, { params });
   }
-  approveWithDraw(id:any){
+  rejectWithDraw(id:any): Observable<any>{
+    return this.http.delete(`${this.baseURL2}/admin/${id}`);
+  }
+  approveWithDraw(id:any): Observable<any>{
     return this.http.put(`${this.baseURL2}/${id}`,id);
   }
   recharge(req: any): Observable<any> {
