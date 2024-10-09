@@ -36,7 +36,7 @@ public interface NotificationRepository extends JpaRepository<Notification , Lon
     @Query("SELECT COUNT(n) FROM Notification n WHERE n.isRemoved = false AND n.recipientId = :userId AND n.isRead = false")
     int countNotificationNotReadOfUser(Long userId);
 
-    @Query("SELECT n FROM Notification n WHERE n.isRemoved = false AND n.recipientId = :userId")
+    @Query("SELECT n FROM Notification n WHERE n.isRemoved = false AND n.recipientId = :userId order by n.createdAt desc ")
     Page<Notification> findAllNotificationOfUser(@Param("userId") Long userId, Pageable pageable);
 
     @Modifying

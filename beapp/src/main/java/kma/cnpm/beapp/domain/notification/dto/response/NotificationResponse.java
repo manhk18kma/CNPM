@@ -8,6 +8,8 @@ import kma.cnpm.beapp.domain.common.enumType.NotificationTypeRedirect;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class NotificationResponse {
 
@@ -26,6 +28,8 @@ public class NotificationResponse {
     private boolean isRemoved;
 
     private String imageUrl;
+
+    private LocalDateTime createTime;
 
 
 }

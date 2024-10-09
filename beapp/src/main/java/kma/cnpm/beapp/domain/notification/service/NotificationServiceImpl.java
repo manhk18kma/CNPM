@@ -371,8 +371,8 @@ public class NotificationServiceImpl implements NotificationService {
         // Handle buyer notification
         String templateBuyer = templateService.getTemplate(NotificationType.ORDER_CONFIRM_BUYER);
         Map<String, String> placeholdersBuyer = new HashMap<>();
-        placeholdersBuyer.put("orderId", orderConfirm.getOrderId().toString());
-        placeholdersBuyer.put("totalAmount", orderConfirm.getTotalAmount().toString());
+        placeholdersBuyer.put("{orderId}", orderConfirm.getOrderId().toString());
+        placeholdersBuyer.put("{totalAmount}", orderConfirm.getTotalAmount().toString());
 
         SaveAndSendNotificationRequest requestBuyer= SaveAndSendNotificationRequest.builder()
                 .template(templateBuyer)
@@ -734,6 +734,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .map(notification -> {
                     NotificationResponse response = new NotificationResponse();
                     BeanUtils.copyProperties(notification, response);
+                    response.setCreateTime(notification.getCreatedAt());
                     return response;
                 })
                 .collect(Collectors.toList());
