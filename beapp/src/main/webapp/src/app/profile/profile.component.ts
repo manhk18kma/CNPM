@@ -40,9 +40,6 @@ export class ProfileComponent implements OnInit{
       this.userService.getPrivateProfile().subscribe(res1 => {
         this.userDetail = {...this.userDetail, ...res1.data};
       })
-      setTimeout(() => {
-        this.router.navigate(['infor'], {relativeTo: this.route});
-      }, 700)
     }
 
   }
