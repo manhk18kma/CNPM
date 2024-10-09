@@ -10,7 +10,7 @@
   z-index: 1000;
   font-family: 'Comfortaa', cursive;
   font-weight: lighter;
-  text-transform: uppercase;
+  //text-transform: uppercase;
   font-size: 11px;
   transform: translateX(5px);
   transform: translateY(0); /* Vị trí mặc định của navbar */
@@ -50,10 +50,8 @@
 .navbar-nav {
   list-style: none;
   display: flex;
-  justify-content: center;
   gap: 20px;
   flex-direction: row;
-  align-items: center;
   margin: 0;
   padding: 0;
 }
@@ -132,4 +130,17 @@ form{
 }
 input::placeholder{
   color: #484848;
+}
+.dx{
+  width: 400px;
+  height: 200px;
+  max-height: 200px;
+  overflow-y: scroll;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background: rgb(238, 238, 238);
+  border-radius: 3px;
+  z-index: 1000;
 }

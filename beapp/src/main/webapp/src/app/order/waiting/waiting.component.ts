@@ -50,7 +50,7 @@ export class WaitingComponent {
         this.router.navigate(['order/cancel']);
       },700)
     },error => {
-      this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
+      this.messageService.add({ severity: 'error', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
     })
   }
 }

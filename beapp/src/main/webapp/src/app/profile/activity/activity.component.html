@@ -25,6 +25,9 @@
         <td>{{i.bankCode}} - {{i.accountNumber}}</td>
         <td>
           <button *ngIf="i.status == 'PENDING'" class="btn rounded-0" style="font-size: 9px;background-color: #d9b026; padding:4px;color:white">Đang xử lý</button>
+          <p style="color:#de1313" *ngIf="i.status == 'REJECTED'" >Bị từ chối</p>
+          <p style="color:#3bad15" *ngIf="i.status == 'APPROVED'" >Đã duyệt</p>
+
         </td>
       </tr>
       </tbody>

@@ -2,13 +2,14 @@ import {Component, HostListener, OnInit} from '@angular/core';
 import {UserService} from "./service/user.service";
 import {Router} from "@angular/router";
 import {TokenService} from "./service/token/token.service";
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'webapp';
   isTransparent = false;
   clickSearch = false;
@@ -16,11 +17,13 @@ export class AppComponent implements OnInit{
   isMobile: boolean = false;
   showMobileMenu: boolean = false;
   currentRole: any;
+  showNotifications: boolean = false;
+  notifications: any = []; // Mảng thông báo mẫu
   constructor(public userService: UserService,
               private router: Router,
               private tokenService: TokenService,
               private breakpointObserver: BreakpointObserver
-              ) {
+  ) {
   }
 
   @HostListener('window:scroll', [])
@@ -36,11 +39,13 @@ export class AppComponent implements OnInit{
   closeInputSearch() {
     this.clickSearch = false;
   }
-  navigateProfile(){
+
+  navigateProfile() {
     const id = this.tokenService.getIDUserFromToken();
     this.router.navigate(['/profile', id]);
 
   }
+
   sendResultSearch(key: any) {
     this.clickSearch = false;
     key = key.trim();
@@ -58,7 +63,18 @@ export class AppComponent implements OnInit{
       });
     this.currentRole = this.tokenService.getRoleUserFromToken();
   }
+
   openMobileMenu() {
     this.showMobileMenu = !this.showMobileMenu;  // Toggles the mobile menu visibility
+  }
+
+  toggleNotifications() {
+    this.showNotifications = !this.showNotifications;
+    if (this.showNotifications) {
+      this.userService.getNotify().subscribe(res =>{
+        this.notifications = res.data;
+        console.log(this.notifications)
+      })
+    }
   }
 }

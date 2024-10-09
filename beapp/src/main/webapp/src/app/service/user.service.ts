@@ -12,6 +12,7 @@ import {Observable} from "rxjs";
 })
 export class UserService {
   private baseURL = "http://localhost:8080/api/v1/users";
+  private baseURL1 = "http://localhost:8080/api/v1/notifications";
 
   constructor(private http: HttpClient, private router: Router
     , private cookieService: CookieService, private tokenService: TokenService,
@@ -53,5 +54,9 @@ export class UserService {
   }
   formatMoneyVND(amount: any): string {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  }
+
+  getNotify(): Observable<any>{
+    return this.http.get(`${this.baseURL1}`);
   }
 }

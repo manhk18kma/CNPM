@@ -29,6 +29,7 @@
           <button (click)="approve(i.withdrawalId)" *ngIf="i.status == 'PENDING'" class="btn rounded-0 m-2" style="font-size: 9px;background-color: #119f24; padding:4px;color:white">Duyệt</button>
           <button (click)="reject(i.withdrawalId)" *ngIf="i.status == 'PENDING'" class="btn rounded-0" style="font-size: 9px;background-color: #da1a1a; padding:4px;color:white">Từ chối</button>
           <p style="color:red" *ngIf="i.status == 'REJECTED'" >Đã từ chối</p>
+          <p style="color:#3bad15" *ngIf="i.status == 'APPROVED'" >Đã duyệt</p>
         </td>
       </tr>
       </tbody>

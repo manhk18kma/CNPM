@@ -33,8 +33,9 @@ export class PostsComponent implements OnInit {
   newComment: any = {}
   comments: any;
   currentRole: any;
-  currentIDUser:any;
-  idUser:any
+  currentIDUser: any;
+  idUser: any
+
   constructor(public authService: AuthService,
               private categoryService: CategoryService,
               private postService: PostService,
@@ -222,7 +223,21 @@ export class PostsComponent implements OnInit {
       })
     }
   }
-  navigatePayment(id: any){
-    this.router.navigate([`payment/${id}`],id);
+
+  navigatePayment(id: any) {
+    this.router.navigate([`payment/${id}`], id);
+  }
+
+  deletePost(id: any) {
+    this.postService.deletePost(id).subscribe(res => {
+      this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
+      setTimeout(() => {
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([this.router.url]);
+      }, 500)
+    }, error => {
+      this.messageService.add({severity: 'error', summary: 'Thao tác', detail: 'Lỗi hệ thống'});
+    })
   }
 }

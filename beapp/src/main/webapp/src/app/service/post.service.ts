@@ -37,7 +37,7 @@ export class PostService {
     return this.http.patch(`${this.baseURL}/approve/${id}`,id);
   }
   deletePost(id:any): Observable<any>{
-    return this.http.delete(`${this.baseURL}/${id}`);
+    return this.http.delete(`${this.baseURL}/${id}`,id);
   }
   unApprovePost(id:any): Observable<any>{
     return this.http.patch(`${this.baseURL}/unApprove/${id}`,id);
