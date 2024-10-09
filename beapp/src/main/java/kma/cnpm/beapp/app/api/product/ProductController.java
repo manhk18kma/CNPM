@@ -54,14 +54,16 @@ public class ProductController {
                 productService.uploadFile(uploadFileRequest));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseData<String> deleteProduct(@PathVariable Integer id) {
-        productService.deleteById(id);
-        return new ResponseData<>(HttpStatus.OK.value(),
-                "Sản phẩm đã được xóa thành công",
-                LocalDateTime.now()
-        );
-    }
+    /*
+//    @DeleteMapping("/{id}")
+//    public ResponseData<String> deleteProduct(@PathVariable Integer id) {
+//        productService.deleteById(id);
+//        return new ResponseData<>(HttpStatus.OK.value(),
+//                "Sản phẩm đã được xóa thành công",
+//                LocalDateTime.now()
+//        );
+//    }
+     */
 
     @GetMapping("/{id}")
     public ResponseData<ProductResponse> getProductById(@PathVariable Integer id) {

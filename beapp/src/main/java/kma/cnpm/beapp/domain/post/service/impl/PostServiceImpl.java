@@ -73,7 +73,7 @@ public class PostServiceImpl implements PostService {
 
         post.setContent(postRequest.getContent());
         if (postRequest.getProductRequest() != null) {
-            productService.deleteById(post.getProductId());
+//            productService.deleteById(post.getProductId());
             post.setProductId(productService.save(postRequest.getProductRequest()).getId());
         }
         postRepository.save(post);
@@ -86,9 +86,8 @@ public class PostServiceImpl implements PostService {
         User user = userService.findUserById(authService.getAuthenticationName());
         if (!user.getId().equals(post.getUserId()))
             throw new AppException(UNAUTHORIZED);
-        if (post.getProductId()!=null)
-            productService.deleteById(post.getProductId());
-        postRepository.deleteById(id);
+        post.setStatus("INACTION");
+        postRepository.save(post);
         notificationService.postRemoved(PostRemoved.builder()
                 .postId(Long.valueOf(post.getId())).build());
     }

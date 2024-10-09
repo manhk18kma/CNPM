@@ -148,16 +148,17 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.map(product, null);
     }
 
-    @Override
-    public void deleteById(Integer id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_EXISTED));
-
-        User user = userService.findUserById(authService.getAuthenticationName());
-        if (!user.getId().equals(product.getSellerId()))
-            throw new AppException(UNAUTHORIZED);
-        productRepository.deleteById(id);
-    }
+/*    @Override
+//    public void deleteById(Integer id) {
+//        Product product = productRepository.findById(id)
+//                .orElseThrow(() -> new AppException(AppErrorCode.PRODUCT_NOT_EXISTED));
+//
+//        User user = userService.findUserById(authService.getAuthenticationName());
+//        if (!user.getId().equals(product.getSellerId()))
+//            throw new AppException(UNAUTHORIZED);
+//        productRepository.deleteById(id);
+//    }
+ */
 
     @Override
     public ProductResponse getProductById(Integer id) {
