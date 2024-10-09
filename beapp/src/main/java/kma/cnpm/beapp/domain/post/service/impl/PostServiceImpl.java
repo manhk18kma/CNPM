@@ -86,7 +86,8 @@ public class PostServiceImpl implements PostService {
         User user = userService.findUserById(authService.getAuthenticationName());
         if (!user.getId().equals(post.getUserId()))
             throw new AppException(UNAUTHORIZED);
-        productService.deleteById(post.getProductId());
+        if (post.getProductId()!=null)
+            productService.deleteById(post.getProductId());
         postRepository.deleteById(id);
         notificationService.postRemoved(PostRemoved.builder()
                 .postId(Long.valueOf(post.getId())).build());
