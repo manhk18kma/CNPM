@@ -23,7 +23,7 @@ export class ApproveWithdrawComponent {
   data: any;
   constructor(private orderService: OrderService,
               private productService: ProductService,
-              private userService: UserService,
+              public userService: UserService,
               private messageService: MessageService,
               private router: Router,
               private bankService: BankService) {
@@ -31,9 +31,9 @@ export class ApproveWithdrawComponent {
   ngOnInit(): void {
     this.page = 1
     this.itemsPerPage = 10;
-    this.bankService.getReqsWithDraw('DEFAULT','CREATE_DESC').subscribe(res => {
+    this.bankService.getReqsWithDrawAllUser('DEFAULT','CREATE_DESC').subscribe(res => {
       if(res.status == 200){
-        this.dataShow = res.data
+        this.dataShow = res.data.items
       }
     })
 
@@ -45,11 +45,8 @@ export class ApproveWithdrawComponent {
   }
   loadPage(page:any){
   }
-  cutAndJoinString(inputStr: string): string {
-    return inputStr.split('-').map(part => part[0]).join('');
-  }
-  acceptOrder(id: any){
-    this.orderService.acceptOrder(id).subscribe(res => {
+  approve(id:any){
+    this.bankService.approveWithDraw(id).subscribe(res => {
       this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: res.message });
       setTimeout(()=>{
         this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -60,11 +57,8 @@ export class ApproveWithdrawComponent {
       this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
     })
   }
-  navigateDetailOrder(id:any){
-    this.router.navigate([`detail-order/${id}`])
-  }
-  cancelOrder(id:any){
-    this.orderService.cancelOrder(id).subscribe(res => {
+  reject(id:any){
+    this.bankService.rejectWithDraw(id).subscribe(res => {
       this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: res.message });
       setTimeout(()=>{
         this.router.routeReuseStrategy.shouldReuseRoute = () => false;

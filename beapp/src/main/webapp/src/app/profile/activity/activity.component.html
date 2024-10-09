@@ -17,7 +17,6 @@
       <tbody>
       <tr style="cursor: pointer" *ngFor="let i of dataShow;let j = index"
           [class.row-selected]="this.selectedRows.indexOf(i) !== -1"
-          (dblclick)="navigateDetailOrder(i.id)"
           class="decor-text-1"
           (click)="selectRow(i, $event, syslogs)">
         <td>Rút tiền</td>

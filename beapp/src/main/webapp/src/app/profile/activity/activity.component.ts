@@ -45,34 +45,5 @@ export class ActivityComponent implements OnInit{
   }
   loadPage(page:any){
   }
-  cutAndJoinString(inputStr: string): string {
-    return inputStr.split('-').map(part => part[0]).join('');
-  }
-  acceptOrder(id: any){
-    this.orderService.acceptOrder(id).subscribe(res => {
-      this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: res.message });
-      setTimeout(()=>{
-        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-        this.router.onSameUrlNavigation = 'reload';
-        this.router.navigate([this.router.url]);
-      },500)
-    },error => {
-      this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
-    })
-  }
-  navigateDetailOrder(id:any){
-    this.router.navigate([`detail-order/${id}`])
-  }
-  cancelOrder(id:any){
-    this.orderService.cancelOrder(id).subscribe(res => {
-      this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: res.message });
-      setTimeout(()=>{
-        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-        this.router.onSameUrlNavigation = 'reload';
-        this.router.navigate([this.router.url]);
-      },500)
-    },error => {
-      this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
-    })
-  }
+
 }
