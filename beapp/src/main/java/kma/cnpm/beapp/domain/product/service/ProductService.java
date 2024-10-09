@@ -12,7 +12,7 @@ public interface ProductService {
     ProductResponse update(Integer id, ProductRequest productRequest);
     ProductResponse uploadFile(UploadFileRequest uploadFileRequest);
     ProductResponse reduceProductQuantity(Integer id, Integer quantity, Boolean rollback);
-    void deleteById(Integer id);
+//    void deleteById(Integer id);
 
     ProductResponse getProductById(Integer id);
     List<ProductResponse> getProductsByName(String name);
