@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "posts")
-public class Post extends AbstractEntity<Integer> {
+public class  Post extends AbstractEntity<Integer> {
 
     private String content;
     private String status;

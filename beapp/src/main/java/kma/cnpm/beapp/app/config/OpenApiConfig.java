@@ -54,9 +54,12 @@ public class OpenApiConfig {
                         "kma.cnpm.beapp.app.api.user",
                         "kma.cnpm.beapp.app.api.product",
                         "kma.cnpm.beapp.app.api.post",
+                        "kma.cnpm.beapp.app.api.notification",
+
                         "kma.cnpm.beapp.app.api.order")
                 .build();
     }
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
