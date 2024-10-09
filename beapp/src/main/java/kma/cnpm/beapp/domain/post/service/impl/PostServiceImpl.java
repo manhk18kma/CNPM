@@ -205,7 +205,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResponse> getPostsByApproved(Boolean isApproved) {
-        List<Post> posts = postRepository.findByIsApprovedAndStatusOrderByCreatedAtDesc(isApproved, "PENDING");
+        List<Post> posts = postRepository.findByIsApprovedAndStatusOrderByCreatedAtDesc(false, "PENDING");
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {

@@ -100,6 +100,7 @@ public class LikeServiceImpl implements LikeService {
         return posts.stream()
                 .map(postMapper::map)
                 .peek(postResponse -> {
+                    postResponse.setUserName(userService.findUserById(String.valueOf(postResponse.getUserId())).getFullName());
                     postResponse.setLiked(this.liked(postResponse.getId()));
                     postResponse.setLikeTotal(this.countLikes(postResponse.getId()));
                     postResponse.setCommentTotal(commentService.countComments(postResponse.getId()));
