@@ -194,7 +194,7 @@ export class PostComponent {
   }
 
   getAllPost() {
-    this.postService.getPostApproved('TRUE').subscribe(res => {
+    this.postService.getAllUploadedPosts('ACTION').subscribe(res => {
       this.posts = res.data
     })
   }

@@ -9,21 +9,31 @@
       <li class="nav-item decor-text">
         <a class="nav-link" routerLink="home" routerLinkActive="active">Trang chủ</a>
       </li>
-      <li class="nav-item d-flex align-items-center">
+      <li class="nav-item d-flex align-items-center decor-text">
         <a class="nav-link" routerLink="post" routerLinkActive="active">Bài đăng</a>
 <!--        <i class="bi bi-caret-down-fill"></i>-->
       </li>
-      <li class="nav-item">
+      <li class="nav-item decor-text">
         <a class="nav-link" routerLink="home" routerLinkActive="active">Hỗ trợ</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item decor-text">
         <a class="nav-link" routerLink="order" routerLinkActive="active">Đơn hàng</a>
       </li>
     </ul>
-
     <ul class="navbar-nav d-flex flex-row justify-content-end align-items-center" *ngIf="!isMobile">
-      <li class="nav-item">
-        <i class="bi bi-bell decor-text" style="cursor: pointer;margin-right: 10px"></i>
+      <li class="nav-item" style="position: relative">
+        <i (click)="toggleNotifications()" class="bi bi-bell decor-text" style="cursor: pointer;margin-right: 10px"></i>
+        <div class="dx decor-text-1" *ngIf="showNotifications">
+          <p style="text-align: center;padding: 5px 0">Thông báo</p>
+          <hr class="faded-line">
+          <ul class="navbar-nav d-flex flex-column">
+            <li class="nav-item decor-text-1" style="text-align: left;padding-left: 10px" *ngFor="let noti of notifications.items">
+              <p [innerHTML]="noti.content" >
+              </p>
+              <hr class="faded-line">
+            </li>
+          </ul>
+        </div>
       </li>
       <li class="nav-item decor-text" *ngIf="userService.authenticated()">
         <a class="nav-link" routerLink="message" routerLinkActive="active">

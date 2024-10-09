@@ -68,7 +68,7 @@ export class DetailOrderComponent implements OnInit{
         this.router.navigate([this.router.url]);
       },500)
     },error => {
-      this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
+      this.messageService.add({ severity: 'error', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
     })
   }
   cancelOrder(id:any){
@@ -80,7 +80,7 @@ export class DetailOrderComponent implements OnInit{
         this.router.navigate([this.router.url]);
       },500)
     },error => {
-      this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
+      this.messageService.add({ severity: 'error', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
     })
   }
   completeOrder(id: any){
@@ -92,7 +92,7 @@ export class DetailOrderComponent implements OnInit{
         this.router.navigate([this.router.url]);
       },500)
     },error => {
-      this.messageService.add({ severity: 'success', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
+      this.messageService.add({ severity: 'error', summary: 'Thao tác', detail: 'Lỗi hệ thống' });
     })
   }
 }

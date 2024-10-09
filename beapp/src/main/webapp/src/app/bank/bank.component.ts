@@ -63,7 +63,7 @@ export class BankComponent implements OnInit {
         this.router.navigate([this.router.url]);
       }, 500);
     }, error => {
-      this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.message});
+      this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.error.message});
     })
     this.showContextMenu = false; // Hide context menu after action
   }

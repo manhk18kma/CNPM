@@ -102,6 +102,7 @@
                 <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
                 <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
               </div>
+
             </div>
             <div class="timeline-content">
               <p style="font-weight: bold">
@@ -150,8 +151,10 @@
                 <span class="separator">|</span>
                 <i (click)="openCommentModal(post)" class="bi bi-chat-dots decor-text"
                    style="color: #5dc486;cursor: pointer"></i>
-                <span class="separator">|</span>
+                <span  *ngIf="post.product.id != null && post.product.quantity > 0 && post.userId != tokenService.getIDUserFromToken()" class="separator">|</span>
                 <i *ngIf="post.product.id != null && post.product.quantity > 0 && post.userId != tokenService.getIDUserFromToken()" class="bi bi-cart-plus decor-text" (click)="navigatePayment(post.id)" style="color: #000000;cursor: pointer"></i>
+                <span class="separator">|</span>
+                <i *ngIf="post.userId == tokenService.getIDUserFromToken()" (click)="deletePost(post.id)" title="Xóa bài viết" style="color: rgba(156,163,222,0.35);cursor: pointer" class="bi bi-trash3 decor-text"></i>
               </div>
             </div>
           </div>
@@ -166,6 +169,7 @@
                   <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
                   <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
                 </div>
+
               </div>
               <div class="timeline-content">
                 <p style="font-weight: bold">

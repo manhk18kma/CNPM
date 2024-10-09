@@ -52,7 +52,12 @@ import { WaitingComponent } from './order/waiting/waiting.component';
 import { DetailOrderComponent } from './detail-order/detail-order.component';
 import { ApproveWithdrawComponent } from './profile/approve-withdraw/approve-withdraw.component';
 import { ApprovePostComponent } from './profile/approve-post/approve-post.component';
+import {AngularFireMessagingModule} from "@angular/fire/compat/messaging";
+import {AngularFireModule} from "@angular/fire/compat";
+import {environment} from "./service/dto/env";
 
+// @ts-ignore
+// @ts-ignore
 @NgModule({
   declarations: [
     AppComponent,
@@ -107,7 +112,9 @@ import { ApprovePostComponent } from './profile/approve-post/approve-post.compon
     MessagesModule,
     RecaptchaModule,
     RecaptchaFormsModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireMessagingModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard, provideAnimations(),MessageService, // required animations providers
     provideToastr(),
