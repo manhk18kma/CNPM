@@ -42,4 +42,7 @@ export class PostService {
   unApprovePost(id:any): Observable<any>{
     return this.http.patch(`${this.baseURL}/unApprove/${id}`,id);
   }
+  getPostsByConent(title:any): Observable<any>{
+    return this.http.get(`${this.baseURL}/search/${title}`);
+  }
 }

@@ -1,7 +1,9 @@
 <p-toast></p-toast>
+<div *ngIf="selectedPost" class="modal-overlay" (click)="closeModal()"></div>
 <div class="profile-content decor-text-1">
   <div class="tab-content p-0">
     <div class="tab-pane fade active show" id="profile-post">
+      <p class="decor-text-1" style="text-align: center;font-size: 18px">Kết quả của từ: <span style="color:#e59a4d">"{{key}}"</span></p>
       <ul class="timeline">
         <li *ngFor="let post of posts" style="background-color: rgba(231,231,231,0.54)">
           <div *ngIf="selectedPost != post" class="timeline-body">
@@ -42,18 +44,35 @@
                 </div>
               </div>
             </div>
+            <div class="timeline-likes">
+              <div class="stats-right">
+                <span class="stats-text">{{post.commentTotal}} Bình luận</span>
+              </div>
+              <div class="stats">
+                <span class="stats-total">{{post.likeTotal}}</span>
+                <i class="bi bi-heart-fill p-1" style="color: red"></i>
+              </div>
+            </div>
+
             <div class="timeline-comment-box rounded-0">
               <div class="d-flex align-items-center">
-                <button (click)="approve(post.id)" class="btn btn-success decor-text-1 rounded-0" style="width:100%">Duyệt</button>
-                <span class="separator">|</span>
-                <button (click)="decline(post.id)" class="btn btn-danger decor-text-1 rounded-0" style="width:100%">Từ chối</button>
 
+                <i *ngIf="!post.liked" (click)="toggleLike(post.id, post)" class="bi bi-heart decor-text p-1"
+                   style="color: red;cursor: pointer"></i>
+                <i *ngIf="post.liked" (click)="toggleLike(post.id, post)" class="bi bi-heart-fill decor-text p-1" style="color: red;cursor: pointer"></i>
+                <span class="separator">|</span>
+                <i (click)="openCommentModal(post)" class="bi bi-chat-dots decor-text"
+                   style="color: #5dc486;cursor: pointer"></i>
+                <span class="separator">|</span>
+                <i *ngIf="post.product.id != null && post.product.quantity > 0 && post.userId != tokenService.getIDUserFromToken()" class="bi bi-cart-plus decor-text" (click)="navigatePayment(post.id)" style="color: #000000;cursor: pointer"></i>
               </div>
             </div>
           </div>
+
         </li>
 
       </ul>
+      <p style="text-align: center;margin-top: 50px" class="decor-text" *ngIf="posts.length == 0">Không tìm được kết quả nào</p>
     </div>
   </div>
 </div>

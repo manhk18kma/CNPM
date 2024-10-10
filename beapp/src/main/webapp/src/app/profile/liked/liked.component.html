@@ -12,8 +12,7 @@
                         alt=""></span>
               <span class="username"><a>{{post.userName}}</a> <small></small></span>
               <div class="pull-right text-muted">
-                <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
-                <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
+                <span class="date">{{userService.handleTime(post.createdAt)}}</span>
               </div>
             </div>
             <div class="timeline-content">
@@ -73,8 +72,7 @@
                         alt=""></span>
                 <span class="username"><a>{{post.product.sellerName}}</a> <small></small></span>
                 <div class="pull-right text-muted">
-                  <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
-                  <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
+                  <span class="date">{{userService.handleTime(post.createdAt)}}</span>
                 </div>
               </div>
               <div class="timeline-content">
@@ -140,8 +138,8 @@
                               <div class="media-body">
                                 <strong class="text-success">{{comment.userName}}</strong>
                                 <span class=" pull-right">
-                                  <small class="text-muted p-2">{{ comment.createdAt | date: ' HH:mm:ss '}}</small>
-                                    <small class="text-muted">{{ comment.createdAt | date: 'dd/MM/yyyy'}}</small>
+                                  <small class="text-muted p-2">{{userService.handleTime(comment.createdAt)}}</small>
+
                                 </span>
                                 <p>
                                   {{comment.content}}

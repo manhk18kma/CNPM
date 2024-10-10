@@ -52,12 +52,14 @@ import { WaitingComponent } from './order/waiting/waiting.component';
 import { DetailOrderComponent } from './detail-order/detail-order.component';
 import { ApproveWithdrawComponent } from './profile/approve-withdraw/approve-withdraw.component';
 import { ApprovePostComponent } from './profile/approve-post/approve-post.component';
-import {AngularFireMessagingModule} from "@angular/fire/compat/messaging";
-import {AngularFireModule} from "@angular/fire/compat";
-import {environment} from "./service/dto/env";
 
-// @ts-ignore
-// @ts-ignore
+import {environment} from "./service/dto/env";
+import { SearchComponent } from './search/search.component';
+import {AngularFireModule} from "@angular/fire/compat";
+import {AngularFireMessagingModule} from "@angular/fire/compat/messaging";
+import { MessageFirebaseComponent } from './message-firebase/message-firebase.component';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -93,7 +95,9 @@ import {environment} from "./service/dto/env";
     WaitingComponent,
     DetailOrderComponent,
     ApproveWithdrawComponent,
-    ApprovePostComponent
+    ApprovePostComponent,
+    SearchComponent,
+    MessageFirebaseComponent
   ],
   imports: [
     BrowserModule,
@@ -113,10 +117,10 @@ import {environment} from "./service/dto/env";
     RecaptchaModule,
     RecaptchaFormsModule,
     NgOptimizedImage,
+    AngularFireMessagingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireMessagingModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard, provideAnimations(),MessageService, // required animations providers
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}, CookieService,provideToastr(),AuthGuard, provideAnimations(),MessageService,AngularFireModule, // required animations providers
     provideToastr(),
   ],
   bootstrap: [AppComponent]

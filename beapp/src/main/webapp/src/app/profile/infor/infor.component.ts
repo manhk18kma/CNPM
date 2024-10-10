@@ -15,7 +15,7 @@ export class InforComponent implements OnInit {
   currentIDUser:any;
   idUser:any
   constructor(public authService: AuthService,
-              private userService: UserService,
+              public userService: UserService,
               private tokenService: TokenService,
               private route: ActivatedRoute,
               private router: Router) {

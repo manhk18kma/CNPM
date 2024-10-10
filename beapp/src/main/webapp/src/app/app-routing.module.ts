@@ -35,6 +35,7 @@ import {WaitingComponent} from "./order/waiting/waiting.component";
 import {DetailOrderComponent} from "./detail-order/detail-order.component";
 import {ApproveWithdrawComponent} from "./profile/approve-withdraw/approve-withdraw.component";
 import {ApprovePostComponent} from "./profile/approve-post/approve-post.component";
+import {SearchComponent} from "./search/search.component";
 
 const routes: Routes = []
 
@@ -111,7 +112,7 @@ function getRoutesBasedOnRole(tokenService: TokenService) {
       {path: 'response-transaction', component: ResponseTransactionComponent, canActivate: [AuthGuard]},
       {path: 'post/:id', component: DetailPostComponent, canActivate: [AuthGuard]},
       {path: 'address', component: AddressComponent, canActivate: [AuthGuard]},
-
+      {path: 'search/:key', component: SearchComponent, canActivate: [AuthGuard]},
     ]
   };
   return [...commonRoutes, ...roleBasedRoutes[role] ?? []];
