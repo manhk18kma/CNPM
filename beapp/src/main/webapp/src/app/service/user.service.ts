@@ -55,8 +55,31 @@ export class UserService {
   formatMoneyVND(amount: any): string {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   }
+  handleTime(time:any){
+    const createTime = new Date(time); // Thời gian bắt đầu
+    const currentTime = new Date(); // Thời gian hiện tại
 
+    const timeDifference = currentTime.getTime() - createTime.getTime(); // Tính toán khoảng thời gian (milliseconds)
+
+// Chuyển đổi thành các đơn vị thời gian cụ thể
+    const seconds = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(timeDifference / (1000 * 60));
+    const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+// Điều kiện để hiển thị
+    if (minutes < 60) {
+      return minutes + ' phút trước';
+    } else if (hours < 24) {
+      return hours + ' giờ trước';
+    } else {
+      return days + ' ngày trước';
+    }
+  }
   getNotify(): Observable<any>{
     return this.http.get(`${this.baseURL1}`);
+  }
+  getCountNotReadNotify(): Observable<any>{
+    return this.http.get(`${this.baseURL1}/count`);
   }
 }

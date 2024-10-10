@@ -58,7 +58,7 @@
               </div>
               <div class="profile-comments__body">
                 <h5 style="font-size: 15px" class="profile-comments__sender">
-                  {{item.fullName}} <small>{{item.viewTime | date: ' HH:mm:ss'}}</small>
+                  {{item.fullName}} <small>{{userService.handleTime(item.viewTime)}}</small>
                 </h5>
               </div>
 

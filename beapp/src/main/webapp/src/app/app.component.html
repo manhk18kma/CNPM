@@ -22,14 +22,19 @@
     </ul>
     <ul class="navbar-nav d-flex flex-row justify-content-end align-items-center" *ngIf="!isMobile">
       <li class="nav-item" style="position: relative">
-        <i (click)="toggleNotifications()" class="bi bi-bell decor-text" style="cursor: pointer;margin-right: 10px"></i>
+        <i (click)="toggleNotifications()" class="bi bi-bell decor-text" style="cursor: pointer;margin-right: 10px;position:relative">
+          <i *ngIf="count > 0" class="bi bi-dot" style="color: #ad0404;position: absolute;right: -100%;top: -140%;font-size: 40px"></i>
+
+        </i>
         <div class="dx decor-text-1" *ngIf="showNotifications">
-          <p style="text-align: center;padding: 5px 0">Thông báo</p>
+          <p style="text-align: center;margin-top: 10px;font-weight: bold;font-size: 16px;text-transform: uppercase">Thông báo</p>
           <hr class="faded-line">
           <ul class="navbar-nav d-flex flex-column">
-            <li class="nav-item decor-text-1" style="text-align: left;padding-left: 10px" *ngFor="let noti of notifications.items">
-              <p [innerHTML]="noti.content" >
+            <li class="nav-item decor-text-1" style="text-align: left;padding-left: 10px; position:relative" *ngFor="let noti of notifications.items">
+              <p [innerHTML]="noti.content" style="margin-bottom: 5px">
               </p>
+
+              <p style="margin:0;color: #2044a4;font-size: 10px">{{userService.handleTime(noti.createTime)}}</p>
               <hr class="faded-line">
             </li>
           </ul>

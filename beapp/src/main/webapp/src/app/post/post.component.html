@@ -99,8 +99,7 @@
                         alt=""></span>
               <span class="username"><a>{{post.userName}}</a> <small></small></span>
               <div class="pull-right text-muted">
-                <span class="date">{{post.createdAt | date: 'dd/MM/yyyy '}}</span>
-                <span class="date">{{post.createdAt | date: ' HH:mm:ss'}}</span>
+                <span class="date">{{userService.handleTime(post.createdAt)}}</span>
               </div>
             </div>
             <div class="timeline-content">

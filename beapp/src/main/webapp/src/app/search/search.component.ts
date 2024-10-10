@@ -8,32 +8,34 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {CommentsService} from "../service/comments.service";
 import {LikeService} from "../service/like.service";
 import {MessageService} from "primeng/api";
-import {catchError, of, tap} from "rxjs";
 import {UserService} from "../service/user.service";
+import {TokenService} from "../service/token/token.service";
+import {catchError, of, tap} from "rxjs";
 
 @Component({
-  selector: 'app-detail-post',
-  templateUrl: './detail-post.component.html',
-  styleUrls: ['./detail-post.component.scss']
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss']
 })
-export class DetailPostComponent {
+export class SearchComponent {
   openPost: boolean = false;
   imageFiles: File[] = [];
   images: Awaited<string>[] = [];
+  post: any = {};
   addProduct: boolean = false;
   product: any = {};
   categories: any;
-  post: any = {};
+  posts: any;
   userDetail: any;
-  id: any;
+  key: any;
   imagePreviewUrls: any = [];
   selectedPost: any = null;
   newComment: any = {}
   comments: any;
-  openComment = false;
+
   constructor(public authService: AuthService,
               private categoryService: CategoryService,
-              private postervice: PostService,
+              private postService: PostService,
               private route: ActivatedRoute,
               private spinner: NgxSpinnerService,
               private router: Router,
@@ -41,23 +43,31 @@ export class DetailPostComponent {
               private cmtService: CommentsService,
               private likeService: LikeService,
               private messageService: MessageService,
-              public userService: UserService
+              public userService: UserService,
+              public tokenService: TokenService
   ) {
   }
 
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
-    // @ts-ignore
-    this.getPostsByPostID(this.id)
+    this.post.product = null;
+    this.key = this.route.snapshot.paramMap.get('key');
+    this.getAllPost();
   }
 
   openCommentModal(post: any) {
-    this.openComment = true;
     this.newComment.content = ''
     this.selectedPost = post;
     this.getCommentsByPost(post.id);
-
   }
+
+  get lockScroll() {
+    return {
+      'overflow-y': this.selectedPost ? 'hidden' : 'auto',
+      'position': this.selectedPost ? 'fixed' : 'relative',
+      'width': '100%'
+    };
+  }
+
   getCommentsByPost(id: any) {
     this.cmtService.getCommentsByPostID(id).pipe(
       tap(res => {
@@ -120,11 +130,72 @@ export class DetailPostComponent {
     textarea.style.height = textarea.scrollHeight + 'px';
   }
 
-  getPostsByPostID(id: any) {
-    this.postervice.getPostByID(id).subscribe(res => {
+  // Method to handle image selection
+  onFilesSelected(event: any): void {
+    const files: File[] = event.target.files;
 
-      this.post = res.data
-      console.log(this.post)
+    if (files.length > 0) {
+      this.images = []; // Clear previous file selection
+      // this.imagePreviewUrls = []; // Clear previous previews
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        this.imageFiles.push(file); // Add to the array of selected files
+        // Generate a URL to display the image preview
+        const objectURL = URL.createObjectURL(file);
+        this.imagePreviewUrls.push(this.sanitizer.bypassSecurityTrustUrl(objectURL) as string);
+      }
+    }
+  }
+
+  private convertToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result as string); // Resolve with the Base64 string
+      };
+      reader.onerror = reject; // Handle any error
+      reader.readAsDataURL(file); // Convert file to Base64
+    });
+  }
+
+
+  onCategoryChange(event: any) {
+    this.product.categoryId = event.target.value;
+  }
+
+  async upPost() {
+    if (this.addProduct == true) {
+      if (this.imageFiles.length > 0) {
+        this.product.imageBase64 = [];
+        this.images = [];
+        for (let file of this.imageFiles) {
+          try {
+            const base64String = await this.convertToBase64(file);
+            this.images.push(base64String);
+          } catch (error) {
+            this.messageService.add({severity: 'error', summary: 'Error', detail: 'Failed to convert image to Base64'});
+            return; // Stop the process if any image conversion fails
+          }
+        }
+        this.product.imageBase64 = this.images;
+      }
+      this.post.product = this.product;
+    }
+    this.spinner.show()
+    this.postService.post(this.post).subscribe(res => {
+      setTimeout(() => {
+        this.messageService.add({severity: 'success', summary: 'Thao tác', detail: res.message});
+        this.spinner.hide()
+        this.openPost = false;
+      }, 500)
+    }, error => {
+      this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.message});
+    })
+  }
+
+  getAllPost() {
+    this.postService.getPostsByConent(this.key).subscribe(res => {
+      this.posts = res.data
     })
   }
 
@@ -146,5 +217,11 @@ export class DetailPostComponent {
         this.messageService.add({severity: 'error', summary: 'Thao tác', detail: error.message});
       })
     }
+  }
+  navigatePayment(id: any){
+    this.router.navigate([`payment/${id}`],id);
+  }
+  viewProfile(id: any){
+    this.router.navigate([`profile/${id}`])
   }
 }
